@@ -110,15 +110,46 @@ A <- diag(3)
 #contraints
 b <- c(1, 2, 6)
 
-
-
-#function
+#augmented matrix
 (A_aug <- cbind(A, b))
-if (A_aug[2, 1] == 0 & sum(A_aug[3, 1:2]) == 0){
-  T
-} else {
-  F
+
+#sort the columns descendingly
+ordered_matrix <- function(aug_matrix){
+  new_matrix <- aug_matrix[order(-aug_matrix[, 1], -aug_matrix[, 2], -aug_matrix[, 3]), ]
+  return(new_matrix)
 }
+
+#Upper triangle test
+upper_tri_test <- function(the_matrix){
+  if (the_matrix[2, 1] == 0 & sum(the_matrix[3, 1:2]) == 0){
+    return(T)
+  } else {
+    return(F)
+  }
+}
+
+
+
+current_matrix <- ordered_matrix(A_aug)
+
+while (!upper_tri_test(current_matrix)){
+  for (r in 1:nrow(current_matrix)){
+    current_row <- current_matrix[r, ]
+    
+    if (sum(current_row[1:2]) == 0){
+      # for (c in 1:length(current_row) - 1){
+      #   if (current_row[c] != 0){
+      #     pivot <- current_row[c]
+      #   }
+    }
+  }
+}
+
+
+
+
+gaussian()
+
 
 for (r in 1:nrow(A_aug)){
   current_row <- A_aug[r, ]
