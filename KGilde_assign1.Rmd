@@ -116,7 +116,7 @@ b <- c(1, 2, 6)
 
 #sort the columns descendingly
 upper_tri_order <- function(aug_matrix){
-  new_matrix <- aug_matrix[order(-aug_matrix[, 1], -aug_matrix[, 2], -aug_matrix[, 3]), ]
+  new_matrix <- aug_matrix[order(-abs(aug_matrix[, 1]), -abs(aug_matrix[, 2]), -abs(aug_matrix[, 3])), ]
   return(new_matrix)
 }
 
@@ -152,34 +152,62 @@ determine_multiplier <- function(the_matrix, row_num, pivot_pos){
 #determine_multiplier(A_aug, 2, 1)
 
 substract_rows <- function(the_matrix, row_num, the_multiplier, pivot_pos){
-  first_row <- the_matrix[row_num, ]
-  second_row <- the_matrix[row_num + 1, ] * the_multiplier
+  first_row <- the_matrix[row_num, ] * the_multiplier
+  second_row <- the_matrix[row_num + 1, ]
   new_row <- first_row - second_row
   the_matrix[row_num, ] <- new_row
   new_matrix <- the_matrix
   return(new_matrix)
 }
 
+the_multiplier <- 2
 row_num <- 1
 A_aug
-first_row <- A_aug[row_num, ]
-second_row <- A_aug[row_num + 1, ] * the_multiplier
+first_row <- A_aug[row_num, ] * the_multiplier
+second_row <- A_aug[row_num + 1, ]
 new_row <- first_row - second_row
-(A_aug[c(row_num), ] <- new_row)
+(A_aug[row_num, ] <- new_row)
 
 
 A_aug[c(row_num), ]
 A_aug[1, ] - A_aug[2, ]
 
-current_matrix <- upper_tri_order(A_aug)
+
+
+
+
 #while (!upper_tri_test(current_matrix)){
   #for (r in 1:1){ #nrow(current_matrix)){
-    r <- 1
-    current_row <- current_matrix[r, ]
-    pivot_pos <- determine_pivot_pos(current_row)
-    the_multiplier <- determine_multiplier(current_matrix, r, pivot_pos)
-    new_matrix <- substract_rows(current_matrix, r, the_multiplier, pivot_pos) 
-    new_matrix
+
+current_matrix <- upper_tri_order(A_aug)
+for (i in 1:2){
+  n_row <- i
+  n_row_1 <- n_row + 1
+  n_col <- i
+  while (sum(current_matrix[1:n_row_1, n_col] == 0) < 2){
+    current_row <- current_matrix[n_row, ]
+    pivot_pos <- determine_pivot_pos(current_matrix[n_row, ])
+    the_multiplier <- determine_multiplier(current_matrix, n_row, pivot_pos)
+    current_matrix <- substract_rows(current_matrix, n_row, the_multiplier, pivot_pos) 
+    current_matrix <- upper_tri_order(current_matrix)
+  }   
+}
+
+upper_tri_test(current_matrix)
+
+
+n_row <- n_row + 1
+n_plus_1 <- n_row + 1
+n_col <- n_col + 1
+while (sum(current_matrix[, n_col] == 0) < 2){
+    current_matrix <- upper_tri_order(current_matrix)
+    upper_tri_test(current_matrix)
+    current_row <- current_matrix[n_row, ]
+    pivot_pos <- determine_pivot_pos(current_matrix[n_row, ])
+    the_multiplier <- determine_multiplier(current_matrix, n_row, pivot_pos)
+    current_matrix <- substract_rows(current_matrix, n_row, the_multiplier, pivot_pos) 
+}   
+
     #if (sum(current_row[1:2]) == 0){
       # for (c in 1:length(current_row) - 1){
       #   if (current_row[c] != 0){
