@@ -102,21 +102,12 @@ Set up a system of equations with 3 variables and 3 constraints and solve for x.
 Please test it with the system below and it should produce a solution x = [1.55, 0.32, 0.95]
 
 ```{r}
-#coefficient matrix
-d <- c(1, 1, 3, 2, −1, 5, −1, −2, 4)
-(A <- matrix(d, ncol = 3, byrow = T))
 
-#A <- diag(3)
-#contraints
-b <- c(1, 2, 6)
+###HELPER FUNCTIONS###
 
-#augmented matrix
-(A_aug <- cbind(A, b))
-
-
-#sort the columns descendingly
+#sort first 2 columns descendingly by absolute values
 upper_tri_order <- function(aug_matrix){
-  new_matrix <- aug_matrix[order(-abs(aug_matrix[, 1]), -abs(aug_matrix[, 2]), -abs(aug_matrix[, 3])), ]
+  new_matrix <- aug_matrix[order(-abs(aug_matrix[, 1]), -abs(aug_matrix[, 2])), ]
   return(new_matrix)
 }
 
@@ -128,6 +119,7 @@ upper_tri_test <- function(the_matrix){
     return(F)
   }
 }
+
 #determine the pivot
 determine_pivot_pos <- function(the_row){
   for (i in 1:2){
@@ -138,19 +130,16 @@ determine_pivot_pos <- function(the_row){
   pivot_pos <- i
   return(pivot_pos)
 }
-# myrow <- c(0,0,2,0)
-# determine_pivot_pos(myrow)
 
 #determine the multiplier
 determine_multiplier <- function(the_matrix, row_num, pivot_pos){
   the_multiplier <- the_matrix[row_num + 1, pivot_pos] / the_matrix[row_num, pivot_pos]
-  if (the_multiplier == 0)
-    break
+  # if (the_multiplier == 0)
+  #   break
   return(the_multiplier)
 }
 
-#determine_multiplier(A_aug, 2, 1)
-
+#subtract 2 rows
 substract_rows <- function(the_matrix, row_num, the_multiplier, pivot_pos){
   first_row <- the_matrix[row_num, ] * the_multiplier
   second_row <- the_matrix[row_num + 1, ]
@@ -160,78 +149,70 @@ substract_rows <- function(the_matrix, row_num, the_multiplier, pivot_pos){
   return(new_matrix)
 }
 
-the_multiplier <- 2
-row_num <- 1
-A_aug
-first_row <- A_aug[row_num, ] * the_multiplier
-second_row <- A_aug[row_num + 1, ]
-new_row <- first_row - second_row
-(A_aug[row_num, ] <- new_row)
-
-
-A_aug[c(row_num), ]
-A_aug[1, ] - A_aug[2, ]
-
-
-
-
-
-#while (!upper_tri_test(current_matrix)){
-  #for (r in 1:1){ #nrow(current_matrix)){
-
-current_matrix <- upper_tri_order(A_aug)
-for (i in 1:2){
-  n_row <- i
-  n_row_1 <- n_row + 1
-  n_col <- i
-  while (sum(current_matrix[1:n_row_1, n_col] == 0) < 2){
-    current_row <- current_matrix[n_row, ]
-    pivot_pos <- determine_pivot_pos(current_matrix[n_row, ])
-    the_multiplier <- determine_multiplier(current_matrix, n_row, pivot_pos)
-    current_matrix <- substract_rows(current_matrix, n_row, the_multiplier, pivot_pos) 
-    current_matrix <- upper_tri_order(current_matrix)
-  }   
-}
-
-upper_tri_test(current_matrix)
-
-
-n_row <- n_row + 1
-n_plus_1 <- n_row + 1
-n_col <- n_col + 1
-while (sum(current_matrix[, n_col] == 0) < 2){
-    current_matrix <- upper_tri_order(current_matrix)
-    upper_tri_test(current_matrix)
-    current_row <- current_matrix[n_row, ]
-    pivot_pos <- determine_pivot_pos(current_matrix[n_row, ])
-    the_multiplier <- determine_multiplier(current_matrix, n_row, pivot_pos)
-    current_matrix <- substract_rows(current_matrix, n_row, the_multiplier, pivot_pos) 
-}   
-
-    #if (sum(current_row[1:2]) == 0){
-      # for (c in 1:length(current_row) - 1){
-      #   if (current_row[c] != 0){
-      #     pivot <- current_row[c]
-      #   }
-    }
- # }
-#}
-
-
-
-
-gaussian()
-
-
-for (r in 1:nrow(A_aug)){
-  current_row <- A_aug[r, ]
-  if (sum(current_row[1:2])) == 0
-    # for (c in 1:length(current_row) - 1){
-    #   if (current_row[c] != 0){
-    #     pivot <- current_row[c]
-    #   }
+### MAIN FUNCTION ###
+gaussion_elimination <- function(A, b){
+  #augmented matrix
+  A_aug <- cbind(A, b)
+  vars <-  c("x1", "x2", "x3")
+  colnames(A_aug)[1:3] <- vars
+  #solved vector
+  x <- rep(NA, 3)
+  names(x) <- vars
+  
+  #pivoting and multiplying
+  current_matrix <- upper_tri_order(A_aug)
+  zeros <- ncol(current_matrix) - 2
+  loops <- ncol(current_matrix) - 2
+  for (i in 1:loops){
+    n_row <- i
+    n_row_1 <- n_row + 1
+    n_col <- i
+    while (sum(current_matrix[, n_col] == 0) < zeros){
+      current_row <- current_matrix[n_row, ]
+      pivot_pos <- determine_pivot_pos(current_matrix[n_row, ])
+      the_multiplier <- determine_multiplier(current_matrix, n_row, pivot_pos)
+      current_matrix <- substract_rows(current_matrix, n_row, the_multiplier, pivot_pos) 
+      current_matrix <- upper_tri_order(current_matrix)
+    }  
+    zeros <- zeros - 1
+  }
+  
+  #test for upper triangle form
+  if(upper_tri_test(current_matrix)){
+    print("Upper Triangle Form:")
+    print(current_matrix)
+    
+    #solve for the x vector
+    x["x3"] <- current_matrix[3, "b"] / current_matrix[3, "x3"]
+    x["x2"] <- (current_matrix[2, "b"] - (x["x3"] * current_matrix[2, "x3"])) / current_matrix[2, "x2"]
+    x["x1"] <- (current_matrix[1, "b"] - (x["x3"] * current_matrix[1, "x3"]) - (x["x2"] * current_matrix[1, "x2"])) / current_matrix[1, "x1"]
+    
+    #validate
+    validation <-  ifelse(sum(round(x, 7) == round(solve(A, b), 7)) == 3, "output matches 'solve' function:", "output doesn't match 'solve' function:")
+    print(validation)
+    print(x)
+  } else {
+      print("Not in Upper Triangle Form")
   }
 }
+
+### Test #1 ###
+d <- c(1, 1, 3, 2, −1, 5, −1, −2, 4)
+A <- matrix(d, ncol = 3, byrow = T)
+b <- c(1, 2, 6)
+gaussion_elimination(A, b)
+
+### Test #2 ###
+d <- 	c(3, 2, -4, 2, 3, 3,	5,	-3,	1)
+A <- matrix(d, ncol = 3, byrow = T)
+b <- c(3, 15, 14)	
+gaussion_elimination(A, b)
+
+### Test #3 ###
+d <- 	c(1, 2, 1, 3, 2, 4,	4, 4,	3)
+A <- matrix(d, ncol = 3, byrow = T)
+b <- c(5, 17, 26)	
+gaussion_elimination(A, b)
 ```
 
 </body>

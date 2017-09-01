@@ -130,16 +130,143 @@ v &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">3</sp
 <li>Alternatively, you can augment the matrix A with vector b and jointly apply the Gauss Jordan elimination procedure.</li>
 </ul>
 <p>Please test it with the system below and it should produce a solution x = [1.55, 0.32, 0.95]</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">d &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">2</span>, -<span class="dv">1</span>, <span class="dv">5</span>, -<span class="dv">1</span>, -<span class="dv">2</span>, <span class="dv">4</span>)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">### HELPER FUNCTIONS###
 
+<span class="co"># sort first 2 columns descendingly by absolute values</span>
+upper_tri_order &lt;-<span class="st"> </span>function(aug_matrix) {
+    new_matrix &lt;-<span class="st"> </span>aug_matrix[<span class="kw">order</span>(-<span class="kw">abs</span>(aug_matrix[, <span class="dv">1</span>]), -<span class="kw">abs</span>(aug_matrix[, 
+        <span class="dv">2</span>])), ]
+    <span class="kw">return</span>(new_matrix)
+}
+
+<span class="co"># Upper triangle test</span>
+upper_tri_test &lt;-<span class="st"> </span>function(the_matrix) {
+    if (the_matrix[<span class="dv">2</span>, <span class="dv">1</span>] ==<span class="st"> </span><span class="dv">0</span> &amp;<span class="st"> </span><span class="kw">sum</span>(the_matrix[<span class="dv">3</span>, <span class="dv">1</span>:<span class="dv">2</span>]) ==<span class="st"> </span><span class="dv">0</span>) {
+        <span class="kw">return</span>(T)
+    } else {
+        <span class="kw">return</span>(F)
+    }
+}
+
+<span class="co"># determine the pivot</span>
+determine_pivot_pos &lt;-<span class="st"> </span>function(the_row) {
+    for (i in <span class="dv">1</span>:<span class="dv">2</span>) {
+        if (the_row[i] !=<span class="st"> </span><span class="dv">0</span>) {
+            break
+        }
+    }
+    pivot_pos &lt;-<span class="st"> </span>i
+    <span class="kw">return</span>(pivot_pos)
+}
+
+<span class="co"># determine the multiplier</span>
+determine_multiplier &lt;-<span class="st"> </span>function(the_matrix, row_num, pivot_pos) {
+    the_multiplier &lt;-<span class="st"> </span>the_matrix[row_num +<span class="st"> </span><span class="dv">1</span>, pivot_pos]/the_matrix[row_num, 
+        pivot_pos]
+    <span class="co"># if (the_multiplier == 0) break</span>
+    <span class="kw">return</span>(the_multiplier)
+}
+
+<span class="co"># subtract 2 rows</span>
+substract_rows &lt;-<span class="st"> </span>function(the_matrix, row_num, the_multiplier, pivot_pos) {
+    first_row &lt;-<span class="st"> </span>the_matrix[row_num, ] *<span class="st"> </span>the_multiplier
+    second_row &lt;-<span class="st"> </span>the_matrix[row_num +<span class="st"> </span><span class="dv">1</span>, ]
+    new_row &lt;-<span class="st"> </span>first_row -<span class="st"> </span>second_row
+    the_matrix[row_num, ] &lt;-<span class="st"> </span>new_row
+    new_matrix &lt;-<span class="st"> </span>the_matrix
+    <span class="kw">return</span>(new_matrix)
+}
+
+### MAIN FUNCTION ###
+gaussion_elimination &lt;-<span class="st"> </span>function(A, b) {
+    <span class="co"># augmented matrix</span>
+    A_aug &lt;-<span class="st"> </span><span class="kw">cbind</span>(A, b)
+    vars &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;x1&quot;</span>, <span class="st">&quot;x2&quot;</span>, <span class="st">&quot;x3&quot;</span>)
+    <span class="kw">colnames</span>(A_aug)[<span class="dv">1</span>:<span class="dv">3</span>] &lt;-<span class="st"> </span>vars
+    <span class="co"># solved vector</span>
+    x &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="ot">NA</span>, <span class="dv">3</span>)
+    <span class="kw">names</span>(x) &lt;-<span class="st"> </span>vars
+    
+    <span class="co"># pivoting and multiplying</span>
+    current_matrix &lt;-<span class="st"> </span><span class="kw">upper_tri_order</span>(A_aug)
+    zeros &lt;-<span class="st"> </span><span class="kw">ncol</span>(current_matrix) -<span class="st"> </span><span class="dv">2</span>
+    loops &lt;-<span class="st"> </span><span class="kw">ncol</span>(current_matrix) -<span class="st"> </span><span class="dv">2</span>
+    for (i in <span class="dv">1</span>:loops) {
+        n_row &lt;-<span class="st"> </span>i
+        n_row_1 &lt;-<span class="st"> </span>n_row +<span class="st"> </span><span class="dv">1</span>
+        n_col &lt;-<span class="st"> </span>i
+        while (<span class="kw">sum</span>(current_matrix[, n_col] ==<span class="st"> </span><span class="dv">0</span>) &lt;<span class="st"> </span>zeros) {
+            current_row &lt;-<span class="st"> </span>current_matrix[n_row, ]
+            pivot_pos &lt;-<span class="st"> </span><span class="kw">determine_pivot_pos</span>(current_matrix[n_row, ])
+            the_multiplier &lt;-<span class="st"> </span><span class="kw">determine_multiplier</span>(current_matrix, n_row, pivot_pos)
+            current_matrix &lt;-<span class="st"> </span><span class="kw">substract_rows</span>(current_matrix, n_row, the_multiplier, 
+                pivot_pos)
+            current_matrix &lt;-<span class="st"> </span><span class="kw">upper_tri_order</span>(current_matrix)
+        }
+        zeros &lt;-<span class="st"> </span>zeros -<span class="st"> </span><span class="dv">1</span>
+    }
+    
+    <span class="co"># test for upper triangle form</span>
+    if (<span class="kw">upper_tri_test</span>(current_matrix)) {
+        <span class="kw">print</span>(<span class="st">&quot;Upper Triangle Form:&quot;</span>)
+        <span class="kw">print</span>(current_matrix)
+        
+        <span class="co"># solve for the x vector</span>
+        x[<span class="st">&quot;x3&quot;</span>] &lt;-<span class="st"> </span>current_matrix[<span class="dv">3</span>, <span class="st">&quot;b&quot;</span>]/current_matrix[<span class="dv">3</span>, <span class="st">&quot;x3&quot;</span>]
+        x[<span class="st">&quot;x2&quot;</span>] &lt;-<span class="st"> </span>(current_matrix[<span class="dv">2</span>, <span class="st">&quot;b&quot;</span>] -<span class="st"> </span>(x[<span class="st">&quot;x3&quot;</span>] *<span class="st"> </span>current_matrix[<span class="dv">2</span>, <span class="st">&quot;x3&quot;</span>]))/current_matrix[<span class="dv">2</span>, 
+            <span class="st">&quot;x2&quot;</span>]
+        x[<span class="st">&quot;x1&quot;</span>] &lt;-<span class="st"> </span>(current_matrix[<span class="dv">1</span>, <span class="st">&quot;b&quot;</span>] -<span class="st"> </span>(x[<span class="st">&quot;x3&quot;</span>] *<span class="st"> </span>current_matrix[<span class="dv">1</span>, <span class="st">&quot;x3&quot;</span>]) -<span class="st"> </span>
+<span class="st">            </span>(x[<span class="st">&quot;x2&quot;</span>] *<span class="st"> </span>current_matrix[<span class="dv">1</span>, <span class="st">&quot;x2&quot;</span>]))/current_matrix[<span class="dv">1</span>, <span class="st">&quot;x1&quot;</span>]
+        
+        <span class="co"># validate</span>
+        validation &lt;-<span class="st"> </span><span class="kw">ifelse</span>(<span class="kw">sum</span>(<span class="kw">round</span>(x, <span class="dv">7</span>) ==<span class="st"> </span><span class="kw">round</span>(<span class="kw">solve</span>(A, b), <span class="dv">7</span>)) ==<span class="st"> </span><span class="dv">3</span>, 
+            <span class="st">&quot;output matches 'solve' function:&quot;</span>, <span class="st">&quot;output doesn't match 'solve' function:&quot;</span>)
+        <span class="kw">print</span>(validation)
+        <span class="kw">print</span>(x)
+    } else {
+        <span class="kw">print</span>(<span class="st">&quot;Not in Upper Triangle Form&quot;</span>)
+    }
+}
+
+### Test #1 ###
+d &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">2</span>, -<span class="dv">1</span>, <span class="dv">5</span>, -<span class="dv">1</span>, -<span class="dv">2</span>, <span class="dv">4</span>)
 A &lt;-<span class="st"> </span><span class="kw">matrix</span>(d, <span class="dt">ncol =</span> <span class="dv">3</span>, <span class="dt">byrow =</span> T)
-
-A</code></pre></div>
-<pre><code>##      [,1] [,2] [,3]
-## [1,]    1    1    3
-## [2,]    2   -1    5
-## [3,]   -1   -2    4</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">b &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">6</span>)</code></pre></div>
+b &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">6</span>)
+<span class="kw">gaussion_elimination</span>(A, b)</code></pre></div>
+<pre><code>## [1] &quot;Upper Triangle Form:&quot;
+##      x1 x2   x3    b
+## [1,]  1  1  3.0  1.0
+## [2,]  0  1 -7.0 -7.0
+## [3,]  0  0  4.4  4.2
+## [1] &quot;output matches 'solve' function:&quot;
+##         x1         x2         x3 
+## -1.5454545 -0.3181818  0.9545455</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">### Test #2 ###
+d &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">3</span>, <span class="dv">2</span>, -<span class="dv">4</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">5</span>, -<span class="dv">3</span>, <span class="dv">1</span>)
+A &lt;-<span class="st"> </span><span class="kw">matrix</span>(d, <span class="dt">ncol =</span> <span class="dv">3</span>, <span class="dt">byrow =</span> T)
+b &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">3</span>, <span class="dv">15</span>, <span class="dv">14</span>)
+<span class="kw">gaussion_elimination</span>(A, b)</code></pre></div>
+<pre><code>## [1] &quot;Upper Triangle Form:&quot;
+##      x1        x2        x3         b
+## [1,]  2  3.000000  3.000000  15.00000
+## [2,]  0 -1.666667 -5.666667 -13.00000
+## [3,]  0  0.000000  7.684211  15.36842
+## [1] &quot;output matches 'solve' function:&quot;
+## x1 x2 x3 
+##  3  1  2</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">### Test #3 ###
+d &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">3</span>)
+A &lt;-<span class="st"> </span><span class="kw">matrix</span>(d, <span class="dt">ncol =</span> <span class="dv">3</span>, <span class="dt">byrow =</span> T)
+b &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">5</span>, <span class="dv">17</span>, <span class="dv">26</span>)
+<span class="kw">gaussion_elimination</span>(A, b)</code></pre></div>
+<pre><code>## [1] &quot;Upper Triangle Form:&quot;
+##      x1 x2    x3    b
+## [1,]  1  2  1.00  5.0
+## [2,]  0  1 -1.75  2.5
+## [3,]  0  0  1.50 -3.0
+## [1] &quot;output matches 'solve' function:&quot;
+## x1 x2 x3 
+##  9 -1 -2</code></pre>
 </body>
 </div>
     </section>
