@@ -197,7 +197,7 @@ gaussion_elimination <- function(A, b){
 }
 
 ### Test #1 ###
-d <- c(1, 1, 3, 2, −1, 5, −1, −2, 4)
+d <- c(1, 1, 3, 2, -1, 5, -1, -2, 4)
 A <- matrix(d, ncol = 3, byrow = T)
 b <- c(1, 2, 6)
 gaussion_elimination(A, b)

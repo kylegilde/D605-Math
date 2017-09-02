@@ -1,0 +1,72 @@
+---
+title: "DATA 605 FUNDAMENTALS OF COMPUTATIONAL MATHEMATICS" 
+subtitle: "Discussion 1: C17 p42"
+author: "Kyle Gilde"
+date: "9/1/2017"
+output: 
+  prettydoc::html_pretty:
+    theme: architect
+    highlight: github
+    toc: true
+    toc_depth: 1
+---
+<style type="text/css">
+body{
+  font-family: Helvetica;
+  font-size: 14pt;
+}
+</style>
+<body>
+```{r knitr_options, echo=FALSE}
+knitr::opts_chunk$set(
+                      warning = FALSE
+                      ,error = FALSE
+                      ,message = FALSE
+                      ,tidy = TRUE
+                      #,cache = TRUE
+                      )
+```
+
+
+```{r packages, echo=F} 
+load_packages <- c("prettydoc")
+
+#see if we need to install any of them
+install_load <- function(pkg){
+  #CODE SOURCE: https://gist.github.com/stevenworthington/3178163
+  new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
+  if (length(new.pkg)) 
+    install.packages(new.pkg, dependencies = TRUE)
+  sapply(pkg, require, character.only = TRUE, quietly = TRUE, warn.conflicts = FALSE)
+}
+
+#library(prettydoc)
+
+#excute function and display the loaded packages
+data.frame(t(t(install_load(load_packages))), fix.empty.names = FALSE)
+```
+
+##C17 p42
+
+
+For problems C10–C19, find all solutions to the system of linear equations. Use your favorite computing device to row-reduce the augmented matrices for the systems, and write the solutions as a set, using correct set notation.
+
+$−x_1 + 5x_2 = −8$
+
+$−2x_1 + 5x_2 + 5x_3 + 2x_4 = 9$
+
+$−3x_1 − x_2 + 3x_3 + x_4 = 3$
+
+$7x_1 + 6x_2 + 5x_3 + x_4 = 30$
+
+
+```{r}
+
+d <- c(−1, 5, 0, 0, −2, 5, 5, 2, −3, −1, 3, 1, 7, 6, 5, 1)
+(A <- matrix(d, ncol = 4, byrow = T))
+
+(b <- c(−8,  9, 3,  30))
+
+solve(A, b)
+```
+
