@@ -51,9 +51,95 @@ data.frame(t(t(install_load(load_packages))), fix.empty.names = FALSE)
 (1) Show that $A^TA \neq AA^T$ in general. (Proof and demonstration.)
 
 ```{r}
-r <- c(-20:20)
-mn
-d <- sample(r, replace = T)
+
+max_dim <- 3
+max_range <- 3
+iterations <- 1000
+
+results_df <- data.frame(
+  mat = character(), 
+  m = integer(),
+  n = integer(),
+  conjecture_test = logical(),
+  matrix_type = character(), 
+  stringsAsFactors=F
+)
+
+
+
+# mat <- matrix(c(-5))
+# mat1 <- matrix(c(-5, 1))
+# mat2 <- diag(3)
+# mat3 <- matrix(c(1,1,1,1))
+# mat4 <- matrix(c(1,1,1,-1))
+# #mat4 <- matrix()
+# 
+# matrix_type_test(mat)
+# matrix_type_test(mat1)
+# matrix_type_test(mat2)
+# matrix_type_test(mat3)
+# matrix_type_test(mat4)
+
+
+matrix_type_test <- function(mat, tmat, m_dim, n_dim){
+  if(all(m_dim == 1, n_dim == 1)){
+    return("1 by 1 matrix")
+  } else if(any(m_dim == 1, n_dim == 1)){
+    return("vector multiplication")
+  } else if(any(m_dim == 1, n_dim == 1)){
+    return("vector multiplication")
+  } else if(identical(mat, diag(m_dim))){
+    return("Is identify matrix")
+  } else if(identical(mat, tmat)){
+    return("Is symmetric matrix")
+  } else if(identical(mat %*% tmat, diag(m_dim))){
+    return("Is orthogonal matrix")
+  }
+}
+# if(m_dim == n_dim){
+#       if(identical(solve(mat), tmat)){
+#       return("Is orthogonal matrix")
+#       }
+#   }
+
+for (i in 1:iterations){
+
+  #select matrix dims
+  dim_range <- c(1:max_dim)
+  m_dim <- sample(dim_range, 1)
+  n_dim <- sample(dim_range, 1)
+  samp_size <- m_dim * n_dim
+
+  #select matrix elements
+  samp_space <- c(-max_range:max_range)  
+  rand_samp <- sample(samp_space, samp_size, replace = T)
+  
+  #create matrices
+  current_matrix <- matrix(rand_samp, m_dim)
+  t_current_matrix <- t(current_matrix)
+  
+  #multiply
+  A_result <- t_current_matrix %*% current_matrix
+  B_result <- current_matrix %*% t_current_matrix
+  
+  
+  
+  #test & store the results
+  match_test <- identical(A_result, B_result)
+  matrix_type <- matrix_type_test(current_matrix, t_current_matrix, m_dim, n_dim)
+  results_df[i, ] <- list(c(paste(rand_samp, collapse = ",")), m_dim, n_dim, match_test, matrix_type)
+  
+}  
+
+nrow(results_df)
+#c(str_split(opp.list,",")[[i]])
+
+
+
+prop.table(table(results_df$conjecture_test))
+
+View(subset(results_df, conjecture_test == T))
+
 
 
 ```
@@ -62,9 +148,11 @@ d <- sample(r, replace = T)
 (2) For a special type of square matrix A, we get $A^TA = AA^T$. Under what conditions could this be true? (Hint: The Identity matrix I is an example of such a matrix).
 
 
+
+
 ##2. Problem set 2
 
-Matrix factorization is a very important problem. There are supercomputers built just to do matrix factorizations. Every second you are on an airplane, matrices are being factorized. Radars that track flights use a technique called Kalman filtering. At the heart of Kalman Filtering is a Matrix Factorization operation. Kalman Filters are solving linear systems of equations when they track your flight using radars. 
+Matrix factorization is a very important problem. There are supercomputers built just to do matrix  factorizations. Every second you are on an airplane, matrices are being factorized. Radars that track flights use a technique called Kalman filtering. At the heart of Kalman Filtering is a Matrix Factorization operation. Kalman Filters are solving linear systems of equations when they track your flight using radars. 
 
 Write an R function to factorize a square matrix A into LU or LDU, whichever you prefer. Please submit your response in an R Markdown document using our class naming convention, E.g. LFulton_Assignment2_PS2.png You don't have to worry about permuting rows of A and you can assume that A is less than 5x5, if you need to hard-code any variables in your code. If you doing the entire assignment in R, then please submit only one markdown document for both the problems.
 

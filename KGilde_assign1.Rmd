@@ -54,8 +54,9 @@ You can think of vectors representing many dimensions of related information. Fo
 
 ```{r}
 u <- c(0.5, 0.5)
-v <- c(3, 4)
+v <- c(3, -4)
 
+u %*% v
 (u.v <- sum(u * v))
 ```
 
@@ -67,6 +68,11 @@ v <- c(3, 4)
 (u_length <- sqrt(sum(u * u)))
 
 (v_length <- sqrt(sum(v * v)))
+
+lenu=sqrt(t(u)%*%u)
+lenv=sqrt(t(v)%*%v)
+lenu
+lenv
 
 ```
 
@@ -86,6 +92,9 @@ v <- c(3, 4)
 ```{r}
 
 (angle <- acos(u.v / (u_length * v_length)))
+
+#radians
+angle * 180 / pi
 
 ```
 
@@ -213,6 +222,38 @@ d <- 	c(1, 2, 1, 3, 2, 4,	4, 4,	3)
 A <- matrix(d, ncol = 3, byrow = T)
 b <- c(5, 17, 26)	
 gaussion_elimination(A, b)
+
+
+#prof solution
+myf=function(A){
+  if(det(A[,1:3])==0){return("singular")} else{
+    
+    if(A[1,1]==0){A=rbind(A[2,],A[3,],A[1,],A[4,])} #Quick sort (2 lines)
+    if(A[1,1]==0){A=rbind(A[3,],A[2,],A[1,],A[4,])}
+    
+    A=rbind(A[1,]/A[1,1], A[2,],A[3,]) #Divide by Pivot
+    A=rbind(A[1,], A[2,]-A[1,]*A[2,1]/A[1,1], A[3,]) #Zero out 2d Row
+    A=rbind(A[1,], A[2,], A[3,]-A[1,]*A[3,1]/A[1,1]) #Zero out 3d Row
+    
+    if (A[2,2]==0){A=rbind(A[1,],A[3,],A[2,])} #Quick sort
+    
+    A=rbind(A[1,], A[2,]/A[2,2], A[3,]) #Divide by Pivot
+    
+    A=rbind(A[1,],A[2,], A[3,]-A[2,]*A[3,2]/A[2,2]) #Zero out 3d Row
+    x3=A[3,4]/A[3,3] #Solve w. UT
+    x2=A[2,4]-A[2,3]*x3
+    x1=A[1,4]-A[1,3]*x3-A[1,2]*x2
+    mylist=list(x1,x2,x3) #Return Solution
+    names(mylist)=c("x1","x2","x3")
+    return(mylist)
+  }
+}
+
+
+
+
+
+
 ```
 
 </body>
