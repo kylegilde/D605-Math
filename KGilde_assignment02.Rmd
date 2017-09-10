@@ -23,7 +23,7 @@ knitr::opts_chunk$set(
                       ,error = FALSE
                       ,message = FALSE
                       ,tidy = TRUE
-                      #,cache = TRUE
+                      ,cache = TRUE
                       )
 ```
 
@@ -50,33 +50,60 @@ data.frame(t(t(install_load(load_packages))), fix.empty.names = FALSE)
 
 (1) Show that $A^TA \neq AA^T$ in general. (Proof and demonstration.)
 
+Let A be a $A^{1x1}$, 
+
+$A = I_n$ (identity)
+
+$A = A^T$ (symmetric),
+
+$A^{-1} = A^T$ (orthogonal)
+
+or $AA^T = A^TA = diagonal_n$ (Both products are the same diagonal matrix).
+
+Then $A^TA = AA^T$.
+
+Let A be a $A^{1x1}$, 
+
+$A \neq I_n$ (identity)
+
+$A \neq A^T$ (symmetric),
+
+$A^{-1} \neq A^T$ (orthogonal)
+
+or $AA^T \neq A^TA \neq diagonal_n$.
+
+Then $A^TA \neq AA^T$
+
 **True, in the random sampling of small matrices, the ~86% of the 2 matrix products were not equal.**
 
 ```{r}
 
 max_dim <- 3
-max_range <- 3
-iterations <- 10000
+max_range <- 2
+iterations <- 20000
+
+dim_range <- c(1:max_dim)
+samp_space <- c(-max_range:max_range)  
 
 results_df <- data.frame(
   mat = character(), 
   m = integer(),
   n = integer(),
-  conjecture_test = logical(),
+  equality_test = logical(),
   matrix_type = character(), 
   stringsAsFactors=F
 )
 
-matrix_type_test <- function(mat, tmat, m_dim, n_dim, A_result, B_result){
+matrix_type_test <- function(mat, tmat, m_dim, n_dim, A_result, B_result, rand_samp){
   if(all(m_dim == 1, n_dim == 1)){
     return("1 by 1 matrix")
-  } else if(identical(mat, diag(m_dim))){
-    return("Is identify matrix")
+  } else if(isTRUE(all.equal(mat, diag(x = 1, m_dim)))){
+    return("Is identity matrix")
   } else if(identical(mat, tmat)){
     return("Is symmetric matrix")
-  } else if(m_dim == n_dim & identical(mat %*% tmat, diag(m_dim))){
+  } else if(m_dim == n_dim && identical(mat %*% tmat, diag(m_dim))){
     return("Is orthogonal matrix")
-  } else if(identical(A_result, B_result) & identical(A_result, diag(A_result[1, 1], nrow(A_result)))){
+  } else if(identical(A_result, B_result) && identical(A_result, diag(A_result[1, 1], nrow(A_result)))){
     return("Both products are the same diagonal matrix")
   } else {
     return("N/A")
@@ -84,17 +111,14 @@ matrix_type_test <- function(mat, tmat, m_dim, n_dim, A_result, B_result){
 }
 
 
-
 for (i in 1:iterations){
 
   #select matrix dims
-  dim_range <- c(1:max_dim)
   m_dim <- sample(dim_range, 1)
   n_dim <- sample(dim_range, 1)
   samp_size <- m_dim * n_dim
 
   #select matrix elements
-  samp_space <- c(-max_range:max_range)  
   rand_samp <- sample(samp_space, samp_size, replace = T)
   
   #create matrices
@@ -108,7 +132,7 @@ for (i in 1:iterations){
   
   #test & store the results
   match_test <- identical(A_result, B_result)
-  matrix_type <- matrix_type_test(current_matrix, t_current_matrix, m_dim, n_dim, A_result, B_result)
+  matrix_type <- matrix_type_test(current_matrix, t_current_matrix, m_dim, n_dim, A_result, B_result, rand_samp)
   
   new_row <- list(c(paste(rand_samp, collapse = ",")), m_dim, n_dim, match_test, matrix_type)
   
@@ -116,13 +140,7 @@ for (i in 1:iterations){
   
 }  
 
-prop.table(table(results_df$conjecture_test))
-
-# View(subset(results_df, conjecture_test == TRUE & matrix_type == "N/A"))
-# View(subset(results_df, matrix_type == "Is orthogonal matrix"))
-
-#mat <- matrix(c(1,5))
-
+prop.table(table(results_df$equality_test))
 ```
 
 
@@ -130,9 +148,11 @@ prop.table(table(results_df$conjecture_test))
 
 (2) For a special type of square matrix A, we get $A^TA = AA^T$. Under what conditions could this be true? (Hint: The Identity matrix I is an example of such a matrix).
 
-**I identified 4 conditions for when the 2 matrix products are equal to each other. **
+**I identified 5 conditions for when the 2 matrix products are equal to each other. **
 
-+ 1 by 1 matrices
++ 1 by 1 matrices, which are also symmetric matrices
+
++ Identity matrices
 
 + Symmetric matrices
 
@@ -142,9 +162,7 @@ prop.table(table(results_df$conjecture_test))
 
 
 ```{r}
-
 t(prop.table(table(results_df[, 4:5])))
-
 ```
 
 

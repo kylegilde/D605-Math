@@ -89,31 +89,45 @@ body{
 </style>
 <body>
 <pre><code>##               
-## prettydoc TRUE
-## stringr   TRUE</code></pre>
+## prettydoc TRUE</code></pre>
 <div id="problem-set-1" class="section level2">
 <h2>1. Problem set 1</h2>
 <ol style="list-style-type: decimal">
 <li>Show that <span class="math inline">\(A^TA \neq AA^T\)</span> in general. (Proof and demonstration.)</li>
 </ol>
+<p>Let A be a <span class="math inline">\(A^{1x1}\)</span>,</p>
+<p><span class="math inline">\(A = I_n\)</span> (identity)</p>
+<p><span class="math inline">\(A = A^T\)</span> (symmetric),</p>
+<p><span class="math inline">\(A^{-1} = A^T\)</span> (orthogonal)</p>
+<p>or <span class="math inline">\(AA^T = A^TA = diagonal_n\)</span> (Both products are the same diagonal matrix).</p>
+<p>Then <span class="math inline">\(A^TA = AA^T\)</span>.</p>
+<p>Let A be a <span class="math inline">\(A^{1x1}\)</span>,</p>
+<p><span class="math inline">\(A \neq I_n\)</span> (identity)</p>
+<p><span class="math inline">\(A \neq A^T\)</span> (symmetric),</p>
+<p><span class="math inline">\(A^{-1} \neq A^T\)</span> (orthogonal)</p>
+<p>or <span class="math inline">\(AA^T \neq A^TA \neq diagonal_n\)</span>.</p>
+<p>Then <span class="math inline">\(A^TA \neq AA^T\)</span></p>
 <p><strong>True, in the random sampling of small matrices, the ~86% of the 2 matrix products were not equal.</strong></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">max_dim &lt;-<span class="st"> </span><span class="dv">3</span>
-max_range &lt;-<span class="st"> </span><span class="dv">3</span>
-iterations &lt;-<span class="st"> </span><span class="dv">10000</span>
+max_range &lt;-<span class="st"> </span><span class="dv">2</span>
+iterations &lt;-<span class="st"> </span><span class="dv">20000</span>
 
-results_df &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">mat =</span> <span class="kw">character</span>(), <span class="dt">m =</span> <span class="kw">integer</span>(), <span class="dt">n =</span> <span class="kw">integer</span>(), <span class="dt">conjecture_test =</span> <span class="kw">logical</span>(), 
+dim_range &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>:max_dim)
+samp_space &lt;-<span class="st"> </span><span class="kw">c</span>(-max_range:max_range)
+
+results_df &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">mat =</span> <span class="kw">character</span>(), <span class="dt">m =</span> <span class="kw">integer</span>(), <span class="dt">n =</span> <span class="kw">integer</span>(), <span class="dt">equality_test =</span> <span class="kw">logical</span>(), 
     <span class="dt">matrix_type =</span> <span class="kw">character</span>(), <span class="dt">stringsAsFactors =</span> F)
 
-matrix_type_test &lt;-<span class="st"> </span>function(mat, tmat, m_dim, n_dim, A_result, B_result) {
+matrix_type_test &lt;-<span class="st"> </span>function(mat, tmat, m_dim, n_dim, A_result, B_result, rand_samp) {
     if (<span class="kw">all</span>(m_dim ==<span class="st"> </span><span class="dv">1</span>, n_dim ==<span class="st"> </span><span class="dv">1</span>)) {
         <span class="kw">return</span>(<span class="st">&quot;1 by 1 matrix&quot;</span>)
-    } else if (<span class="kw">identical</span>(mat, <span class="kw">diag</span>(m_dim))) {
-        <span class="kw">return</span>(<span class="st">&quot;Is identify matrix&quot;</span>)
+    } else if (<span class="kw">isTRUE</span>(<span class="kw">all.equal</span>(mat, <span class="kw">diag</span>(<span class="dt">x =</span> <span class="dv">1</span>, m_dim)))) {
+        <span class="kw">return</span>(<span class="st">&quot;Is identity matrix&quot;</span>)
     } else if (<span class="kw">identical</span>(mat, tmat)) {
         <span class="kw">return</span>(<span class="st">&quot;Is symmetric matrix&quot;</span>)
-    } else if (m_dim ==<span class="st"> </span>n_dim &amp;<span class="st"> </span><span class="kw">identical</span>(mat %*%<span class="st"> </span>tmat, <span class="kw">diag</span>(m_dim))) {
+    } else if (m_dim ==<span class="st"> </span>n_dim &amp;&amp;<span class="st"> </span><span class="kw">identical</span>(mat %*%<span class="st"> </span>tmat, <span class="kw">diag</span>(m_dim))) {
         <span class="kw">return</span>(<span class="st">&quot;Is orthogonal matrix&quot;</span>)
-    } else if (<span class="kw">identical</span>(A_result, B_result) &amp;<span class="st"> </span><span class="kw">identical</span>(A_result, <span class="kw">diag</span>(A_result[<span class="dv">1</span>, 
+    } else if (<span class="kw">identical</span>(A_result, B_result) &amp;&amp;<span class="st"> </span><span class="kw">identical</span>(A_result, <span class="kw">diag</span>(A_result[<span class="dv">1</span>, 
         <span class="dv">1</span>], <span class="kw">nrow</span>(A_result)))) {
         <span class="kw">return</span>(<span class="st">&quot;Both products are the same diagonal matrix&quot;</span>)
     } else {
@@ -122,17 +136,14 @@ matrix_type_test &lt;-<span class="st"> </span>function(mat, tmat, m_dim, n_dim,
 }
 
 
-
 for (i in <span class="dv">1</span>:iterations) {
     
     <span class="co"># select matrix dims</span>
-    dim_range &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>:max_dim)
     m_dim &lt;-<span class="st"> </span><span class="kw">sample</span>(dim_range, <span class="dv">1</span>)
     n_dim &lt;-<span class="st"> </span><span class="kw">sample</span>(dim_range, <span class="dv">1</span>)
     samp_size &lt;-<span class="st"> </span>m_dim *<span class="st"> </span>n_dim
     
     <span class="co"># select matrix elements</span>
-    samp_space &lt;-<span class="st"> </span><span class="kw">c</span>(-max_range:max_range)
     rand_samp &lt;-<span class="st"> </span><span class="kw">sample</span>(samp_space, samp_size, <span class="dt">replace =</span> T)
     
     <span class="co"># create matrices</span>
@@ -147,7 +158,7 @@ for (i in <span class="dv">1</span>:iterations) {
     <span class="co"># test &amp; store the results</span>
     match_test &lt;-<span class="st"> </span><span class="kw">identical</span>(A_result, B_result)
     matrix_type &lt;-<span class="st"> </span><span class="kw">matrix_type_test</span>(current_matrix, t_current_matrix, m_dim, 
-        n_dim, A_result, B_result)
+        n_dim, A_result, B_result, rand_samp)
     
     new_row &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="kw">c</span>(<span class="kw">paste</span>(rand_samp, <span class="dt">collapse =</span> <span class="st">&quot;,&quot;</span>)), m_dim, n_dim, match_test, 
         matrix_type)
@@ -156,74 +167,87 @@ for (i in <span class="dv">1</span>:iterations) {
     
 }
 
-<span class="kw">prop.table</span>(<span class="kw">table</span>(results_df$conjecture_test))</code></pre></div>
+<span class="kw">prop.table</span>(<span class="kw">table</span>(results_df$equality_test))</code></pre></div>
 <pre><code>## 
-## FALSE  TRUE 
-## 0.875 0.125</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># View(subset(results_df, conjecture_test == TRUE &amp; matrix_type == 'N/A'))</span>
-<span class="co"># View(subset(results_df, matrix_type == 'Is orthogonal matrix'))</span>
-
-<span class="co"># mat &lt;- matrix(c(1,5))</span></code></pre></div>
+##  FALSE   TRUE 
+## 0.8628 0.1372</code></pre>
 <ol start="2" style="list-style-type: decimal">
 <li>For a special type of square matrix A, we get <span class="math inline">\(A^TA = AA^T\)</span>. Under what conditions could this be true? (Hint: The Identity matrix I is an example of such a matrix).</li>
 </ol>
-<p><strong>I identified 4 conditions for when the 2 matrix products are equal to each other. </strong></p>
+<p><strong>I identified 5 conditions for when the 2 matrix products are equal to each other. </strong></p>
 <ul>
-<li><p>1 by 1 matrices</p></li>
+<li><p>1 by 1 matrices, which are also symmetric matrices</p></li>
+<li><p>Identity matrices</p></li>
 <li><p>Symmetric matrices</p></li>
 <li><p>Othogonal matrices</p></li>
 <li><p>When both matrix products produce the same diagonal matrix</p></li>
 </ul>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">t</span>(<span class="kw">prop.table</span>(<span class="kw">table</span>(results_df[, <span class="dv">4</span>:<span class="dv">5</span>])))</code></pre></div>
-<pre><code>##                                             conjecture_test
-## matrix_type                                   FALSE   TRUE
-##   1 by 1 matrix                              0.0000 0.1069
-##   Both products are the same diagonal matrix 0.0000 0.0017
-##   Is symmetric matrix                        0.0000 0.0164
-##   N/A                                        0.8750 0.0000</code></pre>
+<pre><code>##                                             equality_test
+## matrix_type                                    FALSE    TRUE
+##   1 by 1 matrix                              0.00000 0.11300
+##   Both products are the same diagonal matrix 0.00000 0.00355
+##   Is identity matrix                         0.00000 0.00020
+##   Is orthogonal matrix                       0.00000 0.00030
+##   Is symmetric matrix                        0.00000 0.02380
+##   N/A                                        0.85900 0.00015</code></pre>
 </div>
 <div id="problem-set-2" class="section level2">
 <h2>2. Problem set 2</h2>
 <p>Matrix factorization is a very important problem. There are supercomputers built just to do matrix factorizations. Every second you are on an airplane, matrices are being factorized. Radars that track flights use a technique called Kalman filtering. At the heart of Kalman Filtering is a Matrix Factorization operation. Kalman Filters are solving linear systems of equations when they track your flight using radars.</p>
 <p>Write an R function to factorize a square matrix A into LU or LDU, whichever you prefer. Please submit your response in an R Markdown document using our class naming convention, E.g. LFulton_Assignment2_PS2.png You don’t have to worry about permuting rows of A and you can assume that A is less than 5x5, if you need to hard-code any variables in your code. If you doing the entire assignment in R, then please submit only one markdown document for both the problems.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">d &lt;-<span class="st"> </span><span class="kw">sample</span>(<span class="kw">c</span>(-<span class="dv">5</span>:<span class="dv">5</span>), <span class="dv">9</span>, <span class="dt">replace =</span> T)
-m &lt;-<span class="st"> </span><span class="kw">matrix</span>(d, <span class="dv">3</span>, <span class="dv">3</span>)
-m &lt;-<span class="st"> </span><span class="kw">diag</span>(<span class="dv">1</span>, <span class="dv">3</span>)
-<span class="kw">upper.tri</span>(m)</code></pre></div>
-<pre><code>##       [,1]  [,2]  [,3]
-## [1,] FALSE  TRUE  TRUE
-## [2,] FALSE FALSE  TRUE
-## [3,] FALSE FALSE FALSE</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">det</span>(m)</code></pre></div>
-<pre><code>## [1] 1</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mat &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">1</span>:<span class="dv">9</span>, <span class="dv">3</span>, <span class="dv">3</span>)
-mat[<span class="kw">lower.tri</span>(mat)] &lt;-<span class="st"> </span><span class="dv">0</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">LU_decomp &lt;-<span class="st"> </span>function(A) {
+    size &lt;-<span class="st"> </span><span class="kw">nrow</span>(A)
+    U &lt;-<span class="st"> </span>A
+    I &lt;-<span class="st"> </span><span class="kw">diag</span>(size)
+    myvector &lt;-<span class="st"> </span><span class="kw">c</span>()
+    
+    for (i in <span class="dv">2</span>:size) {
+        j_max &lt;-<span class="st"> </span>i -<span class="st"> </span><span class="dv">1</span>
+        for (j in <span class="dv">1</span>:j_max) {
+            elim_mat &lt;-<span class="st"> </span>I
+            pivot &lt;-<span class="st"> </span><span class="kw">ifelse</span>(U[i -<span class="st"> </span><span class="dv">1</span>, j] !=<span class="st"> </span><span class="dv">0</span>, U[i -<span class="st"> </span><span class="dv">1</span>, j], U[i -<span class="st"> </span><span class="dv">2</span>, j])
+            elim_mat[i, j] &lt;-<span class="st"> </span>-U[i, j]/pivot
+            (U &lt;-<span class="st"> </span>elim_mat %*%<span class="st"> </span>U)
+            var_name &lt;-<span class="st"> </span><span class="kw">paste0</span>(<span class="st">&quot;E&quot;</span>, i, j)
+            <span class="kw">assign</span>(var_name, elim_mat)
+            myvector &lt;-<span class="st"> </span><span class="kw">c</span>(myvector, var_name)
+        }
+    }
+    
+    L &lt;-<span class="st"> </span><span class="kw">diag</span>(size)
+    for (m in myvector) {
+        L &lt;-<span class="st"> </span>L %*%<span class="st"> </span><span class="kw">solve</span>(<span class="kw">get</span>(m))
+    }
+    
+    <span class="kw">print</span>(U)
+    <span class="kw">print</span>(L)
+    <span class="kw">ifelse</span>(<span class="kw">identical</span>(L %*%<span class="st"> </span>U, A), <span class="st">&quot;The decomposition works&quot;</span>, <span class="st">&quot;The decomposition doesn't work&quot;</span>)
+}
 
 
-<span class="kw">chol</span>(m)</code></pre></div>
+A &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">0</span>, <span class="dv">1</span>), <span class="dt">nrow =</span> <span class="dv">3</span>)
+<span class="kw">LU_decomp</span>(A)</code></pre></div>
 <pre><code>##      [,1] [,2] [,3]
-## [1,]    1    0    0
-## [2,]    0    1    0
-## [3,]    0    0    1</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">y &lt;-<span class="st"> </span><span class="kw">qr</span>(m)
-y</code></pre></div>
-<pre><code>## $qr
+## [1,]    1    1    2
+## [2,]    0   -1   -4
+## [3,]    0    0    3
 ##      [,1] [,2] [,3]
-## [1,]   -1    0    0
-## [2,]    0   -1    0
-## [3,]    0    0    1
-## 
-## $rank
-## [1] 3
-## 
-## $qraux
-## [1] 2 2 1
-## 
-## $pivot
-## [1] 1 2 3
-## 
-## attr(,&quot;class&quot;)
-## [1] &quot;qr&quot;</code></pre>
+## [1,]    1    0    0
+## [2,]    2    1    0
+## [3,]    3    2    1</code></pre>
+<pre><code>## [1] &quot;The decomposition works&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">A &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">c</span>(<span class="dv">1</span>, -<span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">8</span>, <span class="dv">4</span>, -<span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">7</span>), <span class="dv">3</span>)
+<span class="kw">LU_decomp</span>(A)</code></pre></div>
+<pre><code>##      [,1] [,2] [,3]
+## [1,]    1    4 -3.0
+## [2,]    0   16 -1.0
+## [3,]    0    0 15.5
+##      [,1] [,2] [,3]
+## [1,]    1  0.0    0
+## [2,]   -2  1.0    0
+## [3,]    3 -0.5    1</code></pre>
+<pre><code>## [1] &quot;The decomposition works&quot;</code></pre>
 </body>
 </div>
     </section>
