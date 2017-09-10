@@ -50,11 +50,13 @@ data.frame(t(t(install_load(load_packages))), fix.empty.names = FALSE)
 
 (1) Show that $A^TA \neq AA^T$ in general. (Proof and demonstration.)
 
+**True, in the random sampling of small matrices, the ~86% of the 2 matrix products were not equal.**
+
 ```{r}
 
 max_dim <- 3
 max_range <- 3
-iterations <- 1000
+iterations <- 10000
 
 results_df <- data.frame(
   mat = character(), 
@@ -65,42 +67,23 @@ results_df <- data.frame(
   stringsAsFactors=F
 )
 
-
-
-# mat <- matrix(c(-5))
-# mat1 <- matrix(c(-5, 1))
-# mat2 <- diag(3)
-# mat3 <- matrix(c(1,1,1,1))
-# mat4 <- matrix(c(1,1,1,-1))
-# #mat4 <- matrix()
-# 
-# matrix_type_test(mat)
-# matrix_type_test(mat1)
-# matrix_type_test(mat2)
-# matrix_type_test(mat3)
-# matrix_type_test(mat4)
-
-
-matrix_type_test <- function(mat, tmat, m_dim, n_dim){
+matrix_type_test <- function(mat, tmat, m_dim, n_dim, A_result, B_result){
   if(all(m_dim == 1, n_dim == 1)){
     return("1 by 1 matrix")
-  } else if(any(m_dim == 1, n_dim == 1)){
-    return("vector multiplication")
-  } else if(any(m_dim == 1, n_dim == 1)){
-    return("vector multiplication")
   } else if(identical(mat, diag(m_dim))){
     return("Is identify matrix")
   } else if(identical(mat, tmat)){
     return("Is symmetric matrix")
-  } else if(identical(mat %*% tmat, diag(m_dim))){
+  } else if(m_dim == n_dim & identical(mat %*% tmat, diag(m_dim))){
     return("Is orthogonal matrix")
+  } else if(identical(A_result, B_result) & identical(A_result, diag(A_result[1, 1], nrow(A_result)))){
+    return("Both products are the same diagonal matrix")
+  } else {
+    return("N/A")
   }
 }
-# if(m_dim == n_dim){
-#       if(identical(solve(mat), tmat)){
-#       return("Is orthogonal matrix")
-#       }
-#   }
+
+
 
 for (i in 1:iterations){
 
@@ -123,30 +106,46 @@ for (i in 1:iterations){
   B_result <- current_matrix %*% t_current_matrix
   
   
-  
   #test & store the results
   match_test <- identical(A_result, B_result)
-  matrix_type <- matrix_type_test(current_matrix, t_current_matrix, m_dim, n_dim)
-  results_df[i, ] <- list(c(paste(rand_samp, collapse = ",")), m_dim, n_dim, match_test, matrix_type)
+  matrix_type <- matrix_type_test(current_matrix, t_current_matrix, m_dim, n_dim, A_result, B_result)
+  
+  new_row <- list(c(paste(rand_samp, collapse = ",")), m_dim, n_dim, match_test, matrix_type)
+  
+  results_df[i, ] <- new_row
   
 }  
 
-nrow(results_df)
-#c(str_split(opp.list,",")[[i]])
-
-
-
 prop.table(table(results_df$conjecture_test))
 
-View(subset(results_df, conjecture_test == T))
+# View(subset(results_df, conjecture_test == TRUE & matrix_type == "N/A"))
+# View(subset(results_df, matrix_type == "Is orthogonal matrix"))
 
-
+#mat <- matrix(c(1,5))
 
 ```
 
 
+
+
 (2) For a special type of square matrix A, we get $A^TA = AA^T$. Under what conditions could this be true? (Hint: The Identity matrix I is an example of such a matrix).
 
+**I identified 4 conditions for when the 2 matrix products are equal to each other. **
+
++ 1 by 1 matrices
+
++ Symmetric matrices
+
++ Othogonal matrices
+
++ When both matrix products produce the same diagonal matrix
+
+
+```{r}
+
+t(prop.table(table(results_df[, 4:5])))
+
+```
 
 
 
@@ -156,21 +155,48 @@ Matrix factorization is a very important problem. There are supercomputers built
 
 Write an R function to factorize a square matrix A into LU or LDU, whichever you prefer. Please submit your response in an R Markdown document using our class naming convention, E.g. LFulton_Assignment2_PS2.png You don't have to worry about permuting rows of A and you can assume that A is less than 5x5, if you need to hard-code any variables in your code. If you doing the entire assignment in R, then please submit only one markdown document for both the problems.
 
+
 ```{r}
-d <- sample(c(-5 : 5), 9, replace = T)
-m <- matrix(d, 3, 3)
-m <- diag(1, 3)
-upper.tri(m) 
-det(m)
-mat <- matrix(1:9, 3, 3)
-mat[lower.tri(mat)] <- 0
+LU_decomp <- function(A){
+  size <- nrow(A)
+  U <- A
+  I <- diag(size)
+  myvector <- c()
+  
+  for (i in 2:size){
+    j_max <- i - 1
+    for (j in 1:j_max){
+      elim_mat <- I
+      pivot <- ifelse(U[i - 1, j] != 0, U[i - 1, j], U[i - 2, j])
+      elim_mat[i, j] <- - U[i, j] / pivot
+      (U <- elim_mat %*% U)
+      var_name <- paste0("E", i, j)
+      assign(var_name, elim_mat)
+      myvector <- c(myvector, var_name)
+    }
+  }
+  
+  L <- diag(size)
+  for (m in myvector){
+    L <- L %*% solve(get(m))
+  }
+   
+  print(U)
+  print(L)
+  ifelse(identical(L %*% U, A), "The decomposition works", "The decomposition doesn't work")
+}
 
 
-chol(m)
+A <- matrix(c(1,2,3,1,1,1,2,0,1),nrow=3)
+LU_decomp(A)
 
-y <- qr(m)
-y
+
+A <- matrix(c(1, -2, 3, 4,8,4,-3,5,7), 3)
+LU_decomp(A)
 ```
+
+
+
 
 
 </body>
