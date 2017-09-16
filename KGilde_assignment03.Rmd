@@ -29,7 +29,7 @@ knitr::opts_chunk$set(
 
 
 ```{r packages, echo=F} 
-load_packages <- c("prettydoc", "pracma")
+load_packages <- c("prettydoc", "pracma", "ppls")
 
 #see if we need to install any of them
 install_load <- function(pkg){
@@ -54,6 +54,7 @@ data.frame(t(t(install_load(load_packages))), fix.empty.names = FALSE)
 ```{r}
 d <- c(1, 2, 3, 4, −1, 0, 1, 3, 0, 1, −2, 1, 5, 4, −2, −3)
 A <- matrix(d, 4, 4, byrow = T)
+rref(A)
 Aqr <- qr(A)
 Aqr$rank
 ```
@@ -72,20 +73,21 @@ rank, assuming that the matrix is non-zero?
 ```{r}
 d <- c(1, 2, 1, 3, 6, 3, 2, 4, 2)
 A <- matrix(d, 3, byrow = T)
+rref(A)
 Aqr <- qr(A)
 Aqr$rank
 ```
 
-2. Problem set 2
+##2. Problem set 2
 
 Compute the eigenvalues and eigenvectors of the matrix A. You’ll need to show your work. You’ll need to write out the characteristic polynomial and show your solution.
 
 
 \begin{equation}A = \begin{bmatrix} 1 & 2 & 3\\0 & 4 & 5\\ 0 & 0 & 6\\ \end{bmatrix}\end{equation}
 
-$x(\lambda I - A) = 0$
+\begin{equation}x(\lambda I - A) = 0\end{equation}
 
-$det(\lambda I - A) = 0$
+\begin{equation}det(\lambda I - A) = 0\end{equation}
 
 1. 
 \begin{equation}
@@ -138,13 +140,13 @@ $det(\lambda I - A) = 0$
 \end{equation}
 
 \begin{equation}
-\lambda = 1,  4,  6
+\lambda = 6, 4, 1
 \end{equation}
 
 ```{r}
 #validate
 d <- c(1, 2, 3, 0, 4, 5, 0, 0, 6)
-A <- matrix(d, 3)
+A <- matrix(d, 3, byrow = T)
 Aeigen <- eigen(A)
 Aeigen$values
 ```
@@ -170,15 +172,252 @@ p_{A}(\lambda) = \lambda^3 - 11\lambda^2 + 34\lambda -24
 charpoly(A)
 ```
 
-10.
+10. **To get each eigenvector, let's substitute each $\lambda$ into the matrix from step 3 and find the null spaces**
 
-```{r}
-#validate
-Aeigen$vectors
+\begin{equation}
+\begin{bmatrix}
+\lambda - 1 & -2 & -3\\
+0 & \lambda - 4 & -5\\ 
+0 & 0 & \lambda - 6
+\end{bmatrix}x = 0
+\end{equation}
+
+**a.**For $\lambda = 6$
+
+\begin{equation}
+\begin{bmatrix}
+5 & -2 & -3\\
+0 & 2 & -5\\ 
+0 & 0 & 0
+\end{bmatrix}
+
+\begin{bmatrix}
+v_1 \\ v_2 \\ v_3
+\end{bmatrix}
+=
+\begin{bmatrix}
+1 & -2/5 & -3/5\\
+0 & 1 & -5/2\\ 
+0 & 0 & 0
+\end{bmatrix}
+\begin{bmatrix}
+v_1 \\ v_2 \\ v_3
+\end{bmatrix}
+= 
+\begin{bmatrix}
+1 & 0 & -8/5\\
+0 & 1 & -5/2\\ 
+0 & 0 & 0
+\end{bmatrix}
+\begin{bmatrix}
+v_1 \\ v_2 \\ v_3
+\end{bmatrix}
+= 
+\begin{bmatrix}
+0 \\ 0 \\ 0
+\end{bmatrix}
+\end{equation}
+
+\begin{equation}
+v_1 = 8/5v_3, v_2 = 5/2v_3
+\end{equation}
+
+\begin{equation}
+x =
+\begin{bmatrix}
+v_1 \\ v_2 \\ v_3
+\end{bmatrix}
+=
+v_3\begin{bmatrix}
+8/5 \\ 5/2 \\ 1
+\end{bmatrix}
+=
+\begin{bmatrix}
+8/5 \\ 5/2 \\ 1
+\end{bmatrix}
+\end{equation}
+
+
+\begin{equation}
+E_{\lambda=6} = \begin{bmatrix}
+8/5 \\ 5/2 \\ 1
+\end{bmatrix}
+\end{equation}
+**Normalized:**
+
+\begin{equation}
+||x|| = \sqrt{(8/5)^2 + (5/2)^2 + 1^2} = 3.132092
+\end{equation}
+
+\begin{equation}
+E_{\lambda=6} = \begin{bmatrix}
+0.5108407 \\ 0.7981886 \\ 0.3192754
+\end{bmatrix}
+\end{equation}
+```{r, collapse=T}
+#validated
+x <- c(8/5, 5/2, 1)
+(xlen <- norm(x, type="2"))
+x/xlen
+all.equal(x/xlen, Aeigen$vectors[, 1])
 ```
 
-Please show your work using an R-markdown document. Please name your assignment
-submission with your first initial and last name.
+
+**b.** For $\lambda = 4$
+
+\begin{equation}
+\begin{bmatrix}
+3 & -2 & -3\\
+0 & 0 & -5\\ 
+0 & 0 & -2
+\end{bmatrix}
+
+\begin{bmatrix}
+v_1 \\ v_2 \\ v_3
+\end{bmatrix}
+=
+\begin{bmatrix}
+1 & -2/3 & 0\\
+0 & 0 & 1\\ 
+0 & 0 & 0
+\end{bmatrix}
+\begin{bmatrix}
+v_1 \\ v_2 \\ v_3
+\end{bmatrix}
+= 
+\begin{bmatrix}
+0 \\ 0 \\ 0
+\end{bmatrix}
+\end{equation}
+
+\begin{equation}
+v_1 = 2/3v_2, v_3 = 0v_2
+\end{equation}
+
+\begin{equation}
+x =
+\begin{bmatrix}
+v_1 \\ v_2 \\ v_3
+\end{bmatrix}
+=
+v_2\begin{bmatrix}
+2/3 \\ 1 \\ 0
+\end{bmatrix}
+=
+\begin{bmatrix}
+2/3 \\ 1 \\ 0
+\end{bmatrix}
+\end{equation}
+
+
+\begin{equation}
+E_{\lambda=6} = \begin{bmatrix}
+2/3 \\ 1 \\ 0
+\end{bmatrix}
+\end{equation}
+**Normalized:**
+
+\begin{equation}
+||x|| = \sqrt{(2/3)^2 + 1^2 + 0^2} = 1.20185
+\end{equation}
+
+\begin{equation}
+E_{\lambda=6} = \begin{bmatrix}
+0.5547002 \\ 0.8320503 \\ 0.0000000
+\end{bmatrix}
+\end{equation}
+
+```{r, collapse=T}
+#validated
+d <- c(3, -2, -3, 0, 0, -5, 0, 0, -2)
+D <- matrix(d, 3, 3, byrow = T)
+rref(D)
+
+x <- c(2/3, 1,  0)
+(xlen <- norm(x, type="2") )
+x/xlen
+all.equal(x/xlen, Aeigen$vectors[, 2])
+```
+
+**c.** For $\lambda = 1$
+
+\begin{equation}
+\begin{bmatrix}
+0 & -2 & -3\\
+0 & -3 & -5\\ 
+0 & 0 & -5
+\end{bmatrix}
+
+\begin{bmatrix}
+v_1 \\ v_2 \\ v_3
+\end{bmatrix}
+=
+\begin{bmatrix}
+0 & 1 & 0\\
+0 & 0 & 1\\ 
+0 & 0 & 0
+\end{bmatrix}
+\begin{bmatrix}
+v_1 \\ v_2 \\ v_3
+\end{bmatrix}
+= 
+\begin{bmatrix}
+0 \\ 0 \\ 0
+\end{bmatrix}
+\end{equation}
+
+\begin{equation}
+v_2 = 0v_1, v_3 = 0v_1
+\end{equation}
+
+\begin{equation}
+x =
+\begin{bmatrix}
+v_1 \\ v_2 \\ v_3
+\end{bmatrix}
+=
+v_1\begin{bmatrix}
+1 \\ 0 \\ 0
+\end{bmatrix}
+=
+\begin{bmatrix}
+1 \\ 0 \\ 0
+\end{bmatrix}
+\end{equation}
+
+
+\begin{equation}
+E_{\lambda=6} = \begin{bmatrix}
+1 \\ 0 \\ 0
+\end{bmatrix}
+\end{equation}
+**Normalized:**
+
+\begin{equation}
+||x|| = \sqrt{1^2 + 0^2 + 0^2} = 1
+\end{equation}
+
+\begin{equation}
+E_{\lambda=6} = \begin{bmatrix}
+1 \\ 0 \\ 0
+\end{bmatrix}
+\end{equation}
+
+```{r, collapse=T}
+#validated
+d <- c(0, -2, -3, 0, -3, -5, 0, 0, -5)
+D <- matrix(d, 3, 3, byrow = T)
+rref(D)
+
+x <- c(1, 0, 0)
+(xlen <- norm(x, type="2") )
+x/xlen
+all.equal(x/xlen, Aeigen$vectors[, 3])
+```
+
+
+
+Please show your work using an R-markdown document. Please name your assignment submission with your first initial and last name.
 
 
 </body>

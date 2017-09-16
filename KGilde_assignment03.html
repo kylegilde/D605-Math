@@ -90,7 +90,8 @@ body{
 <body>
 <pre><code>##               
 ## prettydoc TRUE
-## pracma    TRUE</code></pre>
+## pracma    TRUE
+## ppls      TRUE</code></pre>
 <div id="problem-set-1" class="section level2">
 <h2>1. Problem set 1</h2>
 <ol style="list-style-type: decimal">
@@ -99,7 +100,13 @@ body{
 <span class="math display">\[\begin{equation}A = \begin{bmatrix} 1 &amp; 2 &amp; 3 &amp; 4\\ −1 &amp; 0 &amp; 1 &amp; 3\\ 0 &amp; 1 &amp; −2 &amp; 1\\ 5 &amp; 4 &amp; −2 &amp; −3 \end{bmatrix}\end{equation}\]</span>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">d &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, -<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">0</span>, <span class="dv">1</span>, -<span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">5</span>, <span class="dv">4</span>, -<span class="dv">2</span>, -<span class="dv">3</span>)
 A &lt;-<span class="st"> </span><span class="kw">matrix</span>(d, <span class="dv">4</span>, <span class="dv">4</span>, <span class="dt">byrow =</span> T)
-Aqr &lt;-<span class="st"> </span><span class="kw">qr</span>(A)
+<span class="kw">rref</span>(A)</code></pre></div>
+<pre><code>##      [,1] [,2] [,3] [,4]
+## [1,]    1    0    0    0
+## [2,]    0    1    0    0
+## [3,]    0    0    1    0
+## [4,]    0    0    0    1</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Aqr &lt;-<span class="st"> </span><span class="kw">qr</span>(A)
 Aqr$rank</code></pre></div>
 <pre><code>## [1] 4</code></pre>
 <ol start="2" style="list-style-type: decimal">
@@ -113,7 +120,12 @@ Aqr$rank</code></pre></div>
 <p></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">d &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">6</span>, <span class="dv">3</span>, <span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">2</span>)
 A &lt;-<span class="st"> </span><span class="kw">matrix</span>(d, <span class="dv">3</span>, <span class="dt">byrow =</span> T)
-Aqr &lt;-<span class="st"> </span><span class="kw">qr</span>(A)
+<span class="kw">rref</span>(A)</code></pre></div>
+<pre><code>##      [,1] [,2] [,3]
+## [1,]    1    2    1
+## [2,]    0    0    0
+## [3,]    0    0    0</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Aqr &lt;-<span class="st"> </span><span class="kw">qr</span>(A)
 Aqr$rank</code></pre></div>
 <pre><code>## [1] 1</code></pre>
 <ol start="2" style="list-style-type: decimal">
@@ -121,8 +133,8 @@ Aqr$rank</code></pre></div>
 </ol>
 <p>Compute the eigenvalues and eigenvectors of the matrix A. You’ll need to show your work. You’ll need to write out the characteristic polynomial and show your solution.</p>
 <span class="math display">\[\begin{equation}A = \begin{bmatrix} 1 &amp; 2 &amp; 3\\0 &amp; 4 &amp; 5\\ 0 &amp; 0 &amp; 6\\ \end{bmatrix}\end{equation}\]</span>
-<p><span class="math inline">\(x(\lambda I - A) = 0\)</span></p>
-<p><span class="math inline">\(det(\lambda I - A) = 0\)</span></p>
+<span class="math display">\[\begin{equation}x(\lambda I - A) = 0\end{equation}\]</span>
+<span class="math display">\[\begin{equation}det(\lambda I - A) = 0\end{equation}\]</span>
 <ol style="list-style-type: decimal">
 <li><span class="math display">\[\begin{equation}
 \begin{array}{|c|} \lambda  \begin{bmatrix} 1 &amp; 0 &amp; 0\\0 &amp; 1 &amp; 0\\ 0 &amp; 0 &amp; 1\\ \end{bmatrix} - \begin{bmatrix} 1 &amp; 2 &amp; 3\\0 &amp; 4 &amp; 5\\ 0 &amp; 0 &amp; 6\\ \end{bmatrix}\end{array} = 0
@@ -167,8 +179,14 @@ Aqr$rank</code></pre></div>
 \end{equation}\]</span></li>
 </ol>
 <span class="math display">\[\begin{equation}
-\lambda = 1,  4,  6
+\lambda = 6, 4, 1
 \end{equation}\]</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># validate</span>
+d &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">0</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">6</span>)
+A &lt;-<span class="st"> </span><span class="kw">matrix</span>(d, <span class="dv">3</span>, <span class="dt">byrow =</span> T)
+Aeigen &lt;-<span class="st"> </span><span class="kw">eigen</span>(A)
+Aeigen$values</code></pre></div>
+<pre><code>## [1] 6 4 1</code></pre>
 <ol start="7" style="list-style-type: decimal">
 <li><span class="math display">\[\begin{equation}
 (\lambda^2 - 5\lambda + 4)(\lambda - 6) = 0
@@ -178,23 +196,239 @@ Aqr$rank</code></pre></div>
 \end{equation}\]</span></li>
 <li><strong>Characteristic Polynomial:</strong>
 <span class="math display">\[\begin{equation}
-p_{A}(\lambda) = \lambda^3 - 11\lambda^2 + 34\lambda -24 = 0
+p_{A}(\lambda) = \lambda^3 - 11\lambda^2 + 34\lambda -24
 \end{equation}\]</span></li>
-<li></li>
 </ol>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># validate</span>
-d &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">0</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">6</span>)
-A &lt;-<span class="st"> </span><span class="kw">matrix</span>(d, <span class="dv">3</span>)
 <span class="kw">charpoly</span>(A)</code></pre></div>
 <pre><code>## [1]   1 -11  34 -24</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Aeigen &lt;-<span class="st"> </span><span class="kw">eigen</span>(A)
-Aeigen$values</code></pre></div>
-<pre><code>## [1] 6 4 1</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Aeigen$vectors</code></pre></div>
-<pre><code>##      [,1]       [,2]        [,3]
-## [1,]    0  0.0000000  0.83077316
-## [2,]    0  0.3713907 -0.55384878
-## [3,]    1 -0.9284767  0.05538488</code></pre>
+<ol start="10" style="list-style-type: decimal">
+<li><strong>To get each eigenvector, let’s substitute each <span class="math inline">\(\lambda\)</span> into the matrix from step 3 and find the eigenvectors.</strong></li>
+</ol>
+<span class="math display">\[\begin{equation}
+\begin{bmatrix}
+\lambda - 1 &amp; -2 &amp; -3\\
+0 &amp; \lambda - 4 &amp; -5\\ 
+0 &amp; 0 &amp; \lambda - 6
+\end{bmatrix}x = 0
+\end{equation}\]</span>
+<p><strong>a.</strong>For <span class="math inline">\(\lambda = 6\)</span></p>
+<span class="math display">\[\begin{equation}
+\begin{bmatrix}
+5 &amp; -2 &amp; -3\\
+0 &amp; 2 &amp; -5\\ 
+0 &amp; 0 &amp; 0
+\end{bmatrix}
+
+\begin{bmatrix}
+v_1 \\ v_2 \\ v_3
+\end{bmatrix}
+=
+\begin{bmatrix}
+1 &amp; -2/5 &amp; -3/5\\
+0 &amp; 1 &amp; -5/2\\ 
+0 &amp; 0 &amp; 0
+\end{bmatrix}
+\begin{bmatrix}
+v_1 \\ v_2 \\ v_3
+\end{bmatrix}
+= 
+\begin{bmatrix}
+1 &amp; 0 &amp; -8/5\\
+0 &amp; 1 &amp; -5/2\\ 
+0 &amp; 0 &amp; 0
+\end{bmatrix}
+\begin{bmatrix}
+v_1 \\ v_2 \\ v_3
+\end{bmatrix}
+= 
+\begin{bmatrix}
+0 \\ 0 \\ 0
+\end{bmatrix}
+\end{equation}\]</span>
+<span class="math display">\[\begin{equation}
+v_1 = 8/5v_3, v_2 = 5/2v_3
+\end{equation}\]</span>
+<span class="math display">\[\begin{equation}
+x =
+\begin{bmatrix}
+v_1 \\ v_2 \\ v_3
+\end{bmatrix}
+=
+v_3\begin{bmatrix}
+8/5 \\ 5/2 \\ 1
+\end{bmatrix}
+=
+\begin{bmatrix}
+8/5 \\ 5/2 \\ 1
+\end{bmatrix}
+\end{equation}\]</span>
+<span class="math display">\[\begin{equation}
+E_{\lambda=6} = \begin{bmatrix}
+8/5 \\ 5/2 \\ 1
+\end{bmatrix}
+\end{equation}\]</span>
+<p><strong>Normalized:</strong></p>
+<span class="math display">\[\begin{equation}
+||x|| = \sqrt{(8/5)^2 + (5/2)^2 + 1^2} = 3.132092
+\end{equation}\]</span>
+<span class="math display">\[\begin{equation}
+E_{\lambda=6} = \begin{bmatrix}
+0.5108407 \\ 0.7981886 \\ 0.3192754
+\end{bmatrix}
+\end{equation}\]</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># validated</span>
+x &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">8</span>/<span class="dv">5</span>, <span class="dv">5</span>/<span class="dv">2</span>, <span class="dv">1</span>)
+(xlen &lt;-<span class="st"> </span><span class="kw">norm</span>(x, <span class="dt">type =</span> <span class="st">&quot;2&quot;</span>))
+## [1] 3.132092
+x/xlen
+## [1] 0.5108407 0.7981886 0.3192754
+<span class="kw">all.equal</span>(x/xlen, Aeigen$vectors[, <span class="dv">1</span>])
+## [1] TRUE</code></pre></div>
+<p><strong>b.</strong> For <span class="math inline">\(\lambda = 4\)</span></p>
+<span class="math display">\[\begin{equation}
+\begin{bmatrix}
+3 &amp; -2 &amp; -3\\
+0 &amp; 0 &amp; -5\\ 
+0 &amp; 0 &amp; -2
+\end{bmatrix}
+
+\begin{bmatrix}
+v_1 \\ v_2 \\ v_3
+\end{bmatrix}
+=
+\begin{bmatrix}
+1 &amp; -2/3 &amp; 0\\
+0 &amp; 0 &amp; 1\\ 
+0 &amp; 0 &amp; 0
+\end{bmatrix}
+\begin{bmatrix}
+v_1 \\ v_2 \\ v_3
+\end{bmatrix}
+= 
+\begin{bmatrix}
+0 \\ 0 \\ 0
+\end{bmatrix}
+\end{equation}\]</span>
+<span class="math display">\[\begin{equation}
+v_1 = 2/3v_2, v_3 = 0v_2
+\end{equation}\]</span>
+<span class="math display">\[\begin{equation}
+x =
+\begin{bmatrix}
+v_1 \\ v_2 \\ v_3
+\end{bmatrix}
+=
+v_2\begin{bmatrix}
+2/3 \\ 1 \\ 0
+\end{bmatrix}
+=
+\begin{bmatrix}
+2/3 \\ 1 \\ 0
+\end{bmatrix}
+\end{equation}\]</span>
+<span class="math display">\[\begin{equation}
+E_{\lambda=6} = \begin{bmatrix}
+2/3 \\ 1 \\ 0
+\end{bmatrix}
+\end{equation}\]</span>
+<p><strong>Normalized:</strong></p>
+<span class="math display">\[\begin{equation}
+||x|| = \sqrt{(2/3)^2 + 1^2 + 0^2} = 1.20185
+\end{equation}\]</span>
+<span class="math display">\[\begin{equation}
+E_{\lambda=6} = \begin{bmatrix}
+0.5547002 \\ 0.8320503 \\ 0.0000000
+\end{bmatrix}
+\end{equation}\]</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># validated</span>
+d &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">3</span>, -<span class="dv">2</span>, -<span class="dv">3</span>, <span class="dv">0</span>, <span class="dv">0</span>, -<span class="dv">5</span>, <span class="dv">0</span>, <span class="dv">0</span>, -<span class="dv">2</span>)
+D &lt;-<span class="st"> </span><span class="kw">matrix</span>(d, <span class="dv">3</span>, <span class="dv">3</span>, <span class="dt">byrow =</span> T)
+<span class="kw">rref</span>(D)
+##      [,1]       [,2] [,3]
+## [1,]    1 -0.6666667    0
+## [2,]    0  0.0000000    1
+## [3,]    0  0.0000000    0
+
+x &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">2</span>/<span class="dv">3</span>, <span class="dv">1</span>, <span class="dv">0</span>)
+(xlen &lt;-<span class="st"> </span><span class="kw">norm</span>(x, <span class="dt">type =</span> <span class="st">&quot;2&quot;</span>))
+## [1] 1.20185
+x/xlen
+## [1] 0.5547002 0.8320503 0.0000000
+<span class="kw">all.equal</span>(x/xlen, Aeigen$vectors[, <span class="dv">2</span>])
+## [1] TRUE</code></pre></div>
+<p><strong>c.</strong> For <span class="math inline">\(\lambda = 1\)</span></p>
+<span class="math display">\[\begin{equation}
+\begin{bmatrix}
+0 &amp; -2 &amp; -3\\
+0 &amp; -3 &amp; -5\\ 
+0 &amp; 0 &amp; -5
+\end{bmatrix}
+
+\begin{bmatrix}
+v_1 \\ v_2 \\ v_3
+\end{bmatrix}
+=
+\begin{bmatrix}
+0 &amp; 1 &amp; 0\\
+0 &amp; 0 &amp; 1\\ 
+0 &amp; 0 &amp; 0
+\end{bmatrix}
+\begin{bmatrix}
+v_1 \\ v_2 \\ v_3
+\end{bmatrix}
+= 
+\begin{bmatrix}
+0 \\ 0 \\ 0
+\end{bmatrix}
+\end{equation}\]</span>
+<span class="math display">\[\begin{equation}
+v_2 = 0v_1, v_3 = 0v_1
+\end{equation}\]</span>
+<span class="math display">\[\begin{equation}
+x =
+\begin{bmatrix}
+v_1 \\ v_2 \\ v_3
+\end{bmatrix}
+=
+v_1\begin{bmatrix}
+1 \\ 0 \\ 0
+\end{bmatrix}
+=
+\begin{bmatrix}
+1 \\ 0 \\ 0
+\end{bmatrix}
+\end{equation}\]</span>
+<span class="math display">\[\begin{equation}
+E_{\lambda=6} = \begin{bmatrix}
+1 \\ 0 \\ 0
+\end{bmatrix}
+\end{equation}\]</span>
+<p><strong>Normalized:</strong></p>
+<span class="math display">\[\begin{equation}
+||x|| = \sqrt{1^2 + 0^2 + 0^2} = 1
+\end{equation}\]</span>
+<span class="math display">\[\begin{equation}
+E_{\lambda=6} = \begin{bmatrix}
+1 \\ 0 \\ 0
+\end{bmatrix}
+\end{equation}\]</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># validated</span>
+d &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">0</span>, -<span class="dv">2</span>, -<span class="dv">3</span>, <span class="dv">0</span>, -<span class="dv">3</span>, -<span class="dv">5</span>, <span class="dv">0</span>, <span class="dv">0</span>, -<span class="dv">5</span>)
+D &lt;-<span class="st"> </span><span class="kw">matrix</span>(d, <span class="dv">3</span>, <span class="dv">3</span>, <span class="dt">byrow =</span> T)
+<span class="kw">rref</span>(D)
+##      [,1] [,2] [,3]
+## [1,]    0    1    0
+## [2,]    0    0    1
+## [3,]    0    0    0
+
+x &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>)
+(xlen &lt;-<span class="st"> </span><span class="kw">norm</span>(x, <span class="dt">type =</span> <span class="st">&quot;2&quot;</span>))
+## [1] 1
+x/xlen
+## [1] 1 0 0
+<span class="kw">all.equal</span>(x/xlen, Aeigen$vectors[, <span class="dv">3</span>])
+## [1] TRUE</code></pre></div>
 <p>Please show your work using an R-markdown document. Please name your assignment submission with your first initial and last name.</p>
 </body>
 </div>
