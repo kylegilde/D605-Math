@@ -1,0 +1,184 @@
+---
+title: "DATA 605 FUNDAMENTALS OF COMPUTATIONAL MATHEMATICS" 
+subtitle: "Assignment 3"
+author: "Kyle Gilde"
+date: "9/15/2017"
+output: 
+  prettydoc::html_pretty:
+    theme: architect
+    highlight: github
+    toc: true
+    toc_depth: 1
+---
+<style type="text/css">
+body{
+  font-family: Helvetica;
+  font-size: 14pt;
+}
+</style>
+<body>
+```{r knitr_options, echo=FALSE}
+knitr::opts_chunk$set(
+                      warning = FALSE
+                      ,error = FALSE
+                      ,message = FALSE
+                      ,tidy = TRUE
+                      ,cache = TRUE
+                      )
+```
+
+
+```{r packages, echo=F} 
+load_packages <- c("prettydoc", "pracma")
+
+#see if we need to install any of them
+install_load <- function(pkg){
+  #CODE SOURCE: https://gist.github.com/stevenworthington/3178163
+  new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
+  if (length(new.pkg)) 
+    install.packages(new.pkg, dependencies = TRUE)
+  sapply(pkg, require, character.only = TRUE, quietly = TRUE, warn.conflicts = FALSE)
+}
+
+#excute function and display the loaded packages
+data.frame(t(t(install_load(load_packages))), fix.empty.names = FALSE)
+```
+
+##1. Problem set 1
+
+(1) What is the rank of the matrix A?
+
+\begin{equation}A = \begin{bmatrix} 1 & 2 & 3 & 4\\ −1 & 0 & 1 & 3\\ 0 & 1 & −2 & 1\\ 5 & 4 & −2 & −3 \end{bmatrix}\end{equation}
+
+
+```{r}
+d <- c(1, 2, 3, 4, −1, 0, 1, 3, 0, 1, −2, 1, 5, 4, −2, −3)
+A <- matrix(d, 4, 4, byrow = T)
+Aqr <- qr(A)
+Aqr$rank
+```
+
+(2) Given an mxn matrix where m > n, what can be the maximum rank? The minimum
+rank, assuming that the matrix is non-zero?
+
+**The maximum rank can be no greater than n.**
+**The minimum rank is 1.**
+
+(3) What is the rank of matrix B?
+
+\begin{equation}B = \begin{bmatrix} 1 & 2 & 1\\3 & 6 & 3\\ 2 & 4 & 2\\ \end{bmatrix}\end{equation}
+
+
+```{r}
+d <- c(1, 2, 1, 3, 6, 3, 2, 4, 2)
+A <- matrix(d, 3, byrow = T)
+Aqr <- qr(A)
+Aqr$rank
+```
+
+2. Problem set 2
+
+Compute the eigenvalues and eigenvectors of the matrix A. You’ll need to show your work. You’ll need to write out the characteristic polynomial and show your solution.
+
+
+\begin{equation}A = \begin{bmatrix} 1 & 2 & 3\\0 & 4 & 5\\ 0 & 0 & 6\\ \end{bmatrix}\end{equation}
+
+$x(\lambda I - A) = 0$
+
+$det(\lambda I - A) = 0$
+
+1. 
+\begin{equation}
+\begin{array}{|c|} \lambda  \begin{bmatrix} 1 & 0 & 0\\0 & 1 & 0\\ 0 & 0 & 1\\ \end{bmatrix} - \begin{bmatrix} 1 & 2 & 3\\0 & 4 & 5\\ 0 & 0 & 6\\ \end{bmatrix}\end{array} = 0
+\end{equation}
+
+2.
+\begin{equation}
+\begin{array}{|c|} \begin{bmatrix} \lambda & 0 & 0\\0 & \lambda & 0\\ 0 & 0 & \lambda\\ \end{bmatrix} - \begin{bmatrix} 1 & 2 & 3\\0 & 4 & 5\\ 0 & 0 & 6\\ \end{bmatrix}\end{array} = 0
+\end{equation}
+3.
+\begin{equation}
+\begin{array}{|c|}
+\lambda - 1 & -2 & -3\\
+0 & \lambda - 4 & -5\\ 
+0 & 0 & \lambda - 6
+\end{array} = 0
+\end{equation}
+
+
+4.
+
+\begin{equation}
+(\lambda - 1)
+\begin{array}{|cc|}
+\lambda - 4 & -5\\
+0 & \lambda - 6
+\end{array}
+- (-2)
+\begin{array}{|cc|}
+0 & -5 \\
+0 & \lambda - 6
+\end{array}
++ -3
+\begin{array}{|cc|}
+0 & \lambda - 4 \\
+0 & 0
+\end{array}
+= 0
+\end{equation}
+
+5. 
+\begin{equation}
+(\lambda - 1)((\lambda - 4)(\lambda - 6) - 0) + 2((0)-(0)) - 3((0)-(0)) = 0
+\end{equation}
+
+6. **Eigenvalues:**
+\begin{equation}
+(\lambda - 1)(\lambda - 4)(\lambda - 6) = 0
+\end{equation}
+
+\begin{equation}
+\lambda = 1,  4,  6
+\end{equation}
+
+```{r}
+#validate
+d <- c(1, 2, 3, 0, 4, 5, 0, 0, 6)
+A <- matrix(d, 3)
+Aeigen <- eigen(A)
+Aeigen$values
+```
+
+7. 
+\begin{equation}
+(\lambda^2 - 5\lambda + 4)(\lambda - 6) = 0
+\end{equation}
+
+8.
+\begin{equation}
+\lambda^3 - 5\lambda^2 + 4\lambda + -6\lambda^2 + 30\lambda -24 = 0
+\end{equation}
+
+9. **Characteristic Polynomial:**
+\begin{equation}
+p_{A}(\lambda) = \lambda^3 - 11\lambda^2 + 34\lambda -24
+\end{equation}
+
+
+```{r validate_cp}
+#validate
+charpoly(A)
+```
+
+10.
+
+```{r}
+#validate
+Aeigen$vectors
+```
+
+Please show your work using an R-markdown document. Please name your assignment
+submission with your first initial and last name.
+
+
+</body>

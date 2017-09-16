@@ -23,14 +23,14 @@ body{
 
 
 \begin{bmatrix}
-3 & −1 & 4 \\
+3 & 1 & 4 \\
 2 & 5 & 1 \\
 2 & 0 & 6
 \end{bmatrix}
 
 \begin{equation}
 \begin{array}{|ccc|}
-3 & −1 & 4 \\
+3 & 1 & 4 \\
 2 & 5 & 1 \\
 2 & 0 & 6
 \end{array}
@@ -57,7 +57,7 @@ body{
 
 ##In R
 ```{r}
-A <- matrix(c(3 , −1 , 4, 2 , 5 , 1, 2 , 0 , 6), 3,3,byrow = T)
+A <- matrix(c(3 , 1 , 4, 2 , 5 , 1, 2 , 0 , 6), 3,3,byrow = T)
 det(A)
 ```
 

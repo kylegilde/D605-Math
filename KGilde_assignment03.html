@@ -70,9 +70,9 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <header>
 <div class="inner">
 <h1 class="title toc-ignore">DATA 605 FUNDAMENTALS OF COMPUTATIONAL MATHEMATICS</h1>
-<h2 class="subtitle">Discussion 2: VS: C25</h2>
+<h2 class="subtitle">Assignment 3</h2>
 <h3 class="author">Kyle Gilde</h3>
-<h3 class="date">9/6/2017</h3>
+<h3 class="date">9/15/2017</h3>
 </div>
 </header>
 
@@ -88,43 +88,115 @@ body{
 }
 </style>
 <body>
-<div id="c25-doing-the-computations-by-hand-find-the-determinant-of-the-matrix-below." class="section level2">
-<h2>C25 Doing the computations by hand, find the determinant of the matrix below.</h2>
-<span class="math display">\[\begin{bmatrix}
-3 &amp; 1 &amp; 4 \\
-2 &amp; 5 &amp; 1 \\
-2 &amp; 0 &amp; 6
-\end{bmatrix}\]</span>
+<pre><code>##               
+## prettydoc TRUE
+## pracma    TRUE</code></pre>
+<div id="problem-set-1" class="section level2">
+<h2>1. Problem set 1</h2>
+<ol style="list-style-type: decimal">
+<li>What is the rank of the matrix A?</li>
+</ol>
+<span class="math display">\[\begin{equation}A = \begin{bmatrix} 1 &amp; 2 &amp; 3 &amp; 4\\ −1 &amp; 0 &amp; 1 &amp; 3\\ 0 &amp; 1 &amp; −2 &amp; 1\\ 5 &amp; 4 &amp; −2 &amp; −3 \end{bmatrix}\end{equation}\]</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">d &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, -<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">0</span>, <span class="dv">1</span>, -<span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">5</span>, <span class="dv">4</span>, -<span class="dv">2</span>, -<span class="dv">3</span>)
+A &lt;-<span class="st"> </span><span class="kw">matrix</span>(d, <span class="dv">4</span>, <span class="dv">4</span>, <span class="dt">byrow =</span> T)
+Aqr &lt;-<span class="st"> </span><span class="kw">qr</span>(A)
+Aqr$rank</code></pre></div>
+<pre><code>## [1] 4</code></pre>
+<ol start="2" style="list-style-type: decimal">
+<li>Given an mxn matrix where m &gt; n, what can be the maximum rank? The minimum rank, assuming that the matrix is non-zero?</li>
+</ol>
+<p><strong>The maximum rank can be no greater than n.</strong> <strong>The minimum rank is 1.</strong></p>
+<ol start="3" style="list-style-type: decimal">
+<li>What is the rank of matrix B?</li>
+</ol>
+<span class="math display">\[\begin{equation}B = \begin{bmatrix} 1 &amp; 2 &amp; 1\\3 &amp; 6 &amp; 3\\ 2 &amp; 4 &amp; 2\\ \end{bmatrix}\end{equation}\]</span>
+<p></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">d &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">6</span>, <span class="dv">3</span>, <span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">2</span>)
+A &lt;-<span class="st"> </span><span class="kw">matrix</span>(d, <span class="dv">3</span>, <span class="dt">byrow =</span> T)
+Aqr &lt;-<span class="st"> </span><span class="kw">qr</span>(A)
+Aqr$rank</code></pre></div>
+<pre><code>## [1] 1</code></pre>
+<ol start="2" style="list-style-type: decimal">
+<li>Problem set 2</li>
+</ol>
+<p>Compute the eigenvalues and eigenvectors of the matrix A. You’ll need to show your work. You’ll need to write out the characteristic polynomial and show your solution.</p>
+<span class="math display">\[\begin{equation}A = \begin{bmatrix} 1 &amp; 2 &amp; 3\\0 &amp; 4 &amp; 5\\ 0 &amp; 0 &amp; 6\\ \end{bmatrix}\end{equation}\]</span>
+<p><span class="math inline">\(x(\lambda I - A) = 0\)</span></p>
+<p><span class="math inline">\(det(\lambda I - A) = 0\)</span></p>
+<ol style="list-style-type: decimal">
+<li><span class="math display">\[\begin{equation}
+\begin{array}{|c|} \lambda  \begin{bmatrix} 1 &amp; 0 &amp; 0\\0 &amp; 1 &amp; 0\\ 0 &amp; 0 &amp; 1\\ \end{bmatrix} - \begin{bmatrix} 1 &amp; 2 &amp; 3\\0 &amp; 4 &amp; 5\\ 0 &amp; 0 &amp; 6\\ \end{bmatrix}\end{array} = 0
+\end{equation}\]</span></li>
+<li><span class="math display">\[\begin{equation}
+\begin{array}{|c|} \begin{bmatrix} \lambda &amp; 0 &amp; 0\\0 &amp; \lambda &amp; 0\\ 0 &amp; 0 &amp; \lambda\\ \end{bmatrix} - \begin{bmatrix} 1 &amp; 2 &amp; 3\\0 &amp; 4 &amp; 5\\ 0 &amp; 0 &amp; 6\\ \end{bmatrix}\end{array} = 0
+\end{equation}\]</span></li>
+<li><span class="math display">\[\begin{equation}
+\begin{array}{|c|}
+\lambda - 1 &amp; -2 &amp; -3\\
+0 &amp; \lambda - 4 &amp; -5\\ 
+0 &amp; 0 &amp; \lambda - 6
+\end{array} = 0
+\end{equation}\]</span></li>
+<li></li>
+</ol>
 <span class="math display">\[\begin{equation}
-\begin{array}{|ccc|}
-3 &amp; 1 &amp; 4 \\
-2 &amp; 5 &amp; 1 \\
-2 &amp; 0 &amp; 6
-\end{array}
-= 3
+(\lambda - 1)
 \begin{array}{|cc|}
-5 &amp; 1 \\
-0 &amp; 6
+\lambda - 4 &amp; -5\\
+0 &amp; \lambda - 6
 \end{array}
-- -1
+- (-2)
 \begin{array}{|cc|}
-2 &amp; 1 \\
-2 &amp; 6
+0 &amp; -5 \\
+0 &amp; \lambda - 6
 \end{array}
-+ 4
++ -3
 \begin{array}{|cc|}
-2 &amp; 5 \\
-2 &amp; 0
+0 &amp; \lambda - 4 \\
+0 &amp; 0
 \end{array}
+= 0
 \end{equation}\]</span>
-<span class="math display">\[\begin{equation}= (3)(30) + (1)(10) + (4)(-10)\end{equation}\]</span>
-<span class="math display">\[\begin{equation}= 60\end{equation}\]</span>
-</div>
-<div id="in-r" class="section level2">
-<h2>In R</h2>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">A &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="kw">c</span>(<span class="dv">3</span> , <span class="dv">1</span> , <span class="dv">4</span>, <span class="dv">2</span> , <span class="dv">5</span> , <span class="dv">1</span>, <span class="dv">2</span> , <span class="dv">0</span> , <span class="dv">6</span>), <span class="dv">3</span>,<span class="dv">3</span>,<span class="dt">byrow =</span> T)
-<span class="kw">det</span>(A)</code></pre></div>
-<pre><code>## [1] 40</code></pre>
+<ol start="5" style="list-style-type: decimal">
+<li><span class="math display">\[\begin{equation}
+(\lambda - 1)((\lambda - 4)(\lambda - 6) - 0) + 2((0)-(0)) - 3((0)-(0)) = 0
+\end{equation}\]</span></li>
+<li><strong>Eigenvalues:</strong>
+<span class="math display">\[\begin{equation}
+(\lambda - 1)(\lambda - 4)(\lambda - 6) = 0
+\end{equation}\]</span></li>
+</ol>
+<span class="math display">\[\begin{equation}
+\lambda = 1,  4,  6
+\end{equation}\]</span>
+<ol start="7" style="list-style-type: decimal">
+<li><span class="math display">\[\begin{equation}
+(\lambda^2 - 5\lambda + 4)(\lambda - 6) = 0
+\end{equation}\]</span></li>
+<li><span class="math display">\[\begin{equation}
+\lambda^3 - 5\lambda^2 + 4\lambda + -6\lambda^2 + 30\lambda -24 = 0
+\end{equation}\]</span></li>
+<li><strong>Characteristic Polynomial:</strong>
+<span class="math display">\[\begin{equation}
+p_{A}(\lambda) = \lambda^3 - 11\lambda^2 + 34\lambda -24 = 0
+\end{equation}\]</span></li>
+<li></li>
+</ol>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># validate</span>
+d &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">0</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">6</span>)
+A &lt;-<span class="st"> </span><span class="kw">matrix</span>(d, <span class="dv">3</span>)
+<span class="kw">charpoly</span>(A)</code></pre></div>
+<pre><code>## [1]   1 -11  34 -24</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Aeigen &lt;-<span class="st"> </span><span class="kw">eigen</span>(A)
+Aeigen$values</code></pre></div>
+<pre><code>## [1] 6 4 1</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Aeigen$vectors</code></pre></div>
+<pre><code>##      [,1]       [,2]        [,3]
+## [1,]    0  0.0000000  0.83077316
+## [2,]    0  0.3713907 -0.55384878
+## [3,]    1 -0.9284767  0.05538488</code></pre>
+<p>Please show your work using an R-markdown document. Please name your assignment submission with your first initial and last name.</p>
+</body>
 </div>
     </section>
   </div>
