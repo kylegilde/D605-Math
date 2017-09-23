@@ -1,0 +1,50 @@
+---
+title: "DATA 605 FUNDAMENTALS OF COMPUTATIONAL MATHEMATICS" 
+subtitle: "Discussion W4: LT.C26"
+author: "Kyle Gilde"
+date: "9/13/2017"
+output: 
+  prettydoc::html_pretty:
+    theme: architect
+    highlight: github
+    toc: true
+    toc_depth: 1
+---
+<style type="text/css">
+body{
+  font-family: Helvetica;
+  font-size: 14pt;
+}
+</style>
+<body>
+
+```{r, echo = F}
+load_packages <- c("pracma")
+
+#see if we need to install any of them
+install_load <- function(pkg){
+  new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
+  if (length(new.pkg)) 
+    install.packages(new.pkg, dependencies = TRUE)
+  sapply(pkg, require, character.only = TRUE, quietly = TRUE)
+}
+
+install_load(load_packages)
+```
+
+##Exercise LT.C26
+
+Verify that the function below is a linear transformation.
+
+\begin{equation}T : {P}_{2} \rightarrow {C}^{2},\quad T\left (a + bx + c{x}^{2}\right ) = \left [\array{ 2a - b \cr b + c } \right ]\end{equation}
+
+##In R
+```{r}
+Aij <- c(1,2,1,0,1,0,1,0,2,1,1,0,3,1,0,1)
+A <- matrix(Aij, 4, 4, byrow = T)
+
+charpoly(A)
+```
+
+$p_{A}(x) = 2 + 2x - 2x^2 - 3x^3 + x^4$
+
