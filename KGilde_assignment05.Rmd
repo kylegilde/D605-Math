@@ -28,23 +28,19 @@ knitr::opts_chunk$set(
 ```
 
 
-```{r packages, echo=F, collapse=T} 
-
-#include=FALSE, warning=FALSE
-
-load_packages <- c("prettydoc", "pracma",  "generalCorr", "subselect")
+```{r packages, echo=F, collapse=T, warning=FALSE} 
+packages <- c("prettydoc", "pracma",  "generalCorr", "subselect")
 
 #see if we need to install any of them
-install_load <- function(pkg){
+installed_and_loaded <- function(pkg){
   #CODE SOURCE: https://gist.github.com/stevenworthington/3178163
   new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
   if (length(new.pkg)) 
     install.packages(new.pkg, dependencies = TRUE)
   sapply(pkg, require, character.only = TRUE, quietly = TRUE, warn.conflicts = FALSE)
 }
-
 #excute function and display the loaded packages
-data.frame(t(t(install_load(load_packages))), fix.empty.names = FALSE)
+data.frame(installed_and_loaded(packages))
 ```
 
 ###Choose independently two numbers B and C at random from the interval [0, 1] with uniform density. Prove that B and C are proper probability distributions. Note that the point (B,C) is then chosen at random in the unit square.
