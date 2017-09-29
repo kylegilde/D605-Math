@@ -1,0 +1,100 @@
+---
+title: "DATA 605 FUNDAMENTALS OF COMPUTATIONAL MATHEMATICS" 
+subtitle: "Assignment 4"
+author: "Kyle Gilde"
+date: "9/23/2017"
+output: 
+  prettydoc::html_pretty:
+    theme: architect
+    highlight: github
+    toc: true
+    toc_depth: 1
+---
+<style type="text/css">
+body{
+  font-family: Helvetica;
+  font-size: 14pt;
+}
+</style>
+<body>
+```{r knitr_options, echo=FALSE}
+knitr::opts_chunk$set(
+                      warning = FALSE
+                      ,error = FALSE
+                      ,message = FALSE
+                      ,tidy = TRUE
+                      #,cache = TRUE
+                      )
+```
+
+
+```{r packages, echo=F, collapse=T} 
+
+#include=FALSE, warning=FALSE
+
+load_packages <- c("prettydoc", "pracma",  "generalCorr", "subselect")
+
+#see if we need to install any of them
+install_load <- function(pkg){
+  #CODE SOURCE: https://gist.github.com/stevenworthington/3178163
+  new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
+  if (length(new.pkg)) 
+    install.packages(new.pkg, dependencies = TRUE)
+  sapply(pkg, require, character.only = TRUE, quietly = TRUE, warn.conflicts = FALSE)
+}
+
+#excute function and display the loaded packages
+data.frame(t(t(install_load(load_packages))), fix.empty.names = FALSE)
+```
+
+###Choose independently two numbers B and C at random from the interval [0, 1] with uniform density. Prove that B and C are proper probability distributions. Note that the point (B,C) is then chosen at random in the unit square.
+
+Find the probability that
+
+(a) B + C < 1/2.
+```{r}
+B <- runif(100000)
+C <- runif(100000)
+
+sum(B + C < .5) / length(B)
+```
+
+
+
+(b) BC < 1/2.
+```{r}
+B <- runif(100000)
+C <- runif(100000)
+
+sum(B * C < .5) / length(B)
+```
+
+
+(c) |B − C| < 1/2.
+```{r}
+B <- runif(100000)
+C <- runif(100000)
+
+sum(abs(B - C) < .5) / length(B)
+```
+
+
+(d) max{B,C} < 1/2.
+```{r}
+B <- runif(100000)
+C <- runif(100000)
+
+sum(pmax(B, C) < .5) / length(B)
+```
+
+
+(e) min{B,C} < 1/2.
+```{r}
+B <- runif(100000)
+C <- runif(100000)
+
+sum(pmin(B, C) < .5) / length(B)
+```
+
+
+</body>
