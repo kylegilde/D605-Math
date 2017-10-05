@@ -1,8 +1,8 @@
 ---
 title: "DATA 605 FUNDAMENTALS OF COMPUTATIONAL MATHEMATICS" 
-subtitle: "Assignment 4"
+subtitle: "Assignment 5"
 author: "Kyle Gilde"
-date: "9/23/2017"
+date: "10/1/2017"
 output: 
   prettydoc::html_pretty:
     theme: architect
@@ -29,7 +29,7 @@ knitr::opts_chunk$set(
 
 
 ```{r packages, echo=F, collapse=T, warning=FALSE} 
-packages <- c("prettydoc", "pracma",  "generalCorr", "subselect")
+packages <- c("prettydoc", "stats", "rmutil")
 
 #see if we need to install any of them
 installed_and_loaded <- function(pkg){
@@ -43,12 +43,27 @@ installed_and_loaded <- function(pkg){
 data.frame(installed_and_loaded(packages))
 ```
 
-###Choose independently two numbers B and C at random from the interval [0, 1] with uniform density. Prove that B and C are proper probability distributions. Note that the point (B,C) is then chosen at random in the unit square.
+###Choose independently two numbers B and C at random from the interval [0, 1] with uniform density. Prove that B and C are proper probability distributions. Note that the point (B,C) is then chosen at random in the unit square.  
 
 Find the probability that
 
 (a) B + C < 1/2.
 ```{r}
+#the integral of the function = 1
+fab <- function(a, b){(dunif(a) + dunif(b))}
+upper_bound <- .5
+lower_bound <- 0
+(Fab <- int2(fab, c(lower_bound, lower_bound), c(upper_bound, upper_bound)))
+Fab == 1
+
+#non-negativity
+x <- runif(1000)
+df <- expand.grid(x, x)
+min(fab(df$Var1, df$Var2)) > 0
+
+
+#probability
+set.seed(.6)
 B <- runif(100000)
 C <- runif(100000)
 
@@ -59,6 +74,21 @@ sum(B + C < .5) / length(B)
 
 (b) BC < 1/2.
 ```{r}
+
+#the integral of the function = 1
+fab <- function(a, b){(dunif(a) * dunif(b))}
+upper_bound <- 1
+lower_bound <- 0
+(Fab <- int2(fab, c(lower_bound, lower_bound), c(upper_bound, upper_bound)))
+Fab == 1
+
+#non-negativity
+x <- runif(1000)
+df <- expand.grid(x, x)
+min(fab(df$Var1, df$Var2)) > 0
+
+#probability
+set.seed(.6)
 B <- runif(100000)
 C <- runif(100000)
 
@@ -68,6 +98,20 @@ sum(B * C < .5) / length(B)
 
 (c) |B − C| < 1/2.
 ```{r}
+#the integral of the function = 1
+fab <- function(a, b){abs(dunif(a) - dunif(b))}
+upper_bound <- 1
+lower_bound <- 0
+(Fab <- int2(fab, c(lower_bound, lower_bound), c(upper_bound, upper_bound)))
+Fab == 1
+
+#non-negativity
+x <- runif(1000)
+df <- expand.grid(x, x)
+min(fab(df$Var1, df$Var2)) > 0
+
+#probability
+set.seed(.6)
 B <- runif(100000)
 C <- runif(100000)
 
@@ -77,6 +121,20 @@ sum(abs(B - C) < .5) / length(B)
 
 (d) max{B,C} < 1/2.
 ```{r}
+#the integral of the function = 1
+fab <- function(a, b){max(dunif(a), dunif(b))}
+upper_bound <- 1
+lower_bound <- 0
+(Fab <- int2(fab, c(lower_bound, lower_bound), c(upper_bound, upper_bound)))
+Fab == 1
+
+#non-negativity
+x <- runif(1000)
+df <- expand.grid(x, x)
+min(fab(df$Var1, df$Var2)) > 0
+
+#probability
+set.seed(.6)
 B <- runif(100000)
 C <- runif(100000)
 
@@ -86,6 +144,21 @@ sum(pmax(B, C) < .5) / length(B)
 
 (e) min{B,C} < 1/2.
 ```{r}
+#the integral of the function = 1
+fab <- function(a, b){min(dunif(a), dunif(b))}
+upper_bound <- 1
+lower_bound <- 0
+(Fab <- int2(fab, c(lower_bound, lower_bound), c(upper_bound, upper_bound)))
+Fab == 1
+
+#non-negativity
+x <- runif(1000)
+df <- expand.grid(x, x)
+min(fab(df$Var1, df$Var2)) > 0
+
+
+#probability
+set.seed(.6)
 B <- runif(100000)
 C <- runif(100000)
 

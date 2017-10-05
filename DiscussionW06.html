@@ -70,9 +70,9 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <header>
 <div class="inner">
 <h1 class="title toc-ignore">DATA 605 FUNDAMENTALS OF COMPUTATIONAL MATHEMATICS</h1>
-<h2 class="subtitle">Assignment 5</h2>
+<h2 class="subtitle">Discussion W6: 3.2 #8 &amp; #10</h2>
 <h3 class="author">Kyle Gilde</h3>
-<h3 class="date">10/1/2017</h3>
+<h3 class="date">9/27/2017</h3>
 </div>
 </header>
 
@@ -88,138 +88,31 @@ body{
 }
 </style>
 <body>
-<pre><code>##           installed_and_loaded.packages.
-## prettydoc                           TRUE
-## stats                               TRUE
-## rmutil                              TRUE</code></pre>
-<div id="choose-independently-two-numbers-b-and-c-at-random-from-the-interval-0-1-with-uniform-density.-prove-that-b-and-c-are-proper-probability-distributions.-note-that-the-point-bc-is-then-chosen-at-random-in-the-unit-square." class="section level3">
-<h3>Choose independently two numbers B and C at random from the interval [0, 1] with uniform density. Prove that B and C are proper probability distributions. Note that the point (B,C) is then chosen at random in the unit square.</h3>
-<p>Find the probability that</p>
-<ol style="list-style-type: lower-alpha">
-<li>B + C &lt; 1/2.</li>
-</ol>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># the integral of the function = 1</span>
-fab &lt;-<span class="st"> </span>function(a, b) {
-    (<span class="kw">dunif</span>(a) +<span class="st"> </span><span class="kw">dunif</span>(b))
-}
-upper_bound &lt;-<span class="st"> </span><span class="fl">0.5</span>
-lower_bound &lt;-<span class="st"> </span><span class="dv">0</span>
-(Fab &lt;-<span class="st"> </span><span class="kw">int2</span>(fab, <span class="kw">c</span>(lower_bound, lower_bound), <span class="kw">c</span>(upper_bound, upper_bound)))</code></pre></div>
-<pre><code>## [1] 0.5</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Fab ==<span class="st"> </span><span class="dv">1</span></code></pre></div>
-<pre><code>## [1] FALSE</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># non-negativity</span>
-x &lt;-<span class="st"> </span><span class="kw">runif</span>(<span class="dv">1000</span>)
-df &lt;-<span class="st"> </span><span class="kw">expand.grid</span>(x, x)
-<span class="kw">min</span>(<span class="kw">fab</span>(df$Var1, df$Var2)) &gt;<span class="st"> </span><span class="dv">0</span></code></pre></div>
-<pre><code>## [1] TRUE</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># probability</span>
-<span class="kw">set.seed</span>(<span class="fl">0.6</span>)
-B &lt;-<span class="st"> </span><span class="kw">runif</span>(<span class="fl">1e+05</span>)
-C &lt;-<span class="st"> </span><span class="kw">runif</span>(<span class="fl">1e+05</span>)
-
-<span class="kw">sum</span>(B +<span class="st"> </span>C &lt;<span class="st"> </span><span class="fl">0.5</span>)/<span class="kw">length</span>(B)</code></pre></div>
-<pre><code>## [1] 0.12412</code></pre>
-<ol start="2" style="list-style-type: lower-alpha">
-<li>BC &lt; 1/2.</li>
-</ol>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># the integral of the function = 1</span>
-fab &lt;-<span class="st"> </span>function(a, b) {
-    (<span class="kw">dunif</span>(a) *<span class="st"> </span><span class="kw">dunif</span>(b))
-}
-upper_bound &lt;-<span class="st"> </span><span class="dv">1</span>
-lower_bound &lt;-<span class="st"> </span><span class="dv">0</span>
-(Fab &lt;-<span class="st"> </span><span class="kw">int2</span>(fab, <span class="kw">c</span>(lower_bound, lower_bound), <span class="kw">c</span>(upper_bound, upper_bound)))</code></pre></div>
-<pre><code>## [1] 1</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Fab ==<span class="st"> </span><span class="dv">1</span></code></pre></div>
-<pre><code>## [1] TRUE</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># non-negativity</span>
-x &lt;-<span class="st"> </span><span class="kw">runif</span>(<span class="dv">1000</span>)
-df &lt;-<span class="st"> </span><span class="kw">expand.grid</span>(x, x)
-<span class="kw">min</span>(<span class="kw">fab</span>(df$Var1, df$Var2)) &gt;<span class="st"> </span><span class="dv">0</span></code></pre></div>
-<pre><code>## [1] TRUE</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># probability</span>
-<span class="kw">set.seed</span>(<span class="fl">0.6</span>)
-B &lt;-<span class="st"> </span><span class="kw">runif</span>(<span class="fl">1e+05</span>)
-C &lt;-<span class="st"> </span><span class="kw">runif</span>(<span class="fl">1e+05</span>)
-
-<span class="kw">sum</span>(B *<span class="st"> </span>C &lt;<span class="st"> </span><span class="fl">0.5</span>)/<span class="kw">length</span>(B)</code></pre></div>
-<pre><code>## [1] 0.84857</code></pre>
-<ol start="3" style="list-style-type: lower-alpha">
-<li>|B − C| &lt; 1/2.</li>
-</ol>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># the integral of the function = 1</span>
-fab &lt;-<span class="st"> </span>function(a, b) {
-    <span class="kw">abs</span>(<span class="kw">dunif</span>(a) -<span class="st"> </span><span class="kw">dunif</span>(b))
-}
-upper_bound &lt;-<span class="st"> </span><span class="dv">1</span>
-lower_bound &lt;-<span class="st"> </span><span class="dv">0</span>
-(Fab &lt;-<span class="st"> </span><span class="kw">int2</span>(fab, <span class="kw">c</span>(lower_bound, lower_bound), <span class="kw">c</span>(upper_bound, upper_bound)))</code></pre></div>
-<pre><code>## [1] 0</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Fab ==<span class="st"> </span><span class="dv">1</span></code></pre></div>
-<pre><code>## [1] FALSE</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># non-negativity</span>
-x &lt;-<span class="st"> </span><span class="kw">runif</span>(<span class="dv">1000</span>)
-df &lt;-<span class="st"> </span><span class="kw">expand.grid</span>(x, x)
-<span class="kw">min</span>(<span class="kw">fab</span>(df$Var1, df$Var2)) &gt;<span class="st"> </span><span class="dv">0</span></code></pre></div>
-<pre><code>## [1] FALSE</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># probability</span>
-<span class="kw">set.seed</span>(<span class="fl">0.6</span>)
-B &lt;-<span class="st"> </span><span class="kw">runif</span>(<span class="fl">1e+05</span>)
-C &lt;-<span class="st"> </span><span class="kw">runif</span>(<span class="fl">1e+05</span>)
-
-<span class="kw">sum</span>(<span class="kw">abs</span>(B -<span class="st"> </span>C) &lt;<span class="st"> </span><span class="fl">0.5</span>)/<span class="kw">length</span>(B)</code></pre></div>
-<pre><code>## [1] 0.74771</code></pre>
-<ol start="4" style="list-style-type: lower-alpha">
-<li>max{B,C} &lt; 1/2.</li>
-</ol>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># the integral of the function = 1</span>
-fab &lt;-<span class="st"> </span>function(a, b) {
-    <span class="kw">max</span>(<span class="kw">dunif</span>(a), <span class="kw">dunif</span>(b))
-}
-upper_bound &lt;-<span class="st"> </span><span class="dv">1</span>
-lower_bound &lt;-<span class="st"> </span><span class="dv">0</span>
-(Fab &lt;-<span class="st"> </span><span class="kw">int2</span>(fab, <span class="kw">c</span>(lower_bound, lower_bound), <span class="kw">c</span>(upper_bound, upper_bound)))</code></pre></div>
-<pre><code>## [1] 1</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Fab ==<span class="st"> </span><span class="dv">1</span></code></pre></div>
-<pre><code>## [1] TRUE</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># non-negativity</span>
-x &lt;-<span class="st"> </span><span class="kw">runif</span>(<span class="dv">1000</span>)
-df &lt;-<span class="st"> </span><span class="kw">expand.grid</span>(x, x)
-<span class="kw">min</span>(<span class="kw">fab</span>(df$Var1, df$Var2)) &gt;<span class="st"> </span><span class="dv">0</span></code></pre></div>
-<pre><code>## [1] TRUE</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># probability</span>
-<span class="kw">set.seed</span>(<span class="fl">0.6</span>)
-B &lt;-<span class="st"> </span><span class="kw">runif</span>(<span class="fl">1e+05</span>)
-C &lt;-<span class="st"> </span><span class="kw">runif</span>(<span class="fl">1e+05</span>)
-
-<span class="kw">sum</span>(<span class="kw">pmax</span>(B, C) &lt;<span class="st"> </span><span class="fl">0.5</span>)/<span class="kw">length</span>(B)</code></pre></div>
-<pre><code>## [1] 0.24749</code></pre>
-<ol start="5" style="list-style-type: lower-alpha">
-<li>min{B,C} &lt; 1/2.</li>
-</ol>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># the integral of the function = 1</span>
-fab &lt;-<span class="st"> </span>function(a, b) {
-    <span class="kw">min</span>(<span class="kw">dunif</span>(a), <span class="kw">dunif</span>(b))
-}
-upper_bound &lt;-<span class="st"> </span><span class="dv">1</span>
-lower_bound &lt;-<span class="st"> </span><span class="dv">0</span>
-(Fab &lt;-<span class="st"> </span><span class="kw">int2</span>(fab, <span class="kw">c</span>(lower_bound, lower_bound), <span class="kw">c</span>(upper_bound, upper_bound)))</code></pre></div>
-<pre><code>## [1] 1</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Fab ==<span class="st"> </span><span class="dv">1</span></code></pre></div>
-<pre><code>## [1] TRUE</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># non-negativity</span>
-x &lt;-<span class="st"> </span><span class="kw">runif</span>(<span class="dv">1000</span>)
-df &lt;-<span class="st"> </span><span class="kw">expand.grid</span>(x, x)
-<span class="kw">min</span>(<span class="kw">fab</span>(df$Var1, df$Var2)) &gt;<span class="st"> </span><span class="dv">0</span></code></pre></div>
-<pre><code>## [1] TRUE</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># probability</span>
-<span class="kw">set.seed</span>(<span class="fl">0.6</span>)
-B &lt;-<span class="st"> </span><span class="kw">runif</span>(<span class="fl">1e+05</span>)
-C &lt;-<span class="st"> </span><span class="kw">runif</span>(<span class="fl">1e+05</span>)
-
-<span class="kw">sum</span>(<span class="kw">pmin</span>(B, C) &lt;<span class="st"> </span><span class="fl">0.5</span>)/<span class="kw">length</span>(B)</code></pre></div>
-<pre><code>## [1] 0.75025</code></pre>
+<div id="a-die-is-rolled-30-times.-what-is-the-probability-that-a-6-turns-up-exactly-5-times" class="section level3">
+<h3>8. A die is rolled 30 times. What is the probability that a 6 turns up exactly 5 times?</h3>
+</div>
+<div id="in-r" class="section level3">
+<h3>In R</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dbinom</span>(<span class="dv">5</span>, <span class="dv">30</span>, <span class="dv">1</span>/<span class="dv">6</span>)
+## [1] 0.1921081</code></pre></div>
+<p>What is the most probable number of times that a 6 will turn up?</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="dv">30</span> *<span class="st"> </span><span class="dv">1</span>/<span class="dv">6</span></code></pre></div>
+<pre><code>## [1] 5</code></pre>
+</div>
+<div id="in-a-ten-question-true-false-exam-find-the-probability-that-a-student-gets-a-grade-of-70-percent-or-better-by-guessing.-answer-the-same-question-if-the-test-has-30-questions-and-if-the-test-has-50-questions." class="section level3">
+<h3>10. In a ten-question true-false exam, find the probability that a student gets a grade of 70 percent or better by guessing. Answer the same question if the test has 30 questions, and if the test has 50 questions.</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">nquestions &lt;-<span class="st"> </span><span class="dv">10</span>
+pct70 &lt;-<span class="st"> </span><span class="kw">ceiling</span>(nquestions *<span class="st"> </span>.<span class="dv">7</span>) -<span class="st"> </span><span class="dv">1</span>
+<span class="kw">pbinom</span>(pct70, nquestions, .<span class="dv">5</span>, <span class="dt">lower.tail =</span> F)</code></pre></div>
+<pre><code>## [1] 0.171875</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">nquestions &lt;-<span class="st"> </span><span class="dv">30</span>
+pct70 &lt;-<span class="st"> </span><span class="kw">ceiling</span>(nquestions *<span class="st"> </span>.<span class="dv">7</span>) -<span class="st"> </span><span class="dv">1</span>
+<span class="kw">pbinom</span>(pct70, nquestions, .<span class="dv">5</span>, <span class="dt">lower.tail =</span> F)</code></pre></div>
+<pre><code>## [1] 0.02138697</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">nquestions &lt;-<span class="st"> </span><span class="dv">50</span>
+pct70 &lt;-<span class="st"> </span><span class="kw">ceiling</span>(nquestions *<span class="st"> </span>.<span class="dv">7</span>) -<span class="st"> </span><span class="dv">1</span>
+<span class="kw">pbinom</span>(pct70, nquestions, .<span class="dv">5</span>, <span class="dt">lower.tail =</span> F)</code></pre></div>
+<pre><code>## [1] 0.003300224</code></pre>
 </body>
 </div>
     </section>
