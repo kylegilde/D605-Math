@@ -29,7 +29,7 @@ knitr::opts_chunk$set(
 
 
 ```{r packages, echo=F, collapse=T, warning=FALSE} 
-packages <- c("prettydoc", "prob", "rmutil")
+packages <- c("prettydoc", "prob")
 
 #see if we need to install any of them
 installed_and_loaded <- function(pkg){
@@ -42,17 +42,6 @@ installed_and_loaded <- function(pkg){
 #excute function and display the loaded packages
 data.frame(installed_and_loaded(packages))
 ```
-
-###1. A box contains 54 red marbles, 9 white marbles, and 75 blue marbles. If a marble is randomly selected from the box,
-what is the probability that it is red or blue? Express your answer as a fraction or a decimal number rounded to four
-decimal places.
-1
-
-
-
-You are going to play mini golf. A ball machine that contains 19 green golf balls, 20 red golf balls, 24 blue golf balls, and 17 yellow golf balls, randomly gives you your ball. What is the probability that you end up with a red golf ball? Express your answer as a simplified fraction or a decimal rounded to four decimal places.
-
-
 
 ### 1. A box contains 54 red marbles, 9 white marbles, and 75 blue marbles. If a marble is randomly selected from the box, what is the probability that it is red or blue? Express your answer as a fraction or a decimal number rounded to four decimal places.
 
@@ -90,7 +79,6 @@ Answer: A) Dependent B) Independent
 choose(8, 3) * choose(7, 3)  * 3
 ```
 
-
 ###6. Determine if the following events are independent.
 Jeff runs out of gas on the way to work. Liz watches the evening news.
 
@@ -114,9 +102,6 @@ combn
 
 ```
 
-
-
-
 ###9. Evaluate the following expression.
 $11!/7!$
 
@@ -135,28 +120,50 @@ factorial(11)/factorial(7)
 
 ```{r}
 samp_space <- tosscoin(4) == "H"
-samp_space 
-rowSums(samp_space)  == 3 / 
+
+PA <- sum(rowSums(samp_space) == 3) / nrow(samp_space)
+PnotA <- 1 - PA
+
+(EV <- PA * 97 - PnotA * 30)
 
 ```
 
 
-Step 2. If you played this game 559 times how much would you expect to win or lose? (Losses must be entered as
-negative.)
-12. Flip a coin 9 times. If you get 4 tails or less, I will pay you $23. Otherwise you pay me $26.
+Step 2. If you played this game 559 times how much would you expect to win or lose? (Losses must be entered as negative.)
+
+```{r}
+EV * 559
+```
+
+
+
+###12. Flip a coin 9 times. If you get 4 tails or less, I will pay you $23. Otherwise you pay me $26.
+
 Step 1. Find the expected value of the proposition. Round your answer to two decimal places.
-Step 2. If you played this game 994 times how much would you expect to win or lose? (Losses must be entered as
-negative.)
-2
-13. The sensitivity and specificity of the polygraph has been a subject of study and debate for years. A 2001 study of the
-use of polygraph for screening purposes suggested that the probability of detecting a liar was .59 (sensitivity) and that
-the probability of detecting a "truth teller" was .90 (specificity). We estimate that about 20% of individuals selected for
-the screening polygraph will lie.
-a. What is the probability that an individual is actually a liar given that the polygraph detected him/her as such? (Show
-me the table or the formulaic solution or both.)
-b. What is the probability that an individual is actually a truth-teller given that the polygraph detected him/her as
-such? (Show me the table or the formulaic solution or both.)
-c. What is the probability that a randomly selected individual is either a liar or was identified as a liar by the
-polygraph? Be sure to write the probability statement.
+
+```{r, 12a}
+samp_space <- tosscoin(9) == "T"
+
+(PA <- sum(rowSums(samp_space) <= 4) / nrow(samp_space))
+PnotA <- 1 - PA
+
+(EV <- PA * 23 - PnotA * 26)
+
+```
+
+Step 2. If you played this game 994 times how much would you expect to win or lose? (Losses must be entered as negative.)
+
+```{r, 12b}
+EV * 994
+```
+
+
+##13. The sensitivity and specificity of the polygraph has been a subject of study and debate for years. A 2001 study of the use of polygraph for screening purposes suggested that the probability of detecting a liar was .59 (sensitivity) and that the probability of detecting a "truth teller" was .90 (specificity). We estimate that about 20% of individuals selected for the screening polygraph will lie. 
+
+a. What is the probability that an individual is actually a liar given that the polygraph detected him/her as such? (Show me the table or the formulaic solution or both.) 
+
+b. What is the probability that an individual is actually a truth-teller given that the polygraph detected him/her as such? (Show me the table or the formulaic solution or both.) 
+
+c. What is the probability that a randomly selected individual is either a liar or was identified as a liar by the polygraph? Be sure to write the probability statement.
 
 </body>
