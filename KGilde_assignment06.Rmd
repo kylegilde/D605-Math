@@ -23,13 +23,13 @@ knitr::opts_chunk$set(
                       ,error = FALSE
                       ,message = FALSE
                       ,tidy = TRUE
-                      #,cache = TRUE
+                      ,cache = TRUE
                       )
 ```
 
 
 ```{r packages, echo=F, collapse=T, warning=FALSE} 
-packages <- c("prettydoc", "prob", "caret")
+packages <- c("prettydoc", "prob")
 
 #see if we need to install any of them
 installed_and_loaded <- function(pkg){
@@ -153,16 +153,81 @@ EV * 994
 ```
 
 
-##13. The sensitivity and specificity of the polygraph has been a subject of study and debate for years. A 2001 study of the use of polygraph for screening purposes suggested that the probability of detecting a liar was .59 (sensitivity) and that the probability of detecting a "truth teller" was .90 (specificity). We estimate that about 20% of individuals selected for the screening polygraph will lie. 
+###13. The sensitivity and specificity of the polygraph has been a subject of study and debate for years. A 2001 study of the use of polygraph for screening purposes suggested that the probability of detecting a liar was .59 (sensitivity) and that the probability of detecting a "truth teller" was .90 (specificity). We estimate that about 20% of individuals selected for the screening polygraph will lie. 
 
-+ a. What is the probability that an individual is actually a liar given that the polygraph detected him/her as such? (Show me the table or the formulaic solution or both.) 
++ **a. What is the probability that an individual is actually a liar given that the polygraph detected him/her as such? (Show me the table or the formulaic solution or both.) **
+
+**Conditional Probability**
+\begin{equation}
+
+P(Liar \mid DetectedLiar) = \frac{P(Liar \cap DetectedLiar)}{P(DetectedLiar)} = 0.118 / 0.198 = 0.5959596
+
+\end{equation}
+
+**Bayesian Method**
+\begin{equation}
+
+P(Liar \mid DetectedLiar) = \frac{P(DetectedLiar \mid Liar) * P(Liar)}{P(DetectedLiar)} = \frac{(\frac{.118}{.2}) * .2}{.198} = 0.5959596
+
+\end{equation}
+
+```{r, 13a}
+P_liar <- .2
+P_truthteller <- 1 - P_liar
+sensitivity_rate <- .59
+specificity_rate <- .9
+false_positve_rate <- 1 - sensitivity_rate
+false_negative_rate <- 1 - specificity_rate  
+
+P_liar_detectedliar <- P_liar * sensitivity_rate
+P_liar_detectedtruthteller <- P_liar * false_positve_rate
+P_truthteller_detectedtruthteller <- P_truthteller * specificity_rate
+P_truthteller_detectedliar <- P_truthteller * false_negative_rate
+
+P_detected_liar <- P_liar_detectedliar + P_truthteller_detectedliar
+(conditional_method <-  P_liar_detectedliar / P_detected_liar)
+
+P_detectedliar_given_liar <- (P_liar_detectedliar / P_liar)
+(bayesian_method  <- (P_detectedliar_given_liar * P_liar) / P_detected_liar)
+```
 
 
++ **b. What is the probability that an individual is actually a truth-teller given that the polygraph detected him/her as such? (Show me the table or the formulaic solution or both.) **
 
-+ b. What is the probability that an individual is actually a truth-teller given that the polygraph detected him/her as such? (Show me the table or the formulaic solution or both.) 
+**Conditional Probability**
+\begin{equation}
+
+P(Truthteller \mid DetectedTruthteller) = \frac{P(Truthteller \cap DetectedTruthteller)}{P(DetectedTruthteller)} = 0.72 / 0.802 = 0.8977556
+
+\end{equation}
+
+**Bayesian Method**
+\begin{equation}
+
+P(Truthteller \mid DetectedTruthteller) = \frac{P(DetectedTruthteller \mid Truthteller) * P(Truthteller)}{P(DetectedTruthteller)} = \frac{(\frac{.72}{.8}) * .8}{.802} = 0.8977556
+
+\end{equation}
+
+```{r, 13b}
+P_detected_truthteller <- P_liar_detectedtruthteller + P_truthteller_detectedtruthteller
+(conditional_method <- P_truthteller_detectedtruthteller / P_detected_truthteller)
+
+P_detectedtruthteller_given_truthteller <- (P_truthteller_detectedtruthteller / P_truthteller)
+(bayesian_method  <- (P_detectedtruthteller_given_truthteller * P_truthteller) / P_detected_truthteller)
+
+```
 
 
++ **c. What is the probability that a randomly selected individual is either a liar or was identified as a liar by the polygraph? Be sure to write the probability statement.**
 
-+ c. What is the probability that a randomly selected individual is either a liar or was identified as a liar by the polygraph? Be sure to write the probability statement.
+\begin{equation}
+
+P(Liar \cup DetectedLiar) = P(A) + P(B) - P(A \cap B) = .2 + .198 - .118 = 0.28
+
+\end{equation}
+
+```{r, 13c}
+P_liar + P_truthteller_detectedliar
+```
 
 </body>
