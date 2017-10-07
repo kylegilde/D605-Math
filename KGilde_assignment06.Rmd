@@ -29,7 +29,7 @@ knitr::opts_chunk$set(
 
 
 ```{r packages, echo=F, collapse=T, warning=FALSE} 
-packages <- c("prettydoc", "prob")
+packages <- c("prettydoc", "prob", "caret")
 
 #see if we need to install any of them
 installed_and_loaded <- function(pkg){
@@ -73,10 +73,9 @@ Answer: A) Dependent B) Independent
 **A. Dependent. While exercise isn't more effective than managing your diet, knowing whether an overweight person exercises does influence the likelihood of the person losing weight.**
 
 ###5. A veggie wrap at City Subs is composed of 3 different vegetables and 3 different condiments wrapped up in a tortilla. If there are 8 vegetables, 7 condiments, and 3 types of tortilla available, how many different veggie wraps can be made?
-??????
 
 ```{r}
-choose(8, 3) * choose(7, 3)  * 3
+choose(8, 3) * choose(7, 3)  * choose(3, 1)
 ```
 
 ###6. Determine if the following events are independent.
@@ -96,10 +95,7 @@ nsamp(14, 8, ordered = T)
 ###8. A bag contains 9 red, 4 orange, and 9 green jellybeans. What is the probability of reaching into the bag and randomly withdrawing 4 jellybeans such that the number of red ones is 0, the number of orange ones is 1, and the number of green ones is 3? Write your answer as a fraction or a decimal number rounded to four decimal places.
 
 ```{r, 8}
-combn
-
-#9 * "red", 4 "orange",  9 "green"
-
+choose(9,0) * choose(4, 1) * choose(9, 3)/ choose(22, 4)
 ```
 
 ###9. Evaluate the following expression.
@@ -144,11 +140,10 @@ Step 1. Find the expected value of the proposition. Round your answer to two dec
 ```{r, 12a}
 samp_space <- tosscoin(9) == "T"
 
-(PA <- sum(rowSums(samp_space) <= 4) / nrow(samp_space))
+PA <- sum(rowSums(samp_space) <= 4) / nrow(samp_space)
 PnotA <- 1 - PA
 
 (EV <- PA * 23 - PnotA * 26)
-
 ```
 
 Step 2. If you played this game 994 times how much would you expect to win or lose? (Losses must be entered as negative.)
@@ -160,10 +155,14 @@ EV * 994
 
 ##13. The sensitivity and specificity of the polygraph has been a subject of study and debate for years. A 2001 study of the use of polygraph for screening purposes suggested that the probability of detecting a liar was .59 (sensitivity) and that the probability of detecting a "truth teller" was .90 (specificity). We estimate that about 20% of individuals selected for the screening polygraph will lie. 
 
-a. What is the probability that an individual is actually a liar given that the polygraph detected him/her as such? (Show me the table or the formulaic solution or both.) 
++ a. What is the probability that an individual is actually a liar given that the polygraph detected him/her as such? (Show me the table or the formulaic solution or both.) 
 
-b. What is the probability that an individual is actually a truth-teller given that the polygraph detected him/her as such? (Show me the table or the formulaic solution or both.) 
 
-c. What is the probability that a randomly selected individual is either a liar or was identified as a liar by the polygraph? Be sure to write the probability statement.
+
++ b. What is the probability that an individual is actually a truth-teller given that the polygraph detected him/her as such? (Show me the table or the formulaic solution or both.) 
+
+
+
++ c. What is the probability that a randomly selected individual is either a liar or was identified as a liar by the polygraph? Be sure to write the probability statement.
 
 </body>

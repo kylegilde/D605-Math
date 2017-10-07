@@ -102,17 +102,17 @@ body{
 <div id="in-a-ten-question-true-false-exam-find-the-probability-that-a-student-gets-a-grade-of-70-percent-or-better-by-guessing.-answer-the-same-question-if-the-test-has-30-questions-and-if-the-test-has-50-questions." class="section level3">
 <h3>10. In a ten-question true-false exam, find the probability that a student gets a grade of 70 percent or better by guessing. Answer the same question if the test has 30 questions, and if the test has 50 questions.</h3>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">nquestions &lt;-<span class="st"> </span><span class="dv">10</span>
-pct70 &lt;-<span class="st"> </span><span class="kw">ceiling</span>(nquestions *<span class="st"> </span>.<span class="dv">7</span>) -<span class="st"> </span><span class="dv">1</span>
+pct70 &lt;-<span class="st"> </span><span class="kw">ceiling</span>(nquestions *<span class="st"> </span>.<span class="dv">7</span>)
 <span class="kw">pbinom</span>(pct70, nquestions, .<span class="dv">5</span>, <span class="dt">lower.tail =</span> F)</code></pre></div>
-<pre><code>## [1] 0.171875</code></pre>
+<pre><code>## [1] 0.0546875</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">nquestions &lt;-<span class="st"> </span><span class="dv">30</span>
-pct70 &lt;-<span class="st"> </span><span class="kw">ceiling</span>(nquestions *<span class="st"> </span>.<span class="dv">7</span>) -<span class="st"> </span><span class="dv">1</span>
+pct70 &lt;-<span class="st"> </span><span class="kw">ceiling</span>(nquestions *<span class="st"> </span>.<span class="dv">7</span>)
 <span class="kw">pbinom</span>(pct70, nquestions, .<span class="dv">5</span>, <span class="dt">lower.tail =</span> F)</code></pre></div>
-<pre><code>## [1] 0.02138697</code></pre>
+<pre><code>## [1] 0.008062401</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">nquestions &lt;-<span class="st"> </span><span class="dv">50</span>
-pct70 &lt;-<span class="st"> </span><span class="kw">ceiling</span>(nquestions *<span class="st"> </span>.<span class="dv">7</span>) -<span class="st"> </span><span class="dv">1</span>
+pct70 &lt;-<span class="st"> </span><span class="kw">ceiling</span>(nquestions *<span class="st"> </span>.<span class="dv">7</span>)
 <span class="kw">pbinom</span>(pct70, nquestions, .<span class="dv">5</span>, <span class="dt">lower.tail =</span> F)</code></pre></div>
-<pre><code>## [1] 0.003300224</code></pre>
+<pre><code>## [1] 0.001301086</code></pre>
 </body>
 </div>
     </section>

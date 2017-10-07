@@ -19,7 +19,8 @@ body{
 <body>
 
 ```{r, echo = F}
-#load_packages <- c("prob")
+#collapse=T, warning=FALSE
+load_packages <- c("prob")
 
 #see if we need to install any of them
 install_load <- function(pkg){
@@ -29,7 +30,7 @@ install_load <- function(pkg){
   sapply(pkg, require, character.only = TRUE, quietly = TRUE, warn.conflicts = FALSE)
 }
 
-#install_load(load_packages)
+install_load(load_packages)
 ```
 
 ###8. A die is rolled 30 times. What is the probability that a 6 turns up exactly 5 times? 
@@ -47,15 +48,15 @@ What is the most probable number of times that a 6 will turn up?
 
 ```{r}
 nquestions <- 10
-pct70 <- ceiling(nquestions * .7) - 1
+pct70 <- ceiling(nquestions * .7)
 pbinom(pct70, nquestions, .5, lower.tail = F)
 
 nquestions <- 30
-pct70 <- ceiling(nquestions * .7) - 1
+pct70 <- ceiling(nquestions * .7)
 pbinom(pct70, nquestions, .5, lower.tail = F)
 
 nquestions <- 50
-pct70 <- ceiling(nquestions * .7) - 1
+pct70 <- ceiling(nquestions * .7)
 pbinom(pct70, nquestions, .5, lower.tail = F)
 ```
 
