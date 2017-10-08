@@ -70,9 +70,9 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <header>
 <div class="inner">
 <h1 class="title toc-ignore">DATA 605 FUNDAMENTALS OF COMPUTATIONAL MATHEMATICS</h1>
-<h2 class="subtitle">Assignment 5</h2>
+<h2 class="subtitle">Assignment 6: Conditional, Combinatoric &amp; Bayesian Probability</h2>
 <h3 class="author">Kyle Gilde</h3>
-<h3 class="date">10/1/2017</h3>
+<h3 class="date">10/7/2017</h3>
 </div>
 </header>
 
@@ -93,9 +93,9 @@ body{
 ## prob                                TRUE</code></pre>
 <div id="a-box-contains-54-red-marbles-9-white-marbles-and-75-blue-marbles.-if-a-marble-is-randomly-selected-from-the-box-what-is-the-probability-that-it-is-red-or-blue-express-your-answer-as-a-fraction-or-a-decimal-number-rounded-to-four-decimal-places." class="section level3">
 <h3>1. A box contains 54 red marbles, 9 white marbles, and 75 blue marbles. If a marble is randomly selected from the box, what is the probability that it is red or blue? Express your answer as a fraction or a decimal number rounded to four decimal places.</h3>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">total &lt;-<span class="st"> </span><span class="dv">19</span> +<span class="st"> </span><span class="dv">20</span> +<span class="st"> </span><span class="dv">24</span> +<span class="st"> </span><span class="dv">17</span>
-<span class="dv">20</span>/total</code></pre></div>
-<pre><code>## [1] 0.25</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">total &lt;-<span class="st"> </span><span class="dv">54</span> +<span class="st"> </span><span class="dv">9</span> +<span class="st"> </span><span class="dv">75</span>
+<span class="kw">round</span>((<span class="dv">54</span> +<span class="st"> </span><span class="dv">75</span>)/total, <span class="dv">4</span>)</code></pre></div>
+<pre><code>## [1] 0.9348</code></pre>
 </div>
 <div id="you-are-going-to-play-mini-golf.-a-ball-machine-that-contains-19-green-golf-balls-20-red-golf-balls-24-blue-golf-balls-and-17-yellow-golf-balls-randomly-gives-you-your-ball.-what-is-the-probability-that-you-end-up-with-a-red-golf-ball-express-your-answer-as-a-simplified-fraction-or-a-decimal-rounded-to-four-decimal-places." class="section level3">
 <h3>2. You are going to play mini golf. A ball machine that contains 19 green golf balls, 20 red golf balls, 24 blue golf balls, and 17 yellow golf balls, randomly gives you your ball. What is the probability that you end up with a red golf ball? Express your answer as a simplified fraction or a decimal rounded to four decimal places.</h3>
@@ -134,8 +134,8 @@ desired_outcome &lt;-<span class="st"> </span><span class="dv">228</span> +<span
 </div>
 <div id="a-bag-contains-9-red-4-orange-and-9-green-jellybeans.-what-is-the-probability-of-reaching-into-the-bag-and-randomly-withdrawing-4-jellybeans-such-that-the-number-of-red-ones-is-0-the-number-of-orange-ones-is-1-and-the-number-of-green-ones-is-3-write-your-answer-as-a-fraction-or-a-decimal-number-rounded-to-four-decimal-places." class="section level3">
 <h3>8. A bag contains 9 red, 4 orange, and 9 green jellybeans. What is the probability of reaching into the bag and randomly withdrawing 4 jellybeans such that the number of red ones is 0, the number of orange ones is 1, and the number of green ones is 3? Write your answer as a fraction or a decimal number rounded to four decimal places.</h3>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">choose</span>(<span class="dv">9</span>, <span class="dv">0</span>) *<span class="st"> </span><span class="kw">choose</span>(<span class="dv">4</span>, <span class="dv">1</span>) *<span class="st"> </span><span class="kw">choose</span>(<span class="dv">9</span>, <span class="dv">3</span>)/<span class="kw">choose</span>(<span class="dv">22</span>, <span class="dv">4</span>)</code></pre></div>
-<pre><code>## [1] 0.04593301</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">round</span>(<span class="kw">choose</span>(<span class="dv">9</span>, <span class="dv">0</span>) *<span class="st"> </span><span class="kw">choose</span>(<span class="dv">4</span>, <span class="dv">1</span>) *<span class="st"> </span><span class="kw">choose</span>(<span class="dv">9</span>, <span class="dv">3</span>)/<span class="kw">choose</span>(<span class="dv">22</span>, <span class="dv">4</span>), <span class="dv">4</span>)</code></pre></div>
+<pre><code>## [1] 0.0459</code></pre>
 </div>
 <div id="evaluate-the-following-expression." class="section level3">
 <h3>9. Evaluate the following expression.</h3>
@@ -239,7 +239,7 @@ P(Truthteller \mid DetectedTruthteller) = \frac{P(DetectedTruthteller \mid Truth
 </ul>
 <span class="math display">\[\begin{equation}
 
-P(Liar \cup DetectedLiar) = P(A) + P(B) - P(A \cap B) = .2 + .198 - .118 = 0.28
+P(Liar \cup DetectedLiar) = P(Liar) + P(DetectedLiar) - P(Liar \cap DetectedLiar) = .2 + .198 - .118 = 0.28
 
 \end{equation}\]</span>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">P_liar +<span class="st"> </span>P_truthteller_detectedliar</code></pre></div>

@@ -1,8 +1,8 @@
 ---
 title: "DATA 605 FUNDAMENTALS OF COMPUTATIONAL MATHEMATICS" 
-subtitle: "Assignment 5"
+subtitle: "Assignment 6: Conditional, Combinatoric & Bayesian Probability "
 author: "Kyle Gilde"
-date: "10/1/2017"
+date: "10/7/2017"
 output: 
   prettydoc::html_pretty:
     theme: architect
@@ -46,8 +46,8 @@ data.frame(installed_and_loaded(packages))
 ### 1. A box contains 54 red marbles, 9 white marbles, and 75 blue marbles. If a marble is randomly selected from the box, what is the probability that it is red or blue? Express your answer as a fraction or a decimal number rounded to four decimal places.
 
 ```{r, 1}
-total <- 19 + 20 + 24 + 17
-20 / total
+total <- 54 + 9 + 75
+round((54 + 75) / total, 4)
 ```
 
 ###2. You are going to play mini golf. A ball machine that contains 19 green golf balls, 20 red golf balls, 24 blue golf balls, and 17 yellow golf balls, randomly gives you your ball. What is the probability that you end up with a red golf ball? Express your answer as a simplified fraction or a decimal rounded to four decimal places.
@@ -95,7 +95,7 @@ nsamp(14, 8, ordered = T)
 ###8. A bag contains 9 red, 4 orange, and 9 green jellybeans. What is the probability of reaching into the bag and randomly withdrawing 4 jellybeans such that the number of red ones is 0, the number of orange ones is 1, and the number of green ones is 3? Write your answer as a fraction or a decimal number rounded to four decimal places.
 
 ```{r, 8}
-choose(9,0) * choose(4, 1) * choose(9, 3)/ choose(22, 4)
+round(choose(9,0) * choose(4, 1) * choose(9, 3)/ choose(22, 4), 4)
 ```
 
 ###9. Evaluate the following expression.
@@ -222,7 +222,7 @@ P_detectedtruthteller_given_truthteller <- (P_truthteller_detectedtruthteller / 
 
 \begin{equation}
 
-P(Liar \cup DetectedLiar) = P(A) + P(B) - P(A \cap B) = .2 + .198 - .118 = 0.28
+P(Liar \cup DetectedLiar) = P(Liar) + P(DetectedLiar) - P(Liar \cap DetectedLiar) = .2 + .198 - .118 = 0.28
 
 \end{equation}
 
