@@ -1,0 +1,64 @@
+---
+title: "DATA 605 FUNDAMENTALS OF COMPUTATIONAL MATHEMATICS" 
+subtitle: "Discussion W7: 5.1 #7"
+author: "Kyle Gilde"
+date: "10/9/2017"
+output: 
+  prettydoc::html_pretty:
+    theme: architect
+    highlight: github
+    toc: true
+    toc_depth: 1
+---
+<style type="text/css">
+body{
+  font-family: Helvetica;
+  font-size: 14pt;
+}
+</style>
+<body>
+
+```{r, echo = F}
+#collapse=T, warning=FALSE
+load_packages <- c("prettydoc")
+
+#see if we need to install any of them
+install_load <- function(pkg){
+  new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
+  if (length(new.pkg)) 
+    install.packages(new.pkg, dependencies = TRUE)
+  sapply(pkg, require, character.only = TRUE, quietly = TRUE, warn.conflicts = FALSE)
+}
+
+install_load(load_packages)
+```
+
+###7 A die is rolled until the first time T that a six turns up.
+
+(a) What is the probability distribution for T?
+
+$P(T = t) = 1/6 * 5/6^{t-1}$
+
+
+(b) Find P(T > 3).
+```{r}
+p <- 1/6
+k <- 2
+(T3 <- pgeom(k, p, lower.tail = F))
+```
+
+(c) Find P(T > 6|T > 3).
+
+```{r}
+
+p <- 1/6
+k <- 5
+T6 <- pgeom(k, p, lower.tail = F)
+
+T3 * T6 / T3
+```
+
+
+
+
+</body>
