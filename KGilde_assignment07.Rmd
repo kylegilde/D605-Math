@@ -1,6 +1,6 @@
 ---
 title: "DATA 605 FUNDAMENTALS OF COMPUTATIONAL MATHEMATICS" 
-subtitle: "Assignment 6: Conditional, Combinatoric & Bayesian Probability "
+subtitle: "Assignment 7: Random Variables"
 author: "Kyle Gilde"
 date: "10/7/2017"
 output: 
@@ -29,7 +29,7 @@ knitr::opts_chunk$set(
 
 
 ```{r packages, echo=F, collapse=T, warning=FALSE} 
-packages <- c("prettydoc", "prob")
+packages <- c("prettydoc")
 
 #see if we need to install any of them
 installed_and_loaded <- function(pkg){
@@ -47,32 +47,109 @@ data.frame(installed_and_loaded(packages))
 
 
 
-###2. Your organization owns a copier (future lawyers, etc.) or MRI (future doctors).
-This machine has a manufacturer’s expected lifetime of 10 years. This means
-that we expect one failure every ten years. (Include the probability statements
-and R Code for each part.).
+###2. Your organization owns a copier (future lawyers, etc.) or MRI (future doctors).This machine has a manufacturer’s expected lifetime of 10 years. This means that we expect one failure every ten years. (Include the probability statements and R Code for each part.).
 
 
 
-a. What is the probability that the machine will fail after 8 years?. Provide also the
++ a. What is the probability that the machine will fail after 8 years?. Provide also the
 expected value and standard deviation. Model as a geometric. (Hint: the probability is
 equivalent to not failing during the first 8 years..)
 
-```{r}
-pgeom(7, .1, lower.tail = F)
+ \begin{equation}
+P(X > 8) = \sum_{x>8}.1(1 - .1)^{x - 1} = 0.5695328
+\end{equation}
+ \begin{equation}
+E(X) = 1/.1 = 10
+\end{equation}
+ \begin{equation}
+\sigma = \sqrt{\frac{1 - .1}{.1^2}} = 9.486833
+\end{equation}
+
+```{r, collapse=T}
+p <- .1
+first_success <- 9
+losses_before_success <- first_success - 1
+
+pgeom(losses_before_success, p, lower.tail = F)
+
+(EX <- 1/p)
+
+(sigma <- sqrt((1 - p)/p^2))
 ```
 
-
-
-b. What is the probability that the machine will fail after 8 years?. Provide also the
++ b. What is the probability that the machine will fail after 8 years?. Provide also the
 expected value and standard deviation. Model as an exponential.
 
+ \begin{equation}
+P(X > 8) = 
+\end{equation}
+ \begin{equation}
+E(X) = 10 
+\end{equation}
+ \begin{equation}
+\sigma = \sqrt{10} = 3.162278
+\end{equation}
 
-c. What is the probability that the machine will fail after 8 years?. Provide also the
+
+```{r, collapse=T}
+x <- 8
+rate <- .1
+
+pexp(x, rate, lower.tail = F)
+
+(EX <- 1 / rate)
+
+(sigma <- sqrt(1 / rate^2))
+```
+
++ c. What is the probability that the machine will fail after 8 years?. Provide also the
 expected value and standard deviation. Model as a binomial. (Hint: 0 success in 8
 years)
 
-d. What is the probability that the machine will fail after 8 years?. Provide also the
+ \begin{equation}
+P(X > 8) = \left( \begin{array}{c} 8 \\ 0 \end{array} \right).1^0(1 - .1)^{8-0} = 0.5695328
+\end{equation}
+ \begin{equation}
+E(X) = 8 * .1 = .8
+\end{equation}
+ \begin{equation}
+\sigma = \sqrt{8 * .1 (1 - .1)} = \sqrt{0.72} = 0.8485281
+\end{equation}
+
+```{r, collapse=T}
+p <- .1
+n <- 8
+x <- 0
+
+pbinom(x, n, p, lower.tail = F)
+
+(EX <- n * p)
+
+(sigma <- sqrt(n * p * (1 - p)))
+```
+
+
++ d. What is the probability that the machine will fail after 8 years?. Provide also the
 expected value and standard deviation. Model as a Poisson. 
+
+ \begin{equation}
+P(X > 8) = \frac{10^8e^{-10}}{8!}
+\end{equation}
+ \begin{equation}
+E(X) = 10 
+\end{equation}
+ \begin{equation}
+\sigma = \sqrt{10} = 3.162278
+\end{equation}
+
+```{r, collapse=T}
+x <- 8
+lambda <- 10
+ppois(x, lambda, lower.tail = F)
+
+(EX <- lambda)
+
+(sigma <- sqrt(lambda))
+```
 
 </body>
