@@ -12,6 +12,7 @@
 
 <meta name="author" content="Kyle Gilde" />
 
+<meta name="date" content="2017-10-14" />
 
 <title>DATA 605 FUNDAMENTALS OF COMPUTATIONAL MATHEMATICS</title>
 
@@ -72,7 +73,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <h1 class="title toc-ignore">DATA 605 FUNDAMENTALS OF COMPUTATIONAL MATHEMATICS</h1>
 <h2 class="subtitle">Assignment 7: Random Variables</h2>
 <h3 class="author">Kyle Gilde</h3>
-<h3 class="date">10/7/2017</h3>
+<h3 class="date">10/14/2017</h3>
 </div>
 </header>
 
@@ -92,6 +93,7 @@ body{
 ## prettydoc                           TRUE</code></pre>
 <div id="let-x1-x2-.-.-.-xn-be-n-mutually-independent-random-variables-each-of-which-is-uniformly-distributed-on-the-integers-from-1-to-k.-let-y-denote-the-minimum-of-the-xis.-find-the-distribution-of-y-." class="section level3">
 <h3>1. Let X1, X2, . . . , Xn be n mutually independent random variables, each of which is uniformly distributed on the integers from 1 to k. Let Y denote the minimum of the Xi’s. Find the distribution of Y .</h3>
+<p>????</p>
 </div>
 <div id="your-organization-owns-a-copier-future-lawyers-etc.-or-mri-future-doctors.this-machine-has-a-manufacturers-expected-lifetime-of-10-years.-this-means-that-we-expect-one-failure-every-ten-years.-include-the-probability-statements-and-r-code-for-each-part.." class="section level3">
 <h3>2. Your organization owns a copier (future lawyers, etc.) or MRI (future doctors).This machine has a manufacturer’s expected lifetime of 10 years. This means that we expect one failure every ten years. (Include the probability statements and R Code for each part.).</h3>
@@ -127,7 +129,7 @@ losses_before_success &lt;-<span class="st"> </span>first_success -<span class="
 </ol></li>
 </ul>
 <span class="math display">\[\begin{equation}
-P(X &gt; 8) = 
+P(X &gt; 8) = \int_{8}^{\infty} \lambda e^{-\lambda x} = 0.449329
 \end{equation}\]</span>
 <span class="math display">\[\begin{equation}
 E(X) = 10 
@@ -152,7 +154,7 @@ rate &lt;-<span class="st"> </span><span class="fl">0.1</span>
 </ol></li>
 </ul>
 <span class="math display">\[\begin{equation}
-P(X &gt; 8) = \left( \begin{array}{c} 8 \\ 0 \end{array} \right).1^0(1 - .1)^{8-0} = 0.5695328
+P(X &gt; 8) = \left( \begin{array}{c} 8 \\ 0 \end{array} \right).1^x(1 - .1)^{8-0} = 0.5695328
 \end{equation}\]</span>
 <span class="math display">\[\begin{equation}
 E(X) = 8 * .1 = .8
@@ -178,7 +180,7 @@ x &lt;-<span class="st"> </span><span class="dv">0</span>
 </ol></li>
 </ul>
 <span class="math display">\[\begin{equation}
-P(X &gt; 8) = \frac{10^8e^{-10}}{8!}
+P(X &gt; 8) = \sum_{x&gt;8}\frac{10^xe^{-10}}{x!} = 0.6671803
 \end{equation}\]</span>
 <span class="math display">\[\begin{equation}
 E(X) = 10 

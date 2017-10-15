@@ -2,7 +2,7 @@
 title: "DATA 605 FUNDAMENTALS OF COMPUTATIONAL MATHEMATICS" 
 subtitle: "Assignment 7: Random Variables"
 author: "Kyle Gilde"
-date: "10/7/2017"
+date: "10/14/2017"
 output: 
   prettydoc::html_pretty:
     theme: architect
@@ -45,7 +45,7 @@ data.frame(installed_and_loaded(packages))
 
 ###1. Let X1, X2, . . . , Xn be n mutually independent random variables, each of which is uniformly distributed on the integers from 1 to k. Let Y denote the minimum of the Xi’s. Find the distribution of Y .
 
-
+????
 
 ###2. Your organization owns a copier (future lawyers, etc.) or MRI (future doctors).This machine has a manufacturer’s expected lifetime of 10 years. This means that we expect one failure every ten years. (Include the probability statements and R Code for each part.).
 
@@ -81,7 +81,7 @@ pgeom(losses_before_success, p, lower.tail = F)
 expected value and standard deviation. Model as an exponential.
 
  \begin{equation}
-P(X > 8) = 
+P(X > 8) = \int_{8}^{\infty} \lambda e^{-\lambda x} = 0.449329
 \end{equation}
  \begin{equation}
 E(X) = 10 
@@ -107,7 +107,7 @@ expected value and standard deviation. Model as a binomial. (Hint: 0 success in 
 years)
 
  \begin{equation}
-P(X > 8) = \left( \begin{array}{c} 8 \\ 0 \end{array} \right).1^0(1 - .1)^{8-0} = 0.5695328
+P(X > 8) = \left( \begin{array}{c} 8 \\ 0 \end{array} \right).1^x(1 - .1)^{8-0} = 0.5695328
 \end{equation}
  \begin{equation}
 E(X) = 8 * .1 = .8
@@ -133,7 +133,7 @@ pbinom(x, n, p, lower.tail = F)
 expected value and standard deviation. Model as a Poisson. 
 
  \begin{equation}
-P(X > 8) = \frac{10^8e^{-10}}{8!}
+P(X > 8) = \sum_{x>8}\frac{10^xe^{-10}}{x!} = 0.6671803
 \end{equation}
  \begin{equation}
 E(X) = 10 
