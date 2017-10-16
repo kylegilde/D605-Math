@@ -45,7 +45,7 @@ data.frame(installed_and_loaded(packages))
 
 ###1. Let X1, X2, . . . , Xn be n mutually independent random variables, each of which is uniformly distributed on the integers from 1 to k. Let Y denote the minimum of the Xi’s. Find the distribution of Y .
 
-????
+I don't really know where to start on this one. 
 
 ###2. Your organization owns a copier (future lawyers, etc.) or MRI (future doctors).This machine has a manufacturer’s expected lifetime of 10 years. This means that we expect one failure every ten years. (Include the probability statements and R Code for each part.).
 
@@ -56,7 +56,7 @@ expected value and standard deviation. Model as a geometric. (Hint: the probabil
 equivalent to not failing during the first 8 years..)
 
  \begin{equation}
-P(X > 8) = \sum_{x>8}.1(1 - .1)^{x - 1} = 0.5695328
+P(X > 8) = \sum_{x>8}.1(1 - .1)^{x - 1} = 0.3874205
 \end{equation}
  \begin{equation}
 E(X) = 1/.1 = 10
