@@ -1,0 +1,66 @@
+---
+title: "DATA 605 FUNDAMENTALS OF COMPUTATIONAL MATHEMATICS" 
+subtitle: "Discussion W8: 8.1 #1 & #5"
+author: "Kyle Gilde"
+date: "10/18/2017"
+output: 
+  prettydoc::html_pretty:
+    theme: architect
+    highlight: github
+    toc: true
+    toc_depth: 1
+---
+<style type="text/css">
+body{
+  font-family: Helvetica;
+  font-size: 14pt;
+}
+</style>
+<body>
+
+```{r, echo = F}
+#collapse=T, warning=FALSE
+load_packages <- c("prettydoc")
+
+#see if we need to install any of them
+install_load <- function(pkg){
+  new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
+  if (length(new.pkg)) 
+    install.packages(new.pkg, dependencies = TRUE)
+  sapply(pkg, require, character.only = TRUE, quietly = TRUE, warn.conflicts = FALSE)
+}
+
+install_load(load_packages)
+```
+
+###1. A fair coin is tossed 100 times. The expected number of heads is 50, and the standard deviation for the number of heads is (100 · 1/2 · 1/2)1/2 = 5. What does Chebyshev's Inequality tell you about the probability that the number of heads that turn up deviates from the expected number 50 by three or more standard deviations (i.e., by at least 15)?
+
+Chebyshev's Inequality says that when a fair coin is tossed 100 times, the probability of a deviation of 15 or more from the expected value is .1111.
+
+```{r}
+n <- 100
+mu <- .5
+VX <- n * mu * (1 - mu)
+sigma <- sqrt(VX)
+EX <- n * mu
+
+k <- 3
+e <- k * sigma
+
+(chebyshev <- VX / e^2)
+(chebyshev2 <- 1/k^2)
+```
+
+###5. Let X be a random variable with E(X) = 0 and V (X) = 1. What integer value k will assure us that P(|X| ??? k) ??? .01?
+
+```{r}
+VX <- 1
+sigma <- sqrt(VX)
+EX <- 0
+chebyshev <- .01
+
+(k <- VX / (sqrt(chebyshev * sigma^2)))
+```
+
+
+</body>
