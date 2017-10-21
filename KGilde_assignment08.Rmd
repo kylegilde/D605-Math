@@ -1,0 +1,97 @@
+---
+title: "DATA 605 FUNDAMENTALS OF COMPUTATIONAL MATHEMATICS" 
+subtitle: "Assignment 8: Convolution & Chebyshev's Inequality"
+author: "Kyle Gilde"
+date: "10/20/2017"
+output: 
+  prettydoc::html_pretty:
+    theme: architect
+    highlight: github
+    toc: true
+    toc_depth: 1
+---
+<style type="text/css">
+body{
+  font-family: Helvetica;
+  font-size: 14pt;
+}
+</style>
+<body>
+```{r knitr_options, echo=FALSE}
+knitr::opts_chunk$set(
+                      warning = FALSE
+                      ,error = FALSE
+                      ,message = FALSE
+                      ,tidy = TRUE
+                      ,cache = TRUE
+                      )
+```
+
+
+```{r packages, echo=F, collapse=T, warning=FALSE} 
+packages <- c("prettydoc")
+
+#see if we need to install any of them
+installed_and_loaded <- function(pkg){
+  #CODE SOURCE: https://gist.github.com/stevenworthington/3178163
+  new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
+  if (length(new.pkg)) 
+    install.packages(new.pkg, dependencies = TRUE)
+  sapply(pkg, require, character.only = TRUE, quietly = TRUE, warn.conflicts = FALSE)
+}
+#excute function and display the loaded packages
+data.frame(installed_and_loaded(packages))
+```
+#11 and #14 on page 303 of probability text 
+#1 on page 320-321
+
+###11. A company buys 100 lightbulbs, each of which has an exponential lifetime of 1000 hours. What is the expected time for the first of these bulbs to burn out? (See Exercise 10.)
+
+###14. Assume that X1 and X2 are independent random variables, each having an exponential density with parameter ??. Show that Z = X1 ??? X2 has density
+
+\begin{equation} fZ(z) = (1/2)\lambda e^{-\lambda|z|}| \end{equation}
+
+###8.2: 1. Let X be a continuous random variable with mean ?? = 10 and variance ??^2 = 100/3. Using Chebyshev's Inequality, find an upper bound for the following probabilities.
+
+(a) P(|X ??? 10| ??? 2).
+
+
+```{r}
+VarX <- 100/3
+(sigma <- sqrt(VarX))
+epsilon <- 2
+(k <- epsilon/sigma)
+(chebyshev <- pmin(1/k^2, 1))
+```
+
+
+
+(b) P(|X ??? 10| ??? 5).
+```{r}
+VarX <- 100/3
+(sigma <- sqrt(VarX))
+epsilon <- 5
+(k <- epsilon/sigma)
+(chebyshev <- 1/k^2)
+```
+
+(c) P(|X ??? 10| ??? 9).
+```{r}
+VarX <- 100/3
+(sigma <- sqrt(VarX))
+epsilon <- 9
+(k <- epsilon/sigma)
+
+(chebyshev <- 1/k^2)
+```
+
+(d) P(|X ??? 10| ??? 20).
+```{r}
+VarX <- 100/3
+(sigma <- sqrt(VarX))
+epsilon <- 20
+(k <- epsilon/sigma)
+(chebyshev <- 1/k^2)
+```
+
+</body>

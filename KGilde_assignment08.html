@@ -12,7 +12,7 @@
 
 <meta name="author" content="Kyle Gilde" />
 
-<meta name="date" content="2017-10-14" />
+<meta name="date" content="2017-10-20" />
 
 <title>DATA 605 FUNDAMENTALS OF COMPUTATIONAL MATHEMATICS</title>
 
@@ -71,13 +71,19 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <header>
 <div class="inner">
 <h1 class="title toc-ignore">DATA 605 FUNDAMENTALS OF COMPUTATIONAL MATHEMATICS</h1>
-<h2 class="subtitle">Assignment 7: Random Variables</h2>
+<h2 class="subtitle">Assignment 8: Convolution &amp; Chebyshev’s Inequality</h2>
 <h3 class="author">Kyle Gilde</h3>
-<h3 class="date">10/14/2017</h3>
+<h3 class="date">10/20/2017</h3>
 </div>
 </header>
 
 
+<div id="TOC" class="toc">
+<ul>
+<li><a href="#and-14-on-page-303-of-probability-text">11 and #14 on page 303 of probability text</a></li>
+<li><a href="#on-page-320-321">1 on page 320-321</a></li>
+</ul>
+</div>
 
 <div id="content-wrapper">
   <div class="inner clearfix">
@@ -91,153 +97,66 @@ body{
 <body>
 <pre><code>##           installed_and_loaded.packages.
 ## prettydoc                           TRUE</code></pre>
-<div id="let-x1-x2-.-.-.-xn-be-n-mutually-independent-random-variables-each-of-which-is-uniformly-distributed-on-the-integers-from-1-to-k.-let-y-denote-the-minimum-of-the-xis.-find-the-distribution-of-y." class="section level3">
-<h3>1. Let X1, X2, . . . , Xn be n mutually independent random variables, each of which is uniformly distributed on the integers from 1 to k. Let Y denote the minimum of the Xi’s. Find the distribution of Y.</h3>
-<p>order statistic: distribution of the minimum <a href="https://docs.google.com/document/d/1PqAoVuau_3if7ZJzd7dv8cNPT6n5PNjruk8Hulwjb8c/edit#heading=h.u8c5sr7jr4cj" class="uri">https://docs.google.com/document/d/1PqAoVuau_3if7ZJzd7dv8cNPT6n5PNjruk8Hulwjb8c/edit#heading=h.u8c5sr7jr4cj</a></p>
+<div id="and-14-on-page-303-of-probability-text" class="section level1">
+<h1>11 and #14 on page 303 of probability text</h1>
 </div>
-<div id="your-organization-owns-a-copier-future-lawyers-etc.-or-mri-future-doctors.this-machine-has-a-manufacturers-expected-lifetime-of-10-years.-this-means-that-we-expect-one-failure-every-ten-years.-include-the-probability-statements-and-r-code-for-each-part.." class="section level3">
-<h3>2. Your organization owns a copier (future lawyers, etc.) or MRI (future doctors).This machine has a manufacturer’s expected lifetime of 10 years. This means that we expect one failure every ten years. (Include the probability statements and R Code for each part.).</h3>
-<ul>
-<li><ol style="list-style-type: lower-alpha">
-<li>What is the probability that the machine will fail after 8 years?. Provide also the expected value and standard deviation. Model as a geometric. (Hint: the probability is equivalent to not failing during the first 8 years..)</li>
-</ol></li>
-</ul>
-<span class="math display">\[\begin{equation}
-P(X &gt; 8) = \sum_{x&gt;8}.1(1 - .1)^{x - 1} = 0.4493288
-\end{equation}\]</span>
-<span class="math display">\[\begin{equation}
-E(X) = 1/.1 = 10
-\end{equation}\]</span>
-<span class="math display">\[\begin{equation}
-\sigma = \sqrt{\frac{1 - .1}{.1^2}} = 9.486833
-\end{equation}\]</span>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">p &lt;-<span class="st"> </span><span class="fl">0.1</span>
-first_success &lt;-<span class="st"> </span><span class="dv">8</span>
-initial_failures &lt;-<span class="st"> </span>first_success -<span class="st"> </span><span class="dv">1</span>
-
-<span class="kw">pgeom</span>(initial_failures, p, <span class="dt">lower.tail =</span> F)
-## [1] 0.4304672
-CDF &lt;-<span class="st"> </span><span class="dv">1</span> -<span class="st"> </span>(<span class="dv">1</span> -<span class="st"> </span>p)^first_success
-<span class="dv">1</span> -<span class="st"> </span>CDF
-## [1] 0.4304672
-
-(EX &lt;-<span class="st"> </span><span class="dv">1</span>/p)
-## [1] 10
-
-(sigma &lt;-<span class="st"> </span><span class="kw">sqrt</span>((<span class="dv">1</span> -<span class="st"> </span>p)/p^<span class="dv">2</span>))
-## [1] 9.486833
-
-
-
-<span class="co"># Convert to minutes for N, pi, t</span>
-(N &lt;-<span class="st"> </span><span class="dv">10</span> *<span class="st"> </span><span class="fl">365.25</span> *<span class="st"> </span><span class="dv">24</span> *<span class="st"> </span><span class="dv">60</span>)
-## [1] 5259600
-
-(pi &lt;-<span class="st"> </span><span class="dv">1</span>/N)
-## [1] 1.901285e-07
-
-(t &lt;-<span class="st"> </span><span class="dv">8</span> *<span class="st"> </span><span class="fl">365.25</span> *<span class="st"> </span><span class="dv">24</span> *<span class="st"> </span><span class="dv">60</span>)
-## [1] 4207680
-<span class="co"># Geometric. P(X &gt; t | pi) = 1 - P(X&lt;=t | pi) #0.4493288</span>
-<span class="dv">1</span> -<span class="st"> </span><span class="kw">pgeom</span>(t, pi)
-## [1] 0.4493288</code></pre></div>
-<ul>
-<li><ol start="2" style="list-style-type: lower-alpha">
-<li>What is the probability that the machine will fail after 8 years?. Provide also the expected value and standard deviation. Model as an exponential.</li>
-</ol></li>
-</ul>
-<span class="math display">\[\begin{equation}
-P(X &gt; 8) = \int_{8}^{\infty} \lambda e^{-\lambda x} = 0.449329
-\end{equation}\]</span>
-<span class="math display">\[\begin{equation}
-E(X) = 10 
-\end{equation}\]</span>
-<span class="math display">\[\begin{equation}
-\sigma = \sqrt{1 / .1^2} = 10
-\end{equation}\]</span>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x &lt;-<span class="st"> </span><span class="dv">8</span>
-lambda &lt;-<span class="st"> </span><span class="fl">0.1</span>
-
-<span class="kw">pexp</span>(x, lambda, <span class="dt">lower.tail =</span> F)
-## [1] 0.449329
-CDF &lt;-<span class="st"> </span><span class="dv">1</span> -<span class="st"> </span><span class="kw">exp</span>(-lambda *<span class="st"> </span>x)
-<span class="dv">1</span> -<span class="st"> </span>CDF
-## [1] 0.449329
-
-(EX &lt;-<span class="st"> </span><span class="dv">1</span>/lambda)
-## [1] 10
-
-(sigma &lt;-<span class="st"> </span><span class="kw">sqrt</span>(<span class="dv">1</span>/lambda^<span class="dv">2</span>))
-## [1] 10
-
-<span class="co"># Exponential.  P(X &gt;= t | lambda = pi) = 1 - P(X &lt;= t | pi)</span>
-<span class="dv">1</span> -<span class="st"> </span><span class="kw">pexp</span>(t, pi)  <span class="co">#0.449329</span>
-## [1] 0.449329</code></pre></div>
-<ul>
-<li><ol start="3" style="list-style-type: lower-alpha">
-<li>What is the probability that the machine will fail after 8 years?. Provide also the expected value and standard deviation. Model as a binomial. (Hint: 0 success in 8 years)</li>
-</ol></li>
-</ul>
-<span class="math display">\[\begin{equation}
-P(X &gt; 8) = \left( \begin{array}{c} 8 \\ 0 \end{array} \right).1^x(1 - .1)^{8-0} = 0.4493289
-\end{equation}\]</span>
-<span class="math display">\[\begin{equation}
-E(X) = 8 * .1 = .8
-\end{equation}\]</span>
-<span class="math display">\[\begin{equation}
-\sigma = \sqrt{8 * .1 (1 - .1)} = \sqrt{0.72} = 0.8485281
-\end{equation}\]</span>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">p &lt;-<span class="st"> </span><span class="fl">0.1</span>
-n &lt;-<span class="st"> </span><span class="dv">8</span>
-x &lt;-<span class="st"> </span><span class="dv">0</span>
-
-<span class="kw">dbinom</span>(x, n, p)
-## [1] 0.4304672
-<span class="kw">choose</span>(p, x) *<span class="st"> </span>p^x *<span class="st"> </span>(<span class="dv">1</span> -<span class="st"> </span>p)^(n -<span class="st"> </span>x)
-## [1] 0.4304672
-
-(EX &lt;-<span class="st"> </span>n *<span class="st"> </span>p)
-## [1] 0.8
-
-(sigma &lt;-<span class="st"> </span><span class="kw">sqrt</span>(n *<span class="st"> </span>p *<span class="st"> </span>(<span class="dv">1</span> -<span class="st"> </span>p)))
-## [1] 0.8485281
-
-<span class="co"># Binomial. P(X = 0 | N = t, pi = pi) # 0.4493289</span>
-<span class="kw">dbinom</span>(<span class="dv">0</span>, t, pi)
-## [1] 0.4493289</code></pre></div>
-<ul>
-<li><ol start="4" style="list-style-type: lower-alpha">
-<li>What is the probability that the machine will fail after 8 years?. Provide also the expected value and standard deviation. Model as a Poisson.</li>
-</ol></li>
-</ul>
-<span class="math display">\[\begin{equation}
-P(X &gt; 8) = \sum_{x&gt;8}\frac{10^xe^{-10}}{x!} = 0.449329
-\end{equation}\]</span>
-<span class="math display">\[\begin{equation}
-E(X) = .8 
-\end{equation}\]</span>
-<span class="math display">\[\begin{equation}
-\sigma = \sqrt{.8} = 0.894427
-\end{equation}\]</span>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x &lt;-<span class="st"> </span><span class="dv">0</span>
-T &lt;-<span class="st"> </span><span class="dv">8</span>
-p &lt;-<span class="st"> </span><span class="fl">0.1</span>
-lambda &lt;-<span class="st"> </span>T *<span class="st"> </span>p
-<span class="kw">dpois</span>(x, lambda)
-## [1] 0.449329
-lambda^x *<span class="st"> </span><span class="kw">exp</span>(-lambda)/<span class="kw">factorial</span>(x)
-## [1] 0.449329
-
-(EX &lt;-<span class="st"> </span>lambda)
-## [1] 0.8
-
-(sigma &lt;-<span class="st"> </span><span class="kw">sqrt</span>(lambda))
-## [1] 0.8944272
-
-<span class="co"># Poisson.  P(X = 0 | lambda = pi, t)</span>
-<span class="kw">dpois</span>(<span class="dv">0</span>, pi *<span class="st"> </span>t)  <span class="co">#0.449329</span>
-## [1] 0.449329</code></pre></div>
+<div id="on-page-320-321" class="section level1">
+<h1>1 on page 320-321</h1>
+<div id="a-company-buys-100-lightbulbs-each-of-which-has-an-exponential-lifetime-of-1000-hours.-what-is-the-expected-time-for-the-first-of-these-bulbs-to-burn-out-see-exercise-10." class="section level3">
+<h3>11. A company buys 100 lightbulbs, each of which has an exponential lifetime of 1000 hours. What is the expected time for the first of these bulbs to burn out? (See Exercise 10.)</h3>
+</div>
+<div id="assume-that-x1-and-x2-are-independent-random-variables-each-having-an-exponential-density-with-parameter-.-show-that-z-x1-x2-has-density" class="section level3">
+<h3>14. Assume that X1 and X2 are independent random variables, each having an exponential density with parameter ??. Show that Z = X1 ??? X2 has density</h3>
+<span class="math display">\[\begin{equation} fZ(z) = (1/2)\lambda e^{-\lambda|z|}| \end{equation}\]</span>
+</div>
+<div id="let-x-be-a-continuous-random-variable-with-mean-10-and-variance-2-1003.-using-chebyshevs-inequality-find-an-upper-bound-for-the-following-probabilities." class="section level3">
+<h3>8.2: 1. Let X be a continuous random variable with mean ?? = 10 and variance ??^2 = 100/3. Using Chebyshev’s Inequality, find an upper bound for the following probabilities.</h3>
+<ol style="list-style-type: lower-alpha">
+<li>P(|X ??? 10| ??? 2).</li>
+</ol>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">VarX &lt;-<span class="st"> </span><span class="dv">100</span>/<span class="dv">3</span>
+(sigma &lt;-<span class="st"> </span><span class="kw">sqrt</span>(VarX))</code></pre></div>
+<pre><code>## [1] 5.773503</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">epsilon &lt;-<span class="st"> </span><span class="dv">2</span>
+(k &lt;-<span class="st"> </span>epsilon/sigma)</code></pre></div>
+<pre><code>## [1] 0.3464102</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">(chebyshev &lt;-<span class="st"> </span><span class="kw">pmin</span>(<span class="dv">1</span>/k^<span class="dv">2</span>, <span class="dv">1</span>))</code></pre></div>
+<pre><code>## [1] 1</code></pre>
+<ol start="2" style="list-style-type: lower-alpha">
+<li>P(|X ??? 10| ??? 5).</li>
+</ol>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">VarX &lt;-<span class="st"> </span><span class="dv">100</span>/<span class="dv">3</span>
+(sigma &lt;-<span class="st"> </span><span class="kw">sqrt</span>(VarX))</code></pre></div>
+<pre><code>## [1] 5.773503</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">epsilon &lt;-<span class="st"> </span><span class="dv">5</span>
+(k &lt;-<span class="st"> </span>epsilon/sigma)</code></pre></div>
+<pre><code>## [1] 0.8660254</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">(chebyshev &lt;-<span class="st"> </span><span class="dv">1</span>/k^<span class="dv">2</span>)</code></pre></div>
+<pre><code>## [1] 1.333333</code></pre>
+<ol start="3" style="list-style-type: lower-alpha">
+<li>P(|X ??? 10| ??? 9).</li>
+</ol>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">VarX &lt;-<span class="st"> </span><span class="dv">100</span>/<span class="dv">3</span>
+(sigma &lt;-<span class="st"> </span><span class="kw">sqrt</span>(VarX))</code></pre></div>
+<pre><code>## [1] 5.773503</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">epsilon &lt;-<span class="st"> </span><span class="dv">9</span>
+(k &lt;-<span class="st"> </span>epsilon/sigma)</code></pre></div>
+<pre><code>## [1] 1.558846</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">(chebyshev &lt;-<span class="st"> </span><span class="dv">1</span>/k^<span class="dv">2</span>)</code></pre></div>
+<pre><code>## [1] 0.4115226</code></pre>
+<ol start="4" style="list-style-type: lower-alpha">
+<li>P(|X ??? 10| ??? 20).</li>
+</ol>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">VarX &lt;-<span class="st"> </span><span class="dv">100</span>/<span class="dv">3</span>
+(sigma &lt;-<span class="st"> </span><span class="kw">sqrt</span>(VarX))</code></pre></div>
+<pre><code>## [1] 5.773503</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">epsilon &lt;-<span class="st"> </span><span class="dv">20</span>
+(k &lt;-<span class="st"> </span>epsilon/sigma)</code></pre></div>
+<pre><code>## [1] 3.464102</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">(chebyshev &lt;-<span class="st"> </span><span class="dv">1</span>/k^<span class="dv">2</span>)</code></pre></div>
+<pre><code>## [1] 0.08333333</code></pre>
 </body>
+</div>
 </div>
     </section>
   </div>
