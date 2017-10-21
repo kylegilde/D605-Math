@@ -47,16 +47,46 @@ data.frame(installed_and_loaded(packages))
 
 ###11. A company buys 100 lightbulbs, each of which has an exponential lifetime of 1000 hours. What is the expected time for the first of these bulbs to burn out? (See Exercise 10.)
 
-###14. Assume that X1 and X2 are independent random variables, each having an exponential density with parameter ??. Show that Z = X1 ??? X2 has density
-
-\begin{equation} fZ(z) = (1/2)\lambda e^{-\lambda|z|}| \end{equation}
-
-###8.2: 1. Let X be a continuous random variable with mean ?? = 10 and variance ??^2 = 100/3. Using Chebyshev's Inequality, find an upper bound for the following probabilities.
-
-(a) P(|X ??? 10| ??? 2).
-
-
 ```{r}
+N <- 1000
+bulbs <- 100
+N/bulbs
+```
+
+
+###14. Assume that X1 and X2 are independent random variables, each having an exponential density with parameter $\lambda$. Show that Z = X1 - X2 has density
+
+\begin{equation} fZ(z) = (1/2)\lambda e^{-\lambda|z|} \end{equation}
+
+\begin{equation} f_X(x) = f_Y(x) = \begin{cases}{\lambda e^{-\lambda x},} & \text{if } x\geq 0, \\
+                                                {0} & \text{otherwise;}\end{cases} \end{equation}
+
+
+ \begin{equation}
+f_Z(z) = \int_{-\infty}^{+\infty} f_X(z + y) f_Y(y) \text{dy}
+\end{equation}
+ 
+ \begin{equation}
+f_Z(z) = \int_{0}^{z} \lambda e^{-\lambda (z + y)} \lambda e^{-\lambda y} dy
+ \end{equation}
+ 
+  \begin{equation}
+f_Z(z) = \int_{0}^{z} \lambda^2 e^{-\lambda z} dy
+ \end{equation}
+ 
+   \begin{equation}
+f_Z(z) = \frac{\lambda}{2} e^{-\lambda |z|}
+ \end{equation}
+
+\begin{equation} f_X(x) = f_Y(x) = \begin{cases}{(1/2)\lambda e^{-\lambda|z|},} & \text{if } z\geq 0, \\
+                                                {0} & \text{otherwise.}\end{cases} \end{equation}
+                                                
+###8.2: 1. Let X be a continuous random variable with mean $\mu$ = 10 and variance $\sigma^2$ = 100/3. Using Chebyshev's Inequality, find an upper bound for the following probabilities.
+
+(a) P(|X - 10|>= 2).
+
+
+```{r, collapse = T}
 VarX <- 100/3
 (sigma <- sqrt(VarX))
 epsilon <- 2
@@ -66,17 +96,17 @@ epsilon <- 2
 
 
 
-(b) P(|X ??? 10| ??? 5).
-```{r}
+(b) P(|X - 10|>= 5).
+```{r, collapse = T}
 VarX <- 100/3
 (sigma <- sqrt(VarX))
 epsilon <- 5
 (k <- epsilon/sigma)
-(chebyshev <- 1/k^2)
+(chebyshev <- pmin(1/k^2, 1))
 ```
 
-(c) P(|X ??? 10| ??? 9).
-```{r}
+(c) P(|X - 10|>= 9).
+```{r, collapse = T}
 VarX <- 100/3
 (sigma <- sqrt(VarX))
 epsilon <- 9
@@ -85,8 +115,8 @@ epsilon <- 9
 (chebyshev <- 1/k^2)
 ```
 
-(d) P(|X ??? 10| ??? 20).
-```{r}
+(d) P(|X - 10|>= 20).
+```{r, collapse = T}
 VarX <- 100/3
 (sigma <- sqrt(VarX))
 epsilon <- 20

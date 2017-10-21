@@ -47,6 +47,7 @@ data.frame(installed_and_loaded(packages))
 
 order statistic: distribution of the minimum
 https://docs.google.com/document/d/1PqAoVuau_3if7ZJzd7dv8cNPT6n5PNjruk8Hulwjb8c/edit#heading=h.u8c5sr7jr4cj
+https://math.stackexchange.com/questions/786392/expectation-of-minimum-of-n-i-i-d-uniform-random-variables
 
 ###2. Your organization owns a copier (future lawyers, etc.) or MRI (future doctors).This machine has a manufacturer's expected lifetime of 10 years. This means that we expect one failure every ten years. (Include the probability statements and R Code for each part.).
 
