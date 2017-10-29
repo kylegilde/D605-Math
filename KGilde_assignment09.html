@@ -12,7 +12,7 @@
 
 <meta name="author" content="Kyle Gilde" />
 
-<meta name="date" content="2017-10-20" />
+<meta name="date" content="2017-10-28" />
 
 <title>DATA 605 FUNDAMENTALS OF COMPUTATIONAL MATHEMATICS</title>
 
@@ -71,13 +71,18 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <header>
 <div class="inner">
 <h1 class="title toc-ignore">DATA 605 FUNDAMENTALS OF COMPUTATIONAL MATHEMATICS</h1>
-<h2 class="subtitle">Assignment 8: Convolution &amp; Chebyshev’s Inequality</h2>
+<h2 class="subtitle">Assignment 9: CTL &amp; Moment Generatin Functions</h2>
 <h3 class="author">Kyle Gilde</h3>
-<h3 class="date">10/20/2017</h3>
+<h3 class="date">10/28/2017</h3>
 </div>
 </header>
 
 
+<div id="TOC" class="toc">
+<ul>
+<li><a href="#calculate-the-expected-value-and-variance-of-the-exponential-distribution-using-the-moment-generating-function.">3. Calculate the expected value and variance of the exponential distribution using the moment generating function.</a></li>
+</ul>
+</div>
 
 <div id="content-wrapper">
   <div class="inner clearfix">
@@ -91,82 +96,108 @@ body{
 <body>
 <pre><code>##           installed_and_loaded.packages.
 ## prettydoc                           TRUE</code></pre>
-<p>11 and #14 on page 303; 1 on page 320-321</p>
-<div id="a-company-buys-100-lightbulbs-each-of-which-has-an-exponential-lifetime-of-1000-hours.-what-is-the-expected-time-for-the-first-of-these-bulbs-to-burn-out-see-exercise-10." class="section level3">
-<h3>11. A company buys 100 lightbulbs, each of which has an exponential lifetime of 1000 hours. What is the expected time for the first of these bulbs to burn out? (See Exercise 10.)</h3>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">N &lt;-<span class="st"> </span><span class="dv">1000</span>
-bulbs &lt;-<span class="st"> </span><span class="dv">100</span>
-N/bulbs</code></pre></div>
-<pre><code>## [1] 10</code></pre>
-</div>
-<div id="assume-that-x1-and-x2-are-independent-random-variables-each-having-an-exponential-density-with-parameter-lambda.-show-that-z-x1---x2-has-density" class="section level3">
-<h3>14. Assume that X1 and X2 are independent random variables, each having an exponential density with parameter <span class="math inline">\(\lambda\)</span>. Show that Z = X1 - X2 has density</h3>
-<span class="math display">\[\begin{equation} fZ(z) = (1/2)\lambda e^{-\lambda|z|} \end{equation}\]</span>
-<span class="math display">\[\begin{equation} f_X(x) = f_Y(x)
-= \begin{cases}{\lambda e^{-\lambda x},} &amp; \text{if } x\geq 0, \\
-               {0} &amp; \text{otherwise;}\end{cases} \end{equation}\]</span>
-<span class="math display">\[\begin{equation}
-f_Z(z) = \int_{-\infty}^{+\infty} f_X(z + y) f_Y(y) \text{dy}
-\end{equation}\]</span>
-<span class="math display">\[\begin{equation}
-f_Z(z) = \int_{0}^{z} \lambda e^{-\lambda (z + y)} \lambda e^{-\lambda y} dy
- \end{equation}\]</span>
-<span class="math display">\[\begin{equation}
-f_Z(z) = \int_{0}^{z} \lambda^2 e^{-\lambda z} dy
- \end{equation}\]</span>
-<span class="math display">\[\begin{equation}
-f_Z(z) = \frac{\lambda}{2} e^{-\lambda |z|}
- \end{equation}\]</span>
-<span class="math display">\[\begin{equation} f_X(x) = f_Y(x) = \begin{cases}{(1/2)\lambda e^{-\lambda|z|},} &amp; \text{if } z\geq 0, \\
-                                                {0} &amp; \text{otherwise.}\end{cases} \end{equation}\]</span>
-</div>
-<div id="let-x-be-a-continuous-random-variable-with-mean-mu-10-and-variance-sigma2-1003.-using-chebyshevs-inequality-find-an-upper-bound-for-the-following-probabilities." class="section level3">
-<h3>8.2: 1. Let X be a continuous random variable with mean <span class="math inline">\(\mu\)</span> = 10 and variance <span class="math inline">\(\sigma^2\)</span> = 100/3. Using Chebyshev’s Inequality, find an upper bound for the following probabilities.</h3>
+<div id="p363-11.-the-price-of-one-share-of-stock-in-the-pilsdorff-beer-company-see-exercise-8.2.12-is-given-by-yn-on-the-nth-day-of-the-year.-finn-observes-that-the-differences-x_n-y_n1-y_n-appear-to-be-independent-random-variables-with-a-common-distribution-having-mean-mu-0-and-variance-sigma2-14.-if-y_1-100-estimate-the-probability-that-y_365-is" class="section level3">
+<h3>p363, 11. The price of one share of stock in the Pilsdorff Beer Company (see Exercise 8.2.12) is given by Yn on the nth day of the year. Finn observes that the differences <span class="math inline">\(X_n = Y_{n+1} ??? Y_n\)</span> appear to be independent random variables with a common distribution having mean <span class="math inline">\(\mu = 0\)</span> and variance <span class="math inline">\(\sigma^2 = 1/4\)</span>. If <span class="math inline">\(Y_1 = 100\)</span>, estimate the probability that <span class="math inline">\(Y_365\)</span> is</h3>
 <ol style="list-style-type: lower-alpha">
-<li>P(|X - 10|&gt;= 2).</li>
+<li><span class="math inline">\(\geq 100\)</span></li>
 </ol>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">VarX &lt;-<span class="st"> </span><span class="dv">100</span>/<span class="dv">3</span>
-(sigma &lt;-<span class="st"> </span><span class="kw">sqrt</span>(VarX))
-## [1] 5.773503
-epsilon &lt;-<span class="st"> </span><span class="dv">2</span>
-(k &lt;-<span class="st"> </span>epsilon/sigma)
-## [1] 0.3464102
-(chebyshev &lt;-<span class="st"> </span><span class="kw">pmin</span>(<span class="dv">1</span>/k^<span class="dv">2</span>, <span class="dv">1</span>))
-## [1] 1</code></pre></div>
-<ol start="2" style="list-style-type: lower-alpha">
-<li>P(|X - 10|&gt;= 5).</li>
-</ol>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">VarX &lt;-<span class="st"> </span><span class="dv">100</span>/<span class="dv">3</span>
-(sigma &lt;-<span class="st"> </span><span class="kw">sqrt</span>(VarX))
-## [1] 5.773503
-epsilon &lt;-<span class="st"> </span><span class="dv">5</span>
-(k &lt;-<span class="st"> </span>epsilon/sigma)
-## [1] 0.8660254
-(chebyshev &lt;-<span class="st"> </span><span class="kw">pmin</span>(<span class="dv">1</span>/k^<span class="dv">2</span>, <span class="dv">1</span>))
-## [1] 1</code></pre></div>
-<ol start="3" style="list-style-type: lower-alpha">
-<li>P(|X - 10|&gt;= 9).</li>
-</ol>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">VarX &lt;-<span class="st"> </span><span class="dv">100</span>/<span class="dv">3</span>
-(sigma &lt;-<span class="st"> </span><span class="kw">sqrt</span>(VarX))
-## [1] 5.773503
-epsilon &lt;-<span class="st"> </span><span class="dv">9</span>
-(k &lt;-<span class="st"> </span>epsilon/sigma)
-## [1] 1.558846
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">day_num &lt;-<span class="st"> </span><span class="dv">365</span>
+n &lt;-<span class="st"> </span>day_num -<span class="st"> </span><span class="dv">1</span>
+mu &lt;-<span class="st"> </span><span class="dv">0</span>
+y1 &lt;-<span class="st"> </span><span class="dv">100</span>
+mu &lt;-<span class="st"> </span>mu +<span class="st"> </span>y1
+VarX &lt;-<span class="st"> </span><span class="fl">0.25</span>  <span class="co">#* y1</span>
+sigma &lt;-<span class="st"> </span><span class="kw">sqrt</span>(VarX)  <span class="co"># + y1</span>
 
-(chebyshev &lt;-<span class="st"> </span><span class="dv">1</span>/k^<span class="dv">2</span>)
-## [1] 0.4115226</code></pre></div>
-<ol start="4" style="list-style-type: lower-alpha">
-<li>P(|X - 10|&gt;= 20).</li>
+x &lt;-<span class="st"> </span><span class="dv">100</span>
+<span class="kw">pnorm</span>(x, mu, sigma, <span class="dt">lower.tail =</span> F)</code></pre></div>
+<pre><code>## [1] 0.5</code></pre>
+<ol start="2" style="list-style-type: lower-alpha">
+<li><span class="math inline">\(\geq 110\)</span></li>
 </ol>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">VarX &lt;-<span class="st"> </span><span class="dv">100</span>/<span class="dv">3</span>
-(sigma &lt;-<span class="st"> </span><span class="kw">sqrt</span>(VarX))
-## [1] 5.773503
-epsilon &lt;-<span class="st"> </span><span class="dv">20</span>
-(k &lt;-<span class="st"> </span>epsilon/sigma)
-## [1] 3.464102
-(chebyshev &lt;-<span class="st"> </span><span class="dv">1</span>/k^<span class="dv">2</span>)
-## [1] 0.08333333</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x &lt;-<span class="st"> </span><span class="dv">110</span>
+<span class="kw">pnorm</span>(x, mu, sigma, <span class="dt">lower.tail =</span> F)</code></pre></div>
+<pre><code>## [1] 2.753624e-89</code></pre>
+<ol start="3" style="list-style-type: lower-alpha">
+<li><span class="math inline">\(\geq 120\)</span></li>
+</ol>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x &lt;-<span class="st"> </span><span class="dv">120</span>
+<span class="kw">pnorm</span>(x, mu, sigma, <span class="dt">lower.tail =</span> F)</code></pre></div>
+<pre><code>## [1] 0</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">n &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="ot">NA</span>, <span class="dv">364</span>)
+
+for (i in <span class="dv">1</span>:<span class="kw">length</span>(n)) {
+    n[i] &lt;-<span class="st"> </span><span class="kw">rnorm</span>(<span class="dv">1</span>, <span class="dv">0</span>, <span class="fl">0.5</span>)
+}
+
+n &lt;-<span class="st"> </span>n +<span class="st"> </span><span class="dv">100</span>
+
+mu &lt;-<span class="st"> </span>n/<span class="dv">364</span>
+<span class="kw">sd</span>(n)</code></pre></div>
+<pre><code>## [1] 0.5111741</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sum</span>(n &gt;<span class="st"> </span><span class="dv">100</span>)/<span class="kw">length</span>(n)</code></pre></div>
+<pre><code>## [1] 0.5054945</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sum</span>(n &gt;<span class="st"> </span><span class="dv">110</span>)/<span class="kw">length</span>(n)</code></pre></div>
+<pre><code>## [1] 0</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sum</span>(n &gt;<span class="st"> </span><span class="dv">120</span>)/<span class="kw">length</span>(n)</code></pre></div>
+<pre><code>## [1] 0</code></pre>
+</div>
+<div id="calculate-the-expected-value-and-variance-of-the-binomial-distribution-using-the-moment-generating-function." class="section level3">
+<h3>2. Calculate the expected value and variance of the binomial distribution using the moment generating function.</h3>
+
+<span class="math display">\[\begin{equation}
+f(x) = {n \choose k} p^k (1 - p)^{n - k}, k \in {0, 1, 2, ...}
+ \end{equation}\]</span>
+<span class="math display">\[\begin{equation}
+M_X(t) = E(e^{tx}) = \sum_{k = 0}^{n} e^{tk}  {n \choose k} p^x (1 - p)^{n - k}
+ \end{equation}\]</span>
+<span class="math display">\[\begin{equation}
+M_X(t) = \sum_{k = 0}^{n} {n \choose k} (pe^t)^k  (1 - p)^{n - k}
+ \end{equation}\]</span>
+<span class="math display">\[\begin{equation}
+M_X(t) =  \sum_{k = 0}^{n} {n \choose k} (pe^t)^x  (1 - p)^{n - k}
+ \end{equation}\]</span>
+<span class="math display">\[\begin{equation}
+M_X(t) = [pe^t + 1 - p]^n
+ \end{equation}\]</span>
+The first moment is the expected value:
+<span class="math display">\[\begin{equation}
+M_X'(0) = E(x) = n[pe^t + 1 - p]^{n-1} (pe^t) = n(p + 1 - p)^{n - 1} * p = np
+ \end{equation}\]</span>
+The second moment is the variance:
+<span class="math display">\[\begin{equation}
+M_X''(0) = \sigma^2 =  n(n - 1)[pe^t + 1 - p]^{n-2} (pe^t)^2 n[pe^t + 1 - p]^{n-1} (pe^t) = np(1 - p)
+ \end{equation}\]</span>
+<p>reference: <a href="http://mathworld.wolfram.com/BinomialDistribution.html" class="uri">http://mathworld.wolfram.com/BinomialDistribution.html</a></p>
+</div>
+<div id="calculate-the-expected-value-and-variance-of-the-exponential-distribution-using-the-moment-generating-function." class="section level1">
+<h1>3. Calculate the expected value and variance of the exponential distribution using the moment generating function.</h1>
+<span class="math display">\[\begin{equation}
+f(x) = \lambda e^{-\lambda x}, 0 &lt; x &lt; \infty 
+ \end{equation}\]</span>
+<span class="math display">\[\begin{equation}
+M_X(t) = E(e^{tx}) = \int_{0}^{\infty} e^{tx} \lambda e^{-\lambda x} dx
+ \end{equation}\]</span>
+<span class="math display">\[\begin{equation}
+M_X(t) = \lambda \int_{0}^{\infty} e^{tx} e^{-\lambda x} dx
+ \end{equation}\]</span>
+<span class="math display">\[\begin{equation}
+M_X(t) = \lambda \int_{0}^{\infty} e^{(t -\lambda) x} dx
+ \end{equation}\]</span>
+<span class="math display">\[\begin{equation}
+M_X(t) = \lambda \int_{0}^{\infty} e^{(t -\lambda) x} dx
+ \end{equation}\]</span>
+<span class="math display">\[\begin{equation}
+M_X(t) = \frac{\lambda}{t -\lambda}
+ \end{equation}\]</span>
+The first moment is the expected value:
+<span class="math display">\[\begin{equation}
+M_X'(0) = E(x) = \frac{\lambda}{(t -\lambda)^2} = \frac{1}{\lambda}
+ \end{equation}\]</span>
+The second moment is the variance:
+<span class="math display">\[\begin{equation}
+M_X''(0) = \sigma^2 = \frac{\lambda}{(t -\lambda)^3} = \frac{1}{\lambda^2}
+ \end{equation}\]</span>
 </body>
 </div>
     </section>

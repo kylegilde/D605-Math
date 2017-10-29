@@ -78,6 +78,17 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </header>
 
 
+<div id="TOC" class="toc">
+<ul>
+<li><a href="#let-x1-x2-.-.-.-xn-be-n-mutually-independent-random-variables-each-of-which-is-uniformly-distributed-on-the-integers-from-1-to-k.-let-y-denote-the-minimum-of-the-xis.-find-the-distribution-of-y.">1. Let X1, X2, . . . , Xn be n mutually independent random variables, each of which is uniformly distributed on the integers from 1 to k. Let Y denote the minimum of the Xi’s. Find the distribution of Y.</a></li>
+<li><a href="#your-organization-owns-a-copier-future-lawyers-etc.-or-mri-future-doctors.this-machine-has-a-manufacturers-expected-lifetime-of-10-years.-this-means-that-we-expect-one-failure-every-ten-years.-include-the-probability-statements-and-r-code-for-each-part..">2. Your organization owns a copier (future lawyers, etc.) or MRI (future doctors).This machine has a manufacturer’s expected lifetime of 10 years. This means that we expect one failure every ten years. (Include the probability statements and R Code for each part.).</a><ul>
+<li><a href="#a.-geometric">a. Geometric</a></li>
+<li><a href="#b.-exponential">b. Exponential</a></li>
+<li><a href="#c.-binomial">c. Binomial</a></li>
+<li><a href="#d.-poisson">d. Poisson</a></li>
+</ul></li>
+</ul>
+</div>
 
 <div id="content-wrapper">
   <div class="inner clearfix">
@@ -91,17 +102,15 @@ body{
 <body>
 <pre><code>##           installed_and_loaded.packages.
 ## prettydoc                           TRUE</code></pre>
-<div id="let-x1-x2-.-.-.-xn-be-n-mutually-independent-random-variables-each-of-which-is-uniformly-distributed-on-the-integers-from-1-to-k.-let-y-denote-the-minimum-of-the-xis.-find-the-distribution-of-y." class="section level3">
-<h3>1. Let X1, X2, . . . , Xn be n mutually independent random variables, each of which is uniformly distributed on the integers from 1 to k. Let Y denote the minimum of the Xi’s. Find the distribution of Y.</h3>
-<p>order statistic: distribution of the minimum <a href="https://docs.google.com/document/d/1PqAoVuau_3if7ZJzd7dv8cNPT6n5PNjruk8Hulwjb8c/edit#heading=h.u8c5sr7jr4cj" class="uri">https://docs.google.com/document/d/1PqAoVuau_3if7ZJzd7dv8cNPT6n5PNjruk8Hulwjb8c/edit#heading=h.u8c5sr7jr4cj</a></p>
+<div id="let-x1-x2-.-.-.-xn-be-n-mutually-independent-random-variables-each-of-which-is-uniformly-distributed-on-the-integers-from-1-to-k.-let-y-denote-the-minimum-of-the-xis.-find-the-distribution-of-y." class="section level1">
+<h1>1. Let X1, X2, . . . , Xn be n mutually independent random variables, each of which is uniformly distributed on the integers from 1 to k. Let Y denote the minimum of the Xi’s. Find the distribution of Y.</h1>
+<p>order statistic: distribution of the minimum <a href="https://docs.google.com/document/d/1PqAoVuau_3if7ZJzd7dv8cNPT6n5PNjruk8Hulwjb8c/edit#heading=h.u8c5sr7jr4cj" class="uri">https://docs.google.com/document/d/1PqAoVuau_3if7ZJzd7dv8cNPT6n5PNjruk8Hulwjb8c/edit#heading=h.u8c5sr7jr4cj</a> <a href="https://math.stackexchange.com/questions/786392/expectation-of-minimum-of-n-i-i-d-uniform-random-variables" class="uri">https://math.stackexchange.com/questions/786392/expectation-of-minimum-of-n-i-i-d-uniform-random-variables</a></p>
 </div>
-<div id="your-organization-owns-a-copier-future-lawyers-etc.-or-mri-future-doctors.this-machine-has-a-manufacturers-expected-lifetime-of-10-years.-this-means-that-we-expect-one-failure-every-ten-years.-include-the-probability-statements-and-r-code-for-each-part.." class="section level3">
-<h3>2. Your organization owns a copier (future lawyers, etc.) or MRI (future doctors).This machine has a manufacturer’s expected lifetime of 10 years. This means that we expect one failure every ten years. (Include the probability statements and R Code for each part.).</h3>
-<ul>
-<li><ol style="list-style-type: lower-alpha">
-<li>What is the probability that the machine will fail after 8 years?. Provide also the expected value and standard deviation. Model as a geometric. (Hint: the probability is equivalent to not failing during the first 8 years..)</li>
-</ol></li>
-</ul>
+<div id="your-organization-owns-a-copier-future-lawyers-etc.-or-mri-future-doctors.this-machine-has-a-manufacturers-expected-lifetime-of-10-years.-this-means-that-we-expect-one-failure-every-ten-years.-include-the-probability-statements-and-r-code-for-each-part.." class="section level1">
+<h1>2. Your organization owns a copier (future lawyers, etc.) or MRI (future doctors).This machine has a manufacturer’s expected lifetime of 10 years. This means that we expect one failure every ten years. (Include the probability statements and R Code for each part.).</h1>
+<div id="a.-geometric" class="section level2">
+<h2>a. Geometric</h2>
+<p>What is the probability that the machine will fail after 8 years?. Provide also the expected value and standard deviation. Model as a geometric. (Hint: the probability is equivalent to not failing during the first 8 years..)</p>
 <span class="math display">\[\begin{equation}
 P(X &gt; 8) = \sum_{x&gt;8}.1(1 - .1)^{x - 1} = 0.4493288
 \end{equation}\]</span>
@@ -121,8 +130,8 @@ CDF &lt;-<span class="st"> </span><span class="dv">1</span> -<span class="st"> <
 <span class="dv">1</span> -<span class="st"> </span>CDF
 ## [1] 0.4304672
 
-(EX &lt;-<span class="st"> </span><span class="dv">1</span>/p)
-## [1] 10
+(EX &lt;-<span class="st"> </span>(<span class="dv">1</span> -<span class="st"> </span>p)/p)
+## [1] 9
 
 (sigma &lt;-<span class="st"> </span><span class="kw">sqrt</span>((<span class="dv">1</span> -<span class="st"> </span>p)/p^<span class="dv">2</span>))
 ## [1] 9.486833
@@ -141,11 +150,10 @@ CDF &lt;-<span class="st"> </span><span class="dv">1</span> -<span class="st"> <
 <span class="co"># Geometric. P(X &gt; t | pi) = 1 - P(X&lt;=t | pi) #0.4493288</span>
 <span class="dv">1</span> -<span class="st"> </span><span class="kw">pgeom</span>(t, pi)
 ## [1] 0.4493288</code></pre></div>
-<ul>
-<li><ol start="2" style="list-style-type: lower-alpha">
-<li>What is the probability that the machine will fail after 8 years?. Provide also the expected value and standard deviation. Model as an exponential.</li>
-</ol></li>
-</ul>
+</div>
+<div id="b.-exponential" class="section level2">
+<h2>b. Exponential</h2>
+<p>What is the probability that the machine will fail after 8 years?. Provide also the expected value and standard deviation. Model as an exponential.</p>
 <span class="math display">\[\begin{equation}
 P(X &gt; 8) = \int_{8}^{\infty} \lambda e^{-\lambda x} = 0.449329
 \end{equation}\]</span>
@@ -173,11 +181,10 @@ CDF &lt;-<span class="st"> </span><span class="dv">1</span> -<span class="st"> <
 <span class="co"># Exponential.  P(X &gt;= t | lambda = pi) = 1 - P(X &lt;= t | pi)</span>
 <span class="dv">1</span> -<span class="st"> </span><span class="kw">pexp</span>(t, pi)  <span class="co">#0.449329</span>
 ## [1] 0.449329</code></pre></div>
-<ul>
-<li><ol start="3" style="list-style-type: lower-alpha">
-<li>What is the probability that the machine will fail after 8 years?. Provide also the expected value and standard deviation. Model as a binomial. (Hint: 0 success in 8 years)</li>
-</ol></li>
-</ul>
+</div>
+<div id="c.-binomial" class="section level2">
+<h2>c. Binomial</h2>
+<p>What is the probability that the machine will fail after 8 years?. Provide also the expected value and standard deviation. Model as a binomial. (Hint: 0 success in 8 years)</p>
 <span class="math display">\[\begin{equation}
 P(X &gt; 8) = \left( \begin{array}{c} 8 \\ 0 \end{array} \right).1^x(1 - .1)^{8-0} = 0.4493289
 \end{equation}\]</span>
@@ -205,11 +212,10 @@ x &lt;-<span class="st"> </span><span class="dv">0</span>
 <span class="co"># Binomial. P(X = 0 | N = t, pi = pi) # 0.4493289</span>
 <span class="kw">dbinom</span>(<span class="dv">0</span>, t, pi)
 ## [1] 0.4493289</code></pre></div>
-<ul>
-<li><ol start="4" style="list-style-type: lower-alpha">
-<li>What is the probability that the machine will fail after 8 years?. Provide also the expected value and standard deviation. Model as a Poisson.</li>
-</ol></li>
-</ul>
+</div>
+<div id="d.-poisson" class="section level2">
+<h2>d. Poisson</h2>
+<p>What is the probability that the machine will fail after 8 years?. Provide also the expected value and standard deviation. Model as a Poisson.</p>
 <span class="math display">\[\begin{equation}
 P(X &gt; 8) = \sum_{x&gt;8}\frac{10^xe^{-10}}{x!} = 0.449329
 \end{equation}\]</span>
@@ -238,6 +244,7 @@ lambda^x *<span class="st"> </span><span class="kw">exp</span>(-lambda)/<span cl
 <span class="kw">dpois</span>(<span class="dv">0</span>, pi *<span class="st"> </span>t)  <span class="co">#0.449329</span>
 ## [1] 0.449329</code></pre></div>
 </body>
+</div>
 </div>
     </section>
   </div>

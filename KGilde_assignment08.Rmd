@@ -42,8 +42,8 @@ installed_and_loaded <- function(pkg){
 #excute function and display the loaded packages
 data.frame(installed_and_loaded(packages))
 ```
-#11 and #14 on page 303 of probability text 
-#1 on page 320-321
+11 and #14 on page 303; 
+1 on page 320-321
 
 ###11. A company buys 100 lightbulbs, each of which has an exponential lifetime of 1000 hours. What is the expected time for the first of these bulbs to burn out? (See Exercise 10.)
 
@@ -58,8 +58,9 @@ N/bulbs
 
 \begin{equation} fZ(z) = (1/2)\lambda e^{-\lambda|z|} \end{equation}
 
-\begin{equation} f_X(x) = f_Y(x) = \begin{cases}{\lambda e^{-\lambda x},} & \text{if } x\geq 0, \\
-                                                {0} & \text{otherwise;}\end{cases} \end{equation}
+\begin{equation} f_X(x) = f_Y(x)
+= \begin{cases}{\lambda e^{-\lambda x},} & \text{if } x\geq 0, \\
+               {0} & \text{otherwise;}\end{cases} \end{equation}
 
 
  \begin{equation}

@@ -8,7 +8,7 @@ output:
     theme: architect
     highlight: github
     toc: true
-    toc_depth: 1
+    toc_depth: 2
 ---
 <style type="text/css">
 body{
@@ -43,17 +43,19 @@ installed_and_loaded <- function(pkg){
 data.frame(installed_and_loaded(packages))
 ```
 
-###1. Let X1, X2, . . . , Xn be n mutually independent random variables, each of which is uniformly distributed on the integers from 1 to k. Let Y denote the minimum of the Xi's. Find the distribution of Y.
+#1. Let X1, X2, . . . , Xn be n mutually independent random variables, each of which is uniformly distributed on the integers from 1 to k. Let Y denote the minimum of the Xi's. Find the distribution of Y.
 
 order statistic: distribution of the minimum
 https://docs.google.com/document/d/1PqAoVuau_3if7ZJzd7dv8cNPT6n5PNjruk8Hulwjb8c/edit#heading=h.u8c5sr7jr4cj
 https://math.stackexchange.com/questions/786392/expectation-of-minimum-of-n-i-i-d-uniform-random-variables
 
-###2. Your organization owns a copier (future lawyers, etc.) or MRI (future doctors).This machine has a manufacturer's expected lifetime of 10 years. This means that we expect one failure every ten years. (Include the probability statements and R Code for each part.).
+#2. Your organization owns a copier (future lawyers, etc.) or MRI (future doctors).This machine has a manufacturer's expected lifetime of 10 years. This means that we expect one failure every ten years. (Include the probability statements and R Code for each part.).
 
 
 
-+ a. What is the probability that the machine will fail after 8 years?. Provide also the
+## a. Geometric
+
+What is the probability that the machine will fail after 8 years?. Provide also the
 expected value and standard deviation. Model as a geometric. (Hint: the probability is
 equivalent to not failing during the first 8 years..)
 
@@ -76,7 +78,7 @@ pgeom(initial_failures, p, lower.tail = F)
 CDF <- 1 - (1 - p)^first_success
 1 - CDF
 
-(EX <- 1/p)
+(EX <- (1 - p)/p)
 
 (sigma <- sqrt((1 - p)/p^2))
 
@@ -94,7 +96,9 @@ CDF <- 1 - (1 - p)^first_success
 
 ```
 
-+ b. What is the probability that the machine will fail after 8 years?. Provide also the
+## b. Exponential
+
+What is the probability that the machine will fail after 8 years?. Provide also the
 expected value and standard deviation. Model as an exponential.
 
  \begin{equation}
@@ -124,7 +128,9 @@ CDF <- 1 - exp(-lambda * x)
 1 - pexp(t, pi)  #0.449329
 ```
 
-+ c. What is the probability that the machine will fail after 8 years?. Provide also the
+## c. Binomial 
+
+What is the probability that the machine will fail after 8 years?. Provide also the
 expected value and standard deviation. Model as a binomial. (Hint: 0 success in 8
 years)
 
@@ -156,7 +162,9 @@ dbinom(0, t, pi)
 ```
 
 
-+ d. What is the probability that the machine will fail after 8 years?. Provide also the
+##d. Poisson
+
+What is the probability that the machine will fail after 8 years?. Provide also the
 expected value and standard deviation. Model as a Poisson. 
 
  \begin{equation}

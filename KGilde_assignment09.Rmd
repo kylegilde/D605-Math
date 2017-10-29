@@ -1,0 +1,156 @@
+---
+title: "DATA 605 FUNDAMENTALS OF COMPUTATIONAL MATHEMATICS" 
+subtitle: "Assignment 9: CTL & Moment Generating Functions"
+author: "Kyle Gilde"
+date: "10/28/2017"
+output: 
+  prettydoc::html_pretty:
+    theme: architect
+    highlight: github
+    toc: true
+    toc_depth: 1
+---
+<style type="text/css">
+body{
+  font-family: Helvetica;
+  font-size: 14pt;
+}
+</style>
+<body>
+```{r knitr_options, echo=FALSE}
+knitr::opts_chunk$set(
+                      warning = FALSE
+                      ,error = FALSE
+                      ,message = FALSE
+                      ,tidy = TRUE
+                      ,cache = TRUE
+                      )
+```
+
+
+```{r packages, echo=F, collapse=T, warning=FALSE} 
+packages <- c("prettydoc")
+
+#see if we need to install any of them
+installed_and_loaded <- function(pkg){
+  #CODE SOURCE: https://gist.github.com/stevenworthington/3178163
+  new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
+  if (length(new.pkg)) 
+    install.packages(new.pkg, dependencies = TRUE)
+  sapply(pkg, require, character.only = TRUE, quietly = TRUE, warn.conflicts = FALSE)
+}
+#excute function and display the loaded packages
+data.frame(installed_and_loaded(packages))
+```
+
+###p363, 11. The price of one share of stock in the Pilsdorff Beer Company (see Exercise 8.2.12) is given by Yn on the nth day of the year. Finn observes that the differences $X_n = Y_{n+1} ??? Y_n$ appear to be independent random variables with a common distribution having mean $\mu = 0$ and variance $\sigma^2 = 1/4$. If $Y_1 = 100$, estimate the probability that $Y_365$ is
+
+(a) $\geq 100$
+```{r}
+day_num <- 365
+n <- day_num - 1
+mu <- 0
+y1 <- 100
+mu <- mu + y1
+VarX <- .25 #* y1
+sigma <- sqrt(VarX) # + y1
+
+x <- 100
+pnorm(x, mu, sigma, lower.tail = F)
+```
+
+(b) $\geq 110$
+
+```{r}
+x <- 110
+pnorm(x, mu, sigma, lower.tail = F)
+```
+
+
+(c) $\geq 120$
+
+```{r}
+x <- 120
+pnorm(x, mu, sigma, lower.tail = F)
+```
+
+```{r}
+n <- rep(NA, 364)
+
+for (i in 1:length(n)){
+  n[i] <- rnorm(1, 0, .5)
+}
+
+n <- n + 100
+
+mu <- n / 364
+sd(n)
+
+sum(n > 100) / length(n)
+sum(n > 110) / length(n)
+sum(n > 120) / length(n)
+```
+
+
+###2. Calculate the expected value and variance of the binomial distribution using the moment generating function.
+\frac{n!}{(n - k)!}
+ \begin{equation}
+f(x) = {n \choose k} p^k (1 - p)^{n - k}, k \in {0, 1, 2, ...}
+ \end{equation}
+ \begin{equation}
+M_X(t) = E(e^{tx}) = \sum_{k = 0}^{n} e^{tk}  {n \choose k} p^x (1 - p)^{n - k}
+ \end{equation}
+ \begin{equation}
+M_X(t) = \sum_{k = 0}^{n} {n \choose k} (pe^t)^k  (1 - p)^{n - k}
+ \end{equation}
+ \begin{equation}
+M_X(t) =  \sum_{k = 0}^{n} {n \choose k} (pe^t)^x  (1 - p)^{n - k}
+ \end{equation}
+ \begin{equation}
+M_X(t) = [pe^t + 1 - p]^n
+ \end{equation} 
+The first moment is the expected value: 
+ \begin{equation}
+M_X'(0) = E(x) = n[pe^t + 1 - p]^{n-1} (pe^t) = n(p + 1 - p)^{n - 1} * p = np
+ \end{equation}  
+The second moment is the variance:
+ \begin{equation}
+M_X''(0) = \sigma^2 =  n(n - 1)[pe^t + 1 - p]^{n-2} (pe^t)^2 n[pe^t + 1 - p]^{n-1} (pe^t) = np(1 - p)
+ \end{equation}  
+ 
+reference: http://mathworld.wolfram.com/BinomialDistribution.html
+ 
+#3. Calculate the expected value and variance of the exponential distribution using the moment generating function.
+
+ \begin{equation}
+f(x) = \lambda e^{-\lambda x}, 0 < x < \infty 
+ \end{equation}
+ \begin{equation}
+M_X(t) = E(e^{tx}) = \int_{0}^{\infty} e^{tx} \lambda e^{-\lambda x} dx
+ \end{equation}
+ \begin{equation}
+M_X(t) = \lambda \int_{0}^{\infty} e^{tx} e^{-\lambda x} dx
+ \end{equation}
+ \begin{equation}
+M_X(t) = \lambda \int_{0}^{\infty} e^{(t -\lambda) x} dx
+ \end{equation}
+ \begin{equation}
+M_X(t) = \lambda \int_{0}^{\infty} e^{(t -\lambda) x} dx
+ \end{equation} 
+ \begin{equation}
+M_X(t) = \frac{\lambda}{t -\lambda}
+ \end{equation}  
+The first moment is the expected value: 
+ \begin{equation}
+M_X'(0) = E(x) = \frac{\lambda}{(t -\lambda)^2} = \frac{1}{\lambda}
+ \end{equation}  
+The second moment is the variance:
+ \begin{equation}
+M_X''(0) = \sigma^2 = \frac{\lambda}{(t -\lambda)^3} = \frac{1}{\lambda^2}
+ \end{equation}   
+ 
+ 
+ 
+ 
+ 
+</body>

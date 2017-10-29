@@ -1,0 +1,94 @@
+---
+title: "DATA 605 FUNDAMENTALS OF COMPUTATIONAL MATHEMATICS" 
+subtitle: "Discussion W9: 9.1 #10 & #12"
+author: "Kyle Gilde"
+date: "10/18/2017"
+output: 
+  prettydoc::html_pretty:
+    theme: architect
+    highlight: github
+    toc: true
+    toc_depth: 1
+---
+<style type="text/css">
+body{
+  font-family: Helvetica;
+  font-size: 14pt;
+}
+</style>
+<body>
+
+```{r, echo = F}
+#collapse=T, warning=FALSE
+load_packages <- c("prettydoc")
+
+#see if we need to install any of them
+install_load <- function(pkg){
+  new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
+  if (length(new.pkg)) 
+    install.packages(new.pkg, dependencies = TRUE)
+  sapply(pkg, require, character.only = TRUE, quietly = TRUE, warn.conflicts = FALSE)
+}
+
+install_load(load_packages)
+```
+
+###10 Find the probability that among 10,000 random digits the digit 3 appears not more than 931 times
+
+$P(X <= 931 |  pi = .1) = 0.01064763$
+
+
+```{r}
+n <- 10000
+pi <- .1
+x <- 931
+
+pbinom(x, n, pi)
+```
+
+
+
+###12 A balanced coin is flipped 400 times. Determine the number x such that the probability that the number of heads is between 200 - x and 200 + x is approximately .80.
+
+
+$P(200 - x < X < 200 + x |  pi = .5) = 0.8$
+
+```{r}
+n <- 400
+pi <- .5
+given <- .8
+#we want the 10th percentile on both sides of the distribution
+pctile <- (1 - given)/2
+
+a <- qbinom(pctile, n, pi)
+
+(x <- 200 - a)
+
+
+
+```
+
+```{r, echo=F}
+n_trials <- 10000
+loops <- 100
+ci <- .95
+cv <- (1 - ci)/2
+p <- .3
+q <- 1 - p
+probs <-  c(p, q)
+EX <- p * n_trials
+
+lower <- qbinom(cv, n_trials, p)
+upper <- qbinom(cv, n_trials, p, lower.tail = F)
+
+
+samp_space <- c(1,0)
+trials <- rep(NA, n_trials)
+f_trials <- function(samp_space, x, probs) {sample(samp_space, x, replace = T, prob = probs)}
+# trials <- vapply(trials, f_trials, samp_space, , probs)
+# length(trials)
+# n_trials * sample(samp_space, 1, prob = probs)
+
+```
+
+</body>
