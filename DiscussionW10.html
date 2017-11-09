@@ -12,7 +12,7 @@
 
 <meta name="author" content="Kyle Gilde" />
 
-<meta name="date" content="2017-10-28" />
+<meta name="date" content="2017-10-18" />
 
 <title>DATA 605 FUNDAMENTALS OF COMPUTATIONAL MATHEMATICS</title>
 
@@ -71,18 +71,13 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <header>
 <div class="inner">
 <h1 class="title toc-ignore">DATA 605 FUNDAMENTALS OF COMPUTATIONAL MATHEMATICS</h1>
-<h2 class="subtitle">Assignment 9: CTL &amp; Moment Generating Functions</h2>
+<h2 class="subtitle">Discussion W10: 11.1 #2</h2>
 <h3 class="author">Kyle Gilde</h3>
-<h3 class="date">10/28/2017</h3>
+<h3 class="date">10/18/2017</h3>
 </div>
 </header>
 
 
-<div id="TOC" class="toc">
-<ul>
-<li><a href="#calculate-the-expected-value-and-variance-of-the-exponential-distribution-using-the-moment-generating-function.">3. Calculate the expected value and variance of the exponential distribution using the moment generating function.</a></li>
-</ul>
-</div>
 
 <div id="content-wrapper">
   <div class="inner clearfix">
@@ -94,98 +89,48 @@ body{
 }
 </style>
 <body>
-<pre><code>##           installed_and_loaded.packages.
-## prettydoc                           TRUE</code></pre>
-<div id="p363-11.-the-price-of-one-share-of-stock-in-the-pilsdorff-beer-company-see-exercise-8.2.12-is-given-by-yn-on-the-nth-day-of-the-year.-finn-observes-that-the-differences-x_n-y_n1-y_n-appear-to-be-independent-random-variables-with-a-common-distribution-having-mean-mu-0-and-variance-sigma2-14.-if-y_1-100-estimate-the-probability-that-y_365-is" class="section level3">
-<h3>p363, 11. The price of one share of stock in the Pilsdorff Beer Company (see Exercise 8.2.12) is given by Yn on the nth day of the year. Finn observes that the differences <span class="math inline">\(X_n = Y_{n+1} ??? Y_n\)</span> appear to be independent random variables with a common distribution having mean <span class="math inline">\(\mu = 0\)</span> and variance <span class="math inline">\(\sigma^2 = 1/4\)</span>. If <span class="math inline">\(Y_1 = 100\)</span>, estimate the probability that <span class="math inline">\(Y_365\)</span> is</h3>
-<ol style="list-style-type: lower-alpha">
-<li><span class="math inline">\(\geq 100\)</span></li>
-</ol>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">day_num &lt;-<span class="st"> </span><span class="dv">365</span>
-n &lt;-<span class="st"> </span>day_num -<span class="st"> </span><span class="dv">1</span>
-mu &lt;-<span class="st"> </span><span class="dv">0</span>
-y1 &lt;-<span class="st"> </span><span class="dv">100</span>
-mu &lt;-<span class="st"> </span>mu +<span class="st"> </span>y1
-VarX &lt;-<span class="st"> </span><span class="fl">0.25</span>  <span class="co">#* n</span>
-sigma &lt;-<span class="st"> </span><span class="kw">sqrt</span>(VarX)
+<pre><code>## prettydoc 
+##      TRUE</code></pre>
+<div id="in-example-11.4-let-a-0-and-b-12.-find-p-p2-and-p3-." class="section level3">
+<h3>2. In Example 11.4, let a = 0 and b = 1/2. Find P, P^2 , and P^3 .</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">matrix_power &lt;-<span class="st"> </span>function(M, exponent) {
+  ans &lt;-<span class="st"> </span>M
+  for (i in <span class="dv">1</span>:(exponent -<span class="st"> </span><span class="dv">1</span>)){
+    ans &lt;-<span class="st"> </span>M %*%<span class="st"> </span>ans
+    }
+  <span class="kw">return</span>(ans)
+}
 
-x &lt;-<span class="st"> </span><span class="dv">100</span>
-<span class="kw">pnorm</span>(x, mu, sigma, <span class="dt">lower.tail =</span> F)</code></pre></div>
-<pre><code>## [1] 0.5</code></pre>
-<ol start="2" style="list-style-type: lower-alpha">
-<li><span class="math inline">\(\geq 110\)</span></li>
-</ol>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x &lt;-<span class="st"> </span><span class="dv">110</span>
-<span class="kw">pnorm</span>(x, mu, sigma, <span class="dt">lower.tail =</span> F)</code></pre></div>
-<pre><code>## [1] 2.753624e-89</code></pre>
-<ol start="3" style="list-style-type: lower-alpha">
-<li><span class="math inline">\(\geq 120\)</span></li>
-</ol>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x &lt;-<span class="st"> </span><span class="dv">120</span>
-<span class="kw">pnorm</span>(x, mu, sigma, <span class="dt">lower.tail =</span> F)</code></pre></div>
-<pre><code>## [1] 0</code></pre>
-</div>
-<div id="calculate-the-expected-value-and-variance-of-the-binomial-distribution-using-the-moment-generating-function." class="section level3">
-<h3>2. Calculate the expected value and variance of the binomial distribution using the moment generating function.</h3>
+a &lt;-<span class="st">  </span><span class="dv">0</span> 
+b  &lt;-<span class="st">  </span><span class="dv">1</span>/<span class="dv">2</span>
 
-<span class="math display">\[\begin{equation}
-f(x) = {n \choose k} p^k (1 - p)^{n - k}, k \in \{0, 1, 2, ...\}
- \end{equation}\]</span>
-<span class="math display">\[\begin{equation}
-M_X(t) = E(e^{tx}) = \sum_{k = 0}^{n} e^{tk}  {n \choose k} p^x (1 - p)^{n - k}
- \end{equation}\]</span>
-<span class="math display">\[\begin{equation}
-M_X(t) = \sum_{k = 0}^{n} {n \choose k} (pe^t)^k  (1 - p)^{n - k}
- \end{equation}\]</span>
-<span class="math display">\[\begin{equation}
-M_X(t) =  \sum_{k = 0}^{n} {n \choose k} (pe^t)^x  (1 - p)^{n - k}
- \end{equation}\]</span>
-<span class="math display">\[\begin{equation}
-M_X(t) = [pe^t + 1 - p]^n
- \end{equation}\]</span>
-The first moment is the expected value:
-<span class="math display">\[\begin{equation}
-M_X'(0) = E(x) = n[pe^t + 1 - p]^{n-1} (pe^t) = n(p + 1 - p)^{n - 1} * p = np
- \end{equation}\]</span>
-The second moment:
-<span class="math display">\[\begin{equation}
-M_X''(0) =  n(n - 1)[pe^t + 1 - p]^{n-2} (pe^t)^2 n[pe^t + 1 - p]^{n-1} (pe^t) = n(n-1)p^2+np
- \end{equation}\]</span>
-<span class="math display">\[\begin{equation}
-V(X) = E(X^2) - E(X)^2 = n(n-1)p^2+np - n^2p^2 = np(1 - p)
- \end{equation}\]</span>
-<p>reference: <a href="http://mathworld.wolfram.com/BinomialDistribution.html" class="uri">http://mathworld.wolfram.com/BinomialDistribution.html</a></p>
+d &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span> -<span class="st"> </span>a, a, b, <span class="dv">1</span> -<span class="st"> </span>b)
+P &lt;-<span class="st"> </span><span class="kw">matrix</span>(d, <span class="dt">nrow =</span> <span class="dv">2</span>, <span class="dt">byrow =</span> T)
+row_col &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Yes&quot;</span>, <span class="st">&quot;No&quot;</span>)
+<span class="kw">row.names</span>(P) &lt;-<span class="st"> </span>row_col
+<span class="kw">colnames</span>(P) &lt;-<span class="st"> </span>row_col
+
+P; <span class="kw">matrix_power</span>(P, <span class="dv">2</span>); <span class="kw">matrix_power</span>(P, <span class="dv">3</span>)</code></pre></div>
+<pre><code>##     Yes  No
+## Yes 1.0 0.0
+## No  0.5 0.5</code></pre>
+<pre><code>##      Yes   No
+## Yes 1.00 0.00
+## No  0.75 0.25</code></pre>
+<pre><code>##       Yes    No
+## Yes 1.000 0.000
+## No  0.875 0.125</code></pre>
 </div>
-<div id="calculate-the-expected-value-and-variance-of-the-exponential-distribution-using-the-moment-generating-function." class="section level1">
-<h1>3. Calculate the expected value and variance of the exponential distribution using the moment generating function.</h1>
+<div id="what-would-pn-be-what-happens-to-p-n-as-n-tends-to-infinity-interpret-this-result." class="section level3">
+<h3>What would P^n be? What happens to P n as n tends to infinity? Interpret this result.</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">matrix_power</span>(P, <span class="dv">10000</span>)</code></pre></div>
+<pre><code>##     Yes No
+## Yes   1  0
+## No    1  0</code></pre>
 <span class="math display">\[\begin{equation}
-f(x) = \lambda e^{-\lambda x}, 0 &lt; x &lt; \infty 
- \end{equation}\]</span>
-<span class="math display">\[\begin{equation}
-M_X(t) = E(e^{tx}) = \int_{0}^{\infty} e^{tx} \lambda e^{-\lambda x} dx
- \end{equation}\]</span>
-<span class="math display">\[\begin{equation}
-M_X(t) = \lambda \int_{0}^{\infty} e^{tx} e^{-\lambda x} dx
- \end{equation}\]</span>
-<span class="math display">\[\begin{equation}
-M_X(t) = \lambda \int_{0}^{\infty} e^{(t -\lambda) x} dx
- \end{equation}\]</span>
-<span class="math display">\[\begin{equation}
-M_X(t) = \lambda \int_{0}^{\infty} e^{(t -\lambda) x} dx
- \end{equation}\]</span>
-<span class="math display">\[\begin{equation}
-M_X(t) = \frac{\lambda}{t -\lambda}
- \end{equation}\]</span>
-The first moment is the expected value:
-<span class="math display">\[\begin{equation}
-M_X'(0) = E(x) = \frac{\lambda}{(t -\lambda)^2} = \frac{1}{\lambda}
- \end{equation}\]</span>
-The second moment:
-<span class="math display">\[\begin{equation}
-M_X''(0) = \frac{-2\lambda}{(t -\lambda)^3} 
- \end{equation}\]</span>
-<span class="math display">\[\begin{equation}
-V(X) = E(X^2) - E(X)^2 = \frac{-2\lambda}{(t -\lambda)^3} - \frac{1}{\lambda^2} = \frac{1}{\lambda^2}
+P^n = \begin{bmatrix} 1, 0 \\
+      \frac{2n - 1}{2n}, \frac{1}{2n}
+      \end{bmatrix}
  \end{equation}\]</span>
 </body>
 </div>

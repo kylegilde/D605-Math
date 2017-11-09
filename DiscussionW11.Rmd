@@ -1,0 +1,132 @@
+---
+title: "DATA 605 FUNDAMENTALS OF COMPUTATIONAL MATHEMATICS" 
+subtitle: "Discussion 11: Linear Regression"
+author: "Kyle Gilde"
+date: "11/8/2017"
+output: 
+  prettydoc::html_pretty:
+    theme: architect
+    highlight: github
+    toc: true
+    toc_depth: 2
+---
+<style type="text/css">
+body{
+  font-family: Helvetica;
+  font-size: 14pt;
+}
+</style>
+<body>
+
+```{r knitr_options, echo=FALSE}
+knitr::opts_chunk$set(
+                      warning = FALSE
+                      ,error = FALSE
+                      ,message = FALSE
+                      ,tidy = TRUE
+                      #,cache = TRUE
+                      )
+```
+
+
+```{r packages, echo=F, collapse=T, warning=FALSE} 
+packages <- c("prettydoc", "dplyr", "ggplot2")
+
+#see if we need to install any of them
+installed_and_loaded <- function(pkg){
+  #CODE SOURCE: https://gist.github.com/stevenworthington/3178163
+  new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
+  if (length(new.pkg)) 
+    install.packages(new.pkg, dependencies = TRUE)
+  sapply(pkg, require, character.only = TRUE, quietly = TRUE, warn.conflicts = FALSE)
+}
+#excute function and display the loaded packages
+data.frame(installed_and_loaded(packages))
+```
+
+
+**Using R, build a  regression model for data that interests you.  Conduct residual analysis.  Was the linear model appropriate? Why or why not?**
+
+##Wine Data Set
+
+"These data are the results of a chemical analysis of wines grown in the same region in Italy but derived from three different cultivars. The analysis determined the quantities of 13 constituents found in each of the three types of wines." [UCI Machine Learning Repository](http://archive.ics.uci.edu/ml/datasets/Wine)
+
+
+```{r}
+url <- 'http://archive.ics.uci.edu/ml/machine-learning-databases/wine/wine.data'
+
+wine_df <- read.csv(url, header = F)
+
+names(wine_df) <- c("cultivars","Alcohol","Malic_acid","Ash","Alcalinity_of_ash","Magnesium","Total_phenols","Flavanoids","Nonflavanoid_phenols","Proanthocyanins","Color_intensity","Hue","OD280_OD315_of_dilutedwines","Proline")
+
+glimpse(wine_df)
+```
+
+
+##Question
+
+**Is the measure of color intensity predictive of the wine's alcohol content?**
+
+##Model Summary
+
+```{r}
+wine_model <- lm(Alcohol ~ Color_intensity, wine_df)
+summary(wine_model)
+
+intercept <- coef(wine_model)[1]
+slope <- coef(wine_model)[2]
+```
+
+
+##Scatter Plot
+```{r scatter}
+a <- ggplot(wine_model, aes(Color_intensity, Alcohol))
+a + geom_point() + geom_abline(slope = slope, intercept = intercept, show.legend=TRUE)
+```
+
+
+##Model Interpretation
+
++ This linear model is expressed as $\widehat{Alcohol} = 12.03286 + 0.19133*{ColorIntensity}$
+
++ For each additional unit increase in the color intensity, the model expects an increase of .19 in alcohol content.
+
++ In this model, multiple $R^2$ is $0.2985$, which means that the model's least-squares line accounts for approximately $30\%$ of the variation in the alcohol content. 
+
++ The Color Intensity and Y-intercept's p-values are both near zero, which means that there is very little chance that they are not relevant to the model.
+
+##Model Diagnostics
+
+Let's assess if this linear model is reliable.
+
+###Linearity: Do the variables have a linear relationship?
+
+At first glance, the scatter plot of the variables appears to show a linear relationship, but at second glance, it may show that there is a slight curvilinear relationship. 
+
+###Nearly normal residuals: Are the model's residuals distributed normally?
+
+Yes, per the histogram and Q-Q plot, the residuals are normally distributed.
+
+```{r hist-res, eval=TRUE}
+hist(wine_model$residuals)
+```
+
+```{r qq-res, eval=TRUE}
+qqnorm(wine_model$residuals)
+qqline(wine_model$residuals)  
+```
+
+###Homoscedasticity: Is there constant variability among the residuals?
+
+Based on the scatter plot of the residuals shown above, the residuals first appear to be more negative, then positive and more negative at the end.
+
+```{r residuals, eval=TRUE}
+plot(wine_model$residuals ~ wine_df$Color_intensity)
+abline(h = 0, lty = 3) 
+```
+
+###Independent observations: Are the data from a random sample and not from a time series?
+
+We do not have information on how the samples were collected.
+
+</body>

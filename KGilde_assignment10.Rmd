@@ -1,0 +1,95 @@
+---
+title: "DATA 605 FUNDAMENTALS OF COMPUTATIONAL MATHEMATICS" 
+subtitle: "Assignment 10: Markov Chains & Random Walks"
+author: "Kyle Gilde"
+date: "11/3/2017"
+output: 
+  prettydoc::html_pretty:
+    theme: architect
+    highlight: github
+    toc: true
+    toc_depth: 1
+---
+<style type="text/css">
+body{
+  font-family: Helvetica;
+  font-size: 14pt;
+}
+</style>
+<body>
+
+```{r knitr_options, echo=FALSE}
+knitr::opts_chunk$set(
+                      warning = FALSE
+                      ,error = FALSE
+                      ,message = FALSE
+                      ,tidy = TRUE
+                      #,cache = TRUE
+                      )
+```
+
+
+```{r packages, echo=F, collapse=T, warning=FALSE} 
+packages <- c("prettydoc")
+
+#see if we need to install any of them
+installed_and_loaded <- function(pkg){
+  #CODE SOURCE: https://gist.github.com/stevenworthington/3178163
+  new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
+  if (length(new.pkg)) 
+    install.packages(new.pkg, dependencies = TRUE)
+  sapply(pkg, require, character.only = TRUE, quietly = TRUE, warn.conflicts = FALSE)
+}
+#excute function and display the loaded packages
+data.frame(installed_and_loaded(packages))
+```
+
+
+###Smith is in jail and has 1 dollar; he can get out on bail if he has 8 dollars. A guard agrees to make a series of bets with him. If Smith bets A dollars, he wins A dollars with probability .4 and loses A dollars with probability .6. Find the probability that he wins 8 dollars before losing all of his money if
+
+(a) he bets 1 dollar each time (timid strategy).
+
+```{r}
+p <- .4
+q <- 1 - p
+z <- 1
+M <- 8
+
+(q_z <- (((q/p)^z - 1)/((q/p)^M - 1)))
+```
+
+
+(b) he bets, each time, as much as possible but not more than necessary to bring his fortune up to 8 dollars (bold strategy).
+
+```{r}
+p <- .4
+M <- 8
+wins <- 0
+trials <- 100000
+
+for (i in 1:trials){
+  z <- 1
+  while (z > 0 & z < M){
+    if (runif(1) <= p){
+      z <- z + z
+    } else {
+      z <- z - z
+    }
+  }
+  if(z >= M){
+    wins <- wins + 1
+  }
+}
+
+wins/trials
+```
+
+(c) Which strategy gives Smith the better chance of getting out of jail?
+
+**He should go bold!**
+  
+ 
+ 
+ 
+ 
+</body>

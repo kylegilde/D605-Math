@@ -12,7 +12,6 @@
 
 <meta name="author" content="Kyle Gilde" />
 
-<meta name="date" content="2017-10-28" />
 
 <title>DATA 605 FUNDAMENTALS OF COMPUTATIONAL MATHEMATICS</title>
 
@@ -71,18 +70,13 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <header>
 <div class="inner">
 <h1 class="title toc-ignore">DATA 605 FUNDAMENTALS OF COMPUTATIONAL MATHEMATICS</h1>
-<h2 class="subtitle">Assignment 9: CTL &amp; Moment Generating Functions</h2>
+<h2 class="subtitle">Assignment 10: Markov Chains &amp; Random Walks</h2>
 <h3 class="author">Kyle Gilde</h3>
-<h3 class="date">10/28/2017</h3>
+<h3 class="date">11/3/2017</h3>
 </div>
 </header>
 
 
-<div id="TOC" class="toc">
-<ul>
-<li><a href="#calculate-the-expected-value-and-variance-of-the-exponential-distribution-using-the-moment-generating-function.">3. Calculate the expected value and variance of the exponential distribution using the moment generating function.</a></li>
-</ul>
-</div>
 
 <div id="content-wrapper">
   <div class="inner clearfix">
@@ -96,97 +90,46 @@ body{
 <body>
 <pre><code>##           installed_and_loaded.packages.
 ## prettydoc                           TRUE</code></pre>
-<div id="p363-11.-the-price-of-one-share-of-stock-in-the-pilsdorff-beer-company-see-exercise-8.2.12-is-given-by-yn-on-the-nth-day-of-the-year.-finn-observes-that-the-differences-x_n-y_n1-y_n-appear-to-be-independent-random-variables-with-a-common-distribution-having-mean-mu-0-and-variance-sigma2-14.-if-y_1-100-estimate-the-probability-that-y_365-is" class="section level3">
-<h3>p363, 11. The price of one share of stock in the Pilsdorff Beer Company (see Exercise 8.2.12) is given by Yn on the nth day of the year. Finn observes that the differences <span class="math inline">\(X_n = Y_{n+1} ??? Y_n\)</span> appear to be independent random variables with a common distribution having mean <span class="math inline">\(\mu = 0\)</span> and variance <span class="math inline">\(\sigma^2 = 1/4\)</span>. If <span class="math inline">\(Y_1 = 100\)</span>, estimate the probability that <span class="math inline">\(Y_365\)</span> is</h3>
+<div id="smith-is-in-jail-and-has-1-dollar-he-can-get-out-on-bail-if-he-has-8-dollars.-a-guard-agrees-to-make-a-series-of-bets-with-him.-if-smith-bets-a-dollars-he-wins-a-dollars-with-probability-.4-and-loses-a-dollars-with-probability-.6.-find-the-probability-that-he-wins-8-dollars-before-losing-all-of-his-money-if" class="section level3">
+<h3>Smith is in jail and has 1 dollar; he can get out on bail if he has 8 dollars. A guard agrees to make a series of bets with him. If Smith bets A dollars, he wins A dollars with probability .4 and loses A dollars with probability .6. Find the probability that he wins 8 dollars before losing all of his money if</h3>
 <ol style="list-style-type: lower-alpha">
-<li><span class="math inline">\(\geq 100\)</span></li>
+<li>he bets 1 dollar each time (timid strategy).</li>
 </ol>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">day_num &lt;-<span class="st"> </span><span class="dv">365</span>
-n &lt;-<span class="st"> </span>day_num -<span class="st"> </span><span class="dv">1</span>
-mu &lt;-<span class="st"> </span><span class="dv">0</span>
-y1 &lt;-<span class="st"> </span><span class="dv">100</span>
-mu &lt;-<span class="st"> </span>mu +<span class="st"> </span>y1
-VarX &lt;-<span class="st"> </span><span class="fl">0.25</span>  <span class="co">#* n</span>
-sigma &lt;-<span class="st"> </span><span class="kw">sqrt</span>(VarX)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">p &lt;-<span class="st"> </span><span class="fl">0.4</span>
+q &lt;-<span class="st"> </span><span class="dv">1</span> -<span class="st"> </span>p
+z &lt;-<span class="st"> </span><span class="dv">1</span>
+M &lt;-<span class="st"> </span><span class="dv">8</span>
 
-x &lt;-<span class="st"> </span><span class="dv">100</span>
-<span class="kw">pnorm</span>(x, mu, sigma, <span class="dt">lower.tail =</span> F)</code></pre></div>
-<pre><code>## [1] 0.5</code></pre>
+(q_z &lt;-<span class="st"> </span>(((q/p)^z -<span class="st"> </span><span class="dv">1</span>)/((q/p)^M -<span class="st"> </span><span class="dv">1</span>)))</code></pre></div>
+<pre><code>## [1] 0.02030135</code></pre>
 <ol start="2" style="list-style-type: lower-alpha">
-<li><span class="math inline">\(\geq 110\)</span></li>
+<li>he bets, each time, as much as possible but not more than necessary to bring his fortune up to 8 dollars (bold strategy).</li>
 </ol>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x &lt;-<span class="st"> </span><span class="dv">110</span>
-<span class="kw">pnorm</span>(x, mu, sigma, <span class="dt">lower.tail =</span> F)</code></pre></div>
-<pre><code>## [1] 2.753624e-89</code></pre>
-<ol start="3" style="list-style-type: lower-alpha">
-<li><span class="math inline">\(\geq 120\)</span></li>
-</ol>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x &lt;-<span class="st"> </span><span class="dv">120</span>
-<span class="kw">pnorm</span>(x, mu, sigma, <span class="dt">lower.tail =</span> F)</code></pre></div>
-<pre><code>## [1] 0</code></pre>
-</div>
-<div id="calculate-the-expected-value-and-variance-of-the-binomial-distribution-using-the-moment-generating-function." class="section level3">
-<h3>2. Calculate the expected value and variance of the binomial distribution using the moment generating function.</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">p &lt;-<span class="st"> </span><span class="fl">0.4</span>
+M &lt;-<span class="st"> </span><span class="dv">8</span>
+wins &lt;-<span class="st"> </span><span class="dv">0</span>
+trials &lt;-<span class="st"> </span><span class="fl">1e+05</span>
 
-<span class="math display">\[\begin{equation}
-f(x) = {n \choose k} p^k (1 - p)^{n - k}, k \in \{0, 1, 2, ...\}
- \end{equation}\]</span>
-<span class="math display">\[\begin{equation}
-M_X(t) = E(e^{tx}) = \sum_{k = 0}^{n} e^{tk}  {n \choose k} p^x (1 - p)^{n - k}
- \end{equation}\]</span>
-<span class="math display">\[\begin{equation}
-M_X(t) = \sum_{k = 0}^{n} {n \choose k} (pe^t)^k  (1 - p)^{n - k}
- \end{equation}\]</span>
-<span class="math display">\[\begin{equation}
-M_X(t) =  \sum_{k = 0}^{n} {n \choose k} (pe^t)^x  (1 - p)^{n - k}
- \end{equation}\]</span>
-<span class="math display">\[\begin{equation}
-M_X(t) = [pe^t + 1 - p]^n
- \end{equation}\]</span>
-The first moment is the expected value:
-<span class="math display">\[\begin{equation}
-M_X'(0) = E(x) = n[pe^t + 1 - p]^{n-1} (pe^t) = n(p + 1 - p)^{n - 1} * p = np
- \end{equation}\]</span>
-The second moment:
-<span class="math display">\[\begin{equation}
-M_X''(0) =  n(n - 1)[pe^t + 1 - p]^{n-2} (pe^t)^2 n[pe^t + 1 - p]^{n-1} (pe^t) = n(n-1)p^2+np
- \end{equation}\]</span>
-<span class="math display">\[\begin{equation}
-V(X) = E(X^2) - E(X)^2 = n(n-1)p^2+np - n^2p^2 = np(1 - p)
- \end{equation}\]</span>
-<p>reference: <a href="http://mathworld.wolfram.com/BinomialDistribution.html" class="uri">http://mathworld.wolfram.com/BinomialDistribution.html</a></p>
-</div>
-<div id="calculate-the-expected-value-and-variance-of-the-exponential-distribution-using-the-moment-generating-function." class="section level1">
-<h1>3. Calculate the expected value and variance of the exponential distribution using the moment generating function.</h1>
-<span class="math display">\[\begin{equation}
-f(x) = \lambda e^{-\lambda x}, 0 &lt; x &lt; \infty 
- \end{equation}\]</span>
-<span class="math display">\[\begin{equation}
-M_X(t) = E(e^{tx}) = \int_{0}^{\infty} e^{tx} \lambda e^{-\lambda x} dx
- \end{equation}\]</span>
-<span class="math display">\[\begin{equation}
-M_X(t) = \lambda \int_{0}^{\infty} e^{tx} e^{-\lambda x} dx
- \end{equation}\]</span>
-<span class="math display">\[\begin{equation}
-M_X(t) = \lambda \int_{0}^{\infty} e^{(t -\lambda) x} dx
- \end{equation}\]</span>
-<span class="math display">\[\begin{equation}
-M_X(t) = \lambda \int_{0}^{\infty} e^{(t -\lambda) x} dx
- \end{equation}\]</span>
-<span class="math display">\[\begin{equation}
-M_X(t) = \frac{\lambda}{t -\lambda}
- \end{equation}\]</span>
-The first moment is the expected value:
-<span class="math display">\[\begin{equation}
-M_X'(0) = E(x) = \frac{\lambda}{(t -\lambda)^2} = \frac{1}{\lambda}
- \end{equation}\]</span>
-The second moment:
-<span class="math display">\[\begin{equation}
-M_X''(0) = \frac{-2\lambda}{(t -\lambda)^3} 
- \end{equation}\]</span>
-<span class="math display">\[\begin{equation}
-V(X) = E(X^2) - E(X)^2 = \frac{-2\lambda}{(t -\lambda)^3} - \frac{1}{\lambda^2} = \frac{1}{\lambda^2}
- \end{equation}\]</span>
+for (i in <span class="dv">1</span>:trials) {
+    z &lt;-<span class="st"> </span><span class="dv">1</span>
+    while (z &gt;<span class="st"> </span><span class="dv">0</span> &amp;<span class="st"> </span>z &lt;<span class="st"> </span>M) {
+        if (<span class="kw">runif</span>(<span class="dv">1</span>) &lt;=<span class="st"> </span>p) {
+            z &lt;-<span class="st"> </span>z +<span class="st"> </span>z
+        } else {
+            z &lt;-<span class="st"> </span>z -<span class="st"> </span>z
+        }
+    }
+    if (z &gt;=<span class="st"> </span>M) {
+        wins &lt;-<span class="st"> </span>wins +<span class="st"> </span><span class="dv">1</span>
+    }
+}
+
+wins/trials</code></pre></div>
+<pre><code>## [1] 0.06443</code></pre>
+<ol start="3" style="list-style-type: lower-alpha">
+<li>Which strategy gives Smith the better chance of getting out of jail?</li>
+</ol>
+<p><strong>He should go bold!</strong></p>
 </body>
 </div>
     </section>

@@ -23,7 +23,7 @@ knitr::opts_chunk$set(
                       ,error = FALSE
                       ,message = FALSE
                       ,tidy = TRUE
-                      ,cache = TRUE
+                      #,cache = TRUE
                       )
 ```
 
@@ -52,8 +52,8 @@ n <- day_num - 1
 mu <- 0
 y1 <- 100
 mu <- mu + y1
-VarX <- .25 #* y1
-sigma <- sqrt(VarX) # + y1
+VarX <- .25 #* n
+sigma <- sqrt(VarX)
 
 x <- 100
 pnorm(x, mu, sigma, lower.tail = F)
@@ -74,28 +74,11 @@ x <- 120
 pnorm(x, mu, sigma, lower.tail = F)
 ```
 
-```{r}
-n <- rep(NA, 364)
-
-for (i in 1:length(n)){
-  n[i] <- rnorm(1, 0, .5)
-}
-
-n <- n + 100
-
-mu <- n / 364
-sd(n)
-
-sum(n > 100) / length(n)
-sum(n > 110) / length(n)
-sum(n > 120) / length(n)
-```
-
 
 ###2. Calculate the expected value and variance of the binomial distribution using the moment generating function.
 \frac{n!}{(n - k)!}
  \begin{equation}
-f(x) = {n \choose k} p^k (1 - p)^{n - k}, k \in {0, 1, 2, ...}
+f(x) = {n \choose k} p^k (1 - p)^{n - k}, k \in \{0, 1, 2, ...\}
  \end{equation}
  \begin{equation}
 M_X(t) = E(e^{tx}) = \sum_{k = 0}^{n} e^{tk}  {n \choose k} p^x (1 - p)^{n - k}
@@ -113,10 +96,14 @@ The first moment is the expected value:
  \begin{equation}
 M_X'(0) = E(x) = n[pe^t + 1 - p]^{n-1} (pe^t) = n(p + 1 - p)^{n - 1} * p = np
  \end{equation}  
-The second moment is the variance:
+The second moment:
  \begin{equation}
-M_X''(0) = \sigma^2 =  n(n - 1)[pe^t + 1 - p]^{n-2} (pe^t)^2 n[pe^t + 1 - p]^{n-1} (pe^t) = np(1 - p)
+M_X''(0) =  n(n - 1)[pe^t + 1 - p]^{n-2} (pe^t)^2 n[pe^t + 1 - p]^{n-1} (pe^t) = n(n-1)p^2+np
  \end{equation}  
+  \begin{equation}
+V(X) = E(X^2) - E(X)^2 = n(n-1)p^2+np - n^2p^2 = np(1 - p)
+ \end{equation}  
+ 
  
 reference: http://mathworld.wolfram.com/BinomialDistribution.html
  
@@ -144,11 +131,14 @@ The first moment is the expected value:
  \begin{equation}
 M_X'(0) = E(x) = \frac{\lambda}{(t -\lambda)^2} = \frac{1}{\lambda}
  \end{equation}  
-The second moment is the variance:
+The second moment:
  \begin{equation}
-M_X''(0) = \sigma^2 = \frac{\lambda}{(t -\lambda)^3} = \frac{1}{\lambda^2}
+M_X''(0) = \frac{-2\lambda}{(t -\lambda)^3} 
  \end{equation}   
- 
+  \begin{equation}
+V(X) = E(X^2) - E(X)^2 = \frac{-2\lambda}{(t -\lambda)^3} - \frac{1}{\lambda^2} = \frac{1}{\lambda^2}
+ \end{equation}  
+  
  
  
  
