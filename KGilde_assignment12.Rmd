@@ -8,7 +8,7 @@ output:
     theme: architect
     highlight: github
     toc: true
-    toc_depth: 2
+    toc_depth: 1
 ---
 <style type="text/css">
 body{
@@ -23,14 +23,14 @@ knitr::opts_chunk$set(
                       warning = FALSE
                       ,error = FALSE
                       ,message = FALSE
-                      ,tidy = TRUE
+                       ,tidy = TRUE
                       ,cache = TRUE
                       )
 ```
 
 
 ```{r packages, echo=F, collapse=T, warning=FALSE} 
-packages <- c("prettydoc", "dplyr", "ggplot2", "datasets", "gvlma", "MASS", "lmtest", "car")
+packages <- c("prettydoc", "dplyr", "ggplot2", "gvlma", "MASS", "lmtest", "car")
 installed_and_loaded <- function(pkg){
   #CODE SOURCE: https://gist.github.com/stevenworthington/3178163
   new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
@@ -44,10 +44,10 @@ data.frame(installed_and_loaded(packages))
 
 #The Data
 
-The attached who.csv dataset contains real-world data from 2008. The variables included following:
+**The attached who.csv dataset contains real-world data from 2008. The variables included following:**
 
-Country: name of the country
-LifeExp: average life expectancy for the country in years
+Country: name of the country 
+LifeExp: average life expectancy for the country in years 
 InfantSurvival: proportion of those surviving to one year or more
 Under5Survival: proportion of those surviving to five years or more
 TBFree: proportion of the population without TB.
@@ -58,102 +58,238 @@ GovtExp: mean government expenditures per capita on healthcare, US dollars at av
 TotExp: sum of personal and government expenditures.
 
 ```{r}
-cars_df <- cars
-glimpse(cars_df)
+
+url <- "https://raw.githubusercontent.com/kylegilde/D605-Math/master/who.csv"
+
+who_df <- read.csv(url)
+
+glimpse(who_df)
 ```
 
 
-#Question
+#Questions
 
-**Is the measure of color intensity predictive of the cars's speed content?**
+##1. Provide a scatterplot of LifeExp~TotExp, and run simple linear regression. Do not transform the variables. Provide and interpret the F statistics, R^2, standard error,and p-values only. Discuss whether the assumptions of simple linear regression met.
 
-#Model Summary
+###Model Summary
 
 ```{r}
-cars_model <- lm(dist ~ speed, cars_df)
-summary(cars_model)
+options(scipen=6)
+summary(who_df[c("LifeExp", "TotExp")])
 
-intercept <- coef(cars_model)[1]
-slope <- coef(cars_model)[2]
+who_model <- lm(LifeExp ~ TotExp, who_df)
+summary(who_model)
+
+intercept <- coef(who_model)[1]
+slope <- coef(who_model)[2]
 ```
 
 ```{r scatter}
-a <- ggplot(cars_model, aes(speed, dist))
+a <- ggplot(who_model, aes(TotExp, LifeExp))
 a + geom_point() + geom_abline(slope = slope, intercept = intercept, show.legend=TRUE)
 ```
 
+###Model Interpretation
++ The residual summary statistics indicate a possibly skewed distribution, but we will confirm with further diagnostics.
 
-#Model Interpretation
++ Using the point estimates of the coefficients, the linear model is expressed as $\widehat{LifeExp} = 64.475 + .00006*{TotExp}$
 
-+ This linear model is expressed as $\widehat{StoppingDistance} = -17.5791 + 3.9324*{speed}$
++ For each additional dollar increase in TotExp, the model expects on average an increase of 0.00006 years in LifeExp.
 
-+ For each additional increase in the miles per hour, the model expects an increase of 3.9 feet in stopping distance.
++ The y-intercept's standard error is more than 60 times smaller than its coefficient value, which means there is relatively little variability. The TotExp's standard error is about 8 times smaller than its coefficient value. It is within the 5 to 10 times smaller range that typically characterizes a good model.
 
-+ In this model, multiple $R^2$ is 0.6511, which means that the model's least-squares line accounts for approximately $65\%$ of the variation in the stopping distance. 
++ The coefficient t-values are quite large, which indicates that our point estimates are far from 0 and supports rejecting the null hypothesis that there is no relationhip between the variables.
 
-+ The speed's p-value is near zero and Y-intercept's p-value is ~1%, which means that there is very little chance that they are not relevant to the model.
++ Both the y-intercept & TotExp's p-values are near zero, which means that the probability of observing this relationship due to chance is very small.
 
-#Model Diagnostics
++ At 9.3 years, the residual standard error is relatively large. This is the average amount that our response variable will deviate from the regression line.
+
++ However, in this model, multiple $R^2$ is 0.2537, which means that only $25\%$ of the variance in the response variable can be explained by the independent variable.
+
++ The F-statistic at 65.26 is quite large, and the model's p-value is near zero. If the model's diagnostics are sufficient, these values indicate that we would reject the null hypothesis that there is no relationship between the variables.
+
+###Model Diagnostics
 
 Let's assess if this linear model is reliable.
 
-##Linearity: Do the variables have a linear relationship?
+####Linearity: Do the variables have a linear relationship?
 
-The Component+Residual plot shows some deviation from a linear relationship.
+The Component+Residual plot shows that this is NOT a linear relationship.
 
 ```{r}
-crPlots(cars_model)
+crPlots(who_model)
 ```
 
 
-##Normality: Are the model's residuals distributed nearly normally?
+####Normality: Are the model's residuals LifeExpributed nearly normally?
 
-No, per the histogram and Q-Q plot, the residuals are not normally distributed. There are some outliers on the left-side of the distribution.
+No, per the histogram and Q-Q plot, the residuals are not anywhere near normally distributed.
 
 ```{r hist-res, eval=TRUE}
-sresid <- studres(cars_model) 
+sresid <- studres(who_model) 
 hist(sresid, freq=FALSE, breaks = 10,
-     main="Distribution of Studentized Residuals")
+     main="LifeExpribution of Studentized Residuals")
 xfit<-seq(min(sresid),max(sresid),length=40) 
 yfit<-dnorm(xfit) 
 lines(xfit, yfit)
 ```
 
 ```{r qq-res, eval=TRUE}
-plot(cars_model, which = 2)
+plot(who_model, which = 2)
 ```
 
-##Homoscedasticity: Is there constant variability among the residuals?
+####Homoscedasticity: Is there constant variability among the residuals?
 
-+ Based on the scatter plot, the residuals do show some small deviation in variability. 
++ Based on the scatter plot, the residuals are not indistinctly distributed. 
 
-+ The Non-constant Variance Score Test has a p-value of <.05, which means that we reject the null hypothesis of homoscedasticity.
++ The Non-constant Variance Score Test has a p-value of >.05, which indicates that we would fail to reject the null hypothesis of homoscedasticity.
 
 ```{r residuals, eval=TRUE}
-plot(cars_model, which = 1)
-ncvTest(cars_model) 
+plot(who_model, which = 1)
+ncvTest(who_model) 
 ```
 
-##Independence: Are the data from a random sample and not from a time series?
+####Independence: Are the data from a random sample and not from a time series?
 
 The Durbin Watson test's p-value is >.05. Therefore, we fail to reject the null hypothesis of independence (no autocorrelation).
 
 ```{r}
-durbinWatsonTest(cars_model)
+durbinWatsonTest(who_model)
 ```
 
-#Conclusion
+####Conclusion
 
-Based upon my diagnostics and the gvlma function, the conditions for linear regression have not been met.
+While the coefficient values are likely relevant to modeling LifeExp, based upon my diagnostics and the gvlma function, the conditions for linear regression have not been met.
 
 ```{r}
-gvlma(cars_model)
-plot(gvlma(cars_model))
+gvlma(who_model)
+plot(gvlma(who_model))
 ```
 
 
+##2. Raise life expectancy to the 4.6 power (i.e., LifeExp^4.6). Raise total expenditures to the 0.06 power (nearly a log transform, TotExp^.06). Plot LifeExp^4.6 as a function of TotExp^.06, and re-run the simple regression model using the transformed variables. Provide and interpret the F statistics, R^2, standard error, and p-values. Which model is "better?"
+
+###Model Summary
+
+```{r}
+options( scipen = 0 )
+options( digits = 6 )
+
+who_df$LifeExp4.6 <-  who_df$LifeExp^4.6
+who_df$TotExp.06 <- who_df$TotExp^.06
+
+summary(who_df[c("TotExp", "TotExp.06")])
+
+who_model <- lm(LifeExp4.6 ~ TotExp.06, who_df)
+summary(who_model)
+
+intercept <- coef(who_model)[1]
+slope <- coef(who_model)[2]
+```
+
+```{r scatter}
+a <- ggplot(who_model, aes(TotExp.06, LifeExp4.6))
+a + geom_point() + geom_abline(slope = slope, intercept = intercept, show.legend=TRUE)
+```
+
+###Model Interpretation
++ The residual summary statistics indicate a possibly skewed distribution not centered around zero, but we will confirm with further diagnostics.
+
++ Using the point estimates of the coefficients, the linear model is expressed as $\widehat{LifeExp4.6} = 64.475 + 620060216*{TotExp.06} - 736527910$ 
+
++ For each additional unit increase in TotExp.06, the model expects on average an unit increase of 620060216 in LifeExp4.6.
+
++ The y-intercept's standard error is more than 15 times smaller than its coefficient value. The TotExp.06's standard error is about 22 times smaller than its coefficient value. Both of these ratios are indicative of a good model with relatively little variance in its coefficients.
+
++ The coefficient t-values are large, which indicates that our point estimates are far from 0 and supports rejecting the null hypothesis that there is no relationhip between the variables.
+
++ Both the y-intercept & TotExp.06's p-values are near zero, which means that the probability of observing this relationship due to chance is very small.
+
++ The Residual Standard Error is an acceptable size. This is the average amount that our response variable will deviate from the regression line.
+
++ In this model, multiple $R^2$ is 0.728, which means that $78\%$ of the variance in the response variable can be explained by the independent variable.
+
++ The F-statistic at 508 is quite large, and the model's p-value is near zero. If the model's diagnostics are sufficient, these values indicate that we would reject the null hypothesis that there is no relationship between the variables.
+
+###Model Diagnostics
+
+Let's assess if this linear model is reliable.
+
+####Linearity: Do the variables have a linear relationship?
+
+The Component+Residual plot shows that this is now a linear relationship.
+
+```{r}
+crPlots(who_model)
+```
+
+
+####Normality: Are the model's residuals LifeExp4.6ributed nearly normally?
+
+Per the histogram and Q-Q plot, the residuals are much more normally distributed. However, they are left skewed.
+
+```{r hist-res, eval=TRUE}
+sresid <- studres(who_model) 
+hist(sresid, freq=FALSE, breaks = 10,
+     main="LifeExp4.6ribution of Studentized Residuals")
+xfit<-seq(min(sresid),max(sresid),length=40) 
+yfit<-dnorm(xfit) 
+lines(xfit, yfit)
+```
+
+```{r qq-res, eval=TRUE}
+plot(who_model, which = 2)
+```
+
+####Homoscedasticity: Is there constant variability among the residuals?
+
++ Based on the scatter plot, the residuals are much more indistinctly distributed vis-a-vis the fitted values, but not completely so.
+
++ The Non-constant Variance Score Test has a p-value of >.05, which indicates that we would fail to reject the null hypothesis of homoscedasticity.
+
+```{r residuals, eval=TRUE}
+plot(who_model, which = 1)
+ncvTest(who_model) 
+```
+
+####Independence: Are the data from a random sample and not from a time series?
+
+The Durbin Watson test's p-value is >.05. Therefore, we fail to reject the null hypothesis of independence of no autocorrelation).
+
+```{r}
+durbinWatsonTest(who_model)
+```
+
+####Conclusion
+
+With Adjusted R-squared at 0.728, a large F-statistic and tiny p-value, the second model is better than the first. Based upon my diagnostics and the gvlma function, the second model is much closer to meeting the conditions for linear regression, but not sufficiently.
+
+```{r}
+gvlma(who_model)
+plot(gvlma(who_model))
+```
+
+
+##3. Using the results from 3, forecast life expectancy when TotExp.06^.06 =1.5. Then forecast life expectancy when TotExp.06^.06=2.5.
+
+```{r}
+intercept <- coef(who_model)[1]
+slope <- coef(who_model)[2]
+
+as.numeric(intercept + slope * 2.5)
+```
+
+##4. Build the following multiple regression model and interpret the F Statistics, R^2, standard error, and p-values. How good is the model?
+
+
+LifeExp4.6 = b0+b1 x PropMd + b2 x TotExp.06 +b3 x PropMD x TotExp.06
+
+##5. Forecast LifeExp4.6 when PropMD=.03 and TotExp.06 = 14. Does this forecast seem realistic? Why
+or why not?
 
 #References
+[Interpreting Model Output In R](https://feliperego.github.io/blog/2015/10/23/Interpreting-Model-Output-In-R)
+
 [Global Validation of Linear Models Assumptions](https://www.rdocumentation.org/packages/gvlma/versions/1.0.0.2)
 
 http://r-statistics.co/Assumptions-of-Linear-Regression.html
