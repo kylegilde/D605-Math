@@ -1,0 +1,248 @@
+---
+title: "DATA 605 FUNDAMENTALS OF COMPUTATIONAL MATHEMATICS" 
+subtitle: "Discussion 12: Multiple Linear Regression"
+author: "Kyle Gilde"
+date: "11/15/2017"
+output: 
+  prettydoc::html_pretty:
+    theme: architect
+    highlight: github
+    toc: true
+    toc_depth: 2
+---
+<style type="text/css">
+body{
+  font-family: Helvetica;
+  font-size: 14pt;
+}
+</style>
+<body>
+
+```{r knitr_options, echo=FALSE}
+knitr::opts_chunk$set(
+                      warning = FALSE
+                      ,error = FALSE
+                      ,message = FALSE
+                      ,tidy = TRUE
+                      #,cache = TRUE
+                      )
+```
+
+
+```{r packages, echo=F, collapse=T, warning=FALSE} 
+packages <- c("prettydoc", "dplyr", "gvlma", "MASS", "lmtest", "car")
+
+#see if we need to install any of them
+installed_and_loaded <- function(pkg){
+  #CODE SOURCE: https://gist.github.com/stevenworthington/3178163
+  new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
+  if (length(new.pkg)) 
+    install.packages(new.pkg, dependencies = TRUE)
+  sapply(pkg, require, character.only = TRUE, quietly = TRUE, warn.conflicts = FALSE)
+}
+#excute function and display the loaded packages
+data.frame(installed_and_loaded(packages))
+```
+Using R, build a multiple regression model for data that interests you.  
+
+Include in this model at least one quadratic term, one dichotomous term, and one dichotomous vs. quantitative interaction term.  
+
++ Interpret all coefficients. 
++ Conduct residual analysis.  
++ Was the linear model appropriate? Why or why not?
+
+
+#Multiple LR with Wine Data Set
+
+Last week, I created a univarate LM using the wine's color intensity to predict the alcohol content, but it only accounted for 30% of the variation. Let's see if we can find a better multiple linear model for a wine's alcohol content.
+
+##Background Info on Data
+
+"These data are the results of a chemical analysis of wines grown in the same region in Italy but derived from three different cultivars. The analysis determined the quantities of 13 constituents found in each of the three types of wines." [UCI Machine Learning Repository](http://archive.ics.uci.edu/ml/datasets/Wine)
+
+
+```{r}
+url <- 'http://archive.ics.uci.edu/ml/machine-learning-databases/wine/wine.data'
+
+wine_df <- read.csv(url, header = F)
+
+names(wine_df) <- c("cultivars","Alcohol","Malic_acid","Ash","Alcalinity_of_ash","Magnesium","Total_phenols","Flavanoids","Nonflavanoid_phenols","Proanthocyanins","Color_intensity","Hue","OD280_OD315_of_dilutedwines","Proline")
+
+glimpse(wine_df)
+```
+
+Before proceeding with the model, let's get R to treat the cultivars like the categorical variable that it is by converting it to a factor.
+
+
+```{r}
+wine_df$cultivars <- as.factor(wine_df$cultivars)
+```
+
+##Pairs
+
+```{r}
+pairs(wine_df)
+```
+
+##Model Summary
+
+```{r}
+# wine_df$Color_intensity <- log(wine_df$Color_intensity)
+wine_model <- lm(Alcohol ~ cultivars + Malic_acid + Ash + Alcalinity_of_ash + Magnesium + Total_phenols + Flavanoids + Nonflavanoid_phenols + Proanthocyanins + Color_intensity + Hue + OD280_OD315_of_dilutedwines + Proline, wine_df)
+
+summary(wine_model)
+```
+
+##Backward Elimination
+
+With all the variables, our Adjusted R-squared is 0.639, but we have some variables that are not relevant to the model. Let's start by removing Nonflavanoid_phenols, which has the largest p-value greater than our signigicance level of .05.
+
+```{r}
+wine_model <- update(wine_model, .~. -Nonflavanoid_phenols, data = wine_df)
+summary(wine_model)
+```
+
+Our Adjusted R-squared is 0.6411. Next, let's remove Magnesium, which has next the largest p-value greater than our signigicance level.
+
+```{r}
+wine_model <- update(wine_model, .~. -Magnesium, data = wine_df)
+summary(wine_model)
+```
+
+Our Adjusted R-squared is 0.6432 Next, let's remove Proanthocyanins, which has next the largest p-value greater than our signigicance level.
+
+```{r}
+wine_model <- update(wine_model, .~. -Proanthocyanins, data = wine_df)
+summary(wine_model)
+```
+
+Our Adjusted R-squared is 0.6452 Next, let's remove OD280_OD315_of_dilutedwines, which has next the largest p-value greater than our signigicance level.
+
+```{r}
+wine_model <- update(wine_model, .~. -OD280_OD315_of_dilutedwines, data = wine_df)
+summary(wine_model)
+```
+
+Our Adjusted R-squared is 0.647 Next, let's remove Proline, which has next the largest p-value greater than our signigicance level.
+
+```{r}
+wine_model <- update(wine_model, .~. -Proline, data = wine_df)
+summary(wine_model)
+```
+Our Adjusted R-squared is 0.6485 Next, let's remove Alcalinity_of_ash, which has next the largest p-value greater than our signigicance level.
+
+```{r}
+wine_model <- update(wine_model, .~. -Alcalinity_of_ash, data = wine_df)
+summary(wine_model)
+```
+
+Our Adjusted R-squared is 0.65 Next, let's remove Flavanoids, which has next the largest p-value greater than our signigicance level.
+
+```{r}
+wine_model <- update(wine_model, .~. -Flavanoids, data = wine_df)
+summary(wine_model)
+```
+
+Our Adjusted R-squared is 0.6495 Next, let's remove Total_phenols, which has next the largest p-value greater than our signigicance level.
+
+```{r}
+wine_model <- update(wine_model, .~. -Total_phenols, data = wine_df)
+summary(wine_model)
+```
+
+Our Adjusted R-squared is 0.6509 Next, let's remove Hue, which has next the largest p-value greater than our signigicance level.
+
+```{r}
+wine_model <- update(wine_model, .~. -Hue, data = wine_df)
+summary(wine_model)
+```
+
+Our Adjusted R-squared is 0.6487 Next, let's remove Malic_acid, which has next the largest p-value greater than our signigicance level.
+
+```{r}
+wine_model <- update(wine_model, .~. -Malic_acid, data = wine_df)
+summary(wine_model)
+```
+Our Adjusted R-squared is 0.6473 Next, let's remove Ash, which has next the largest p-value greater than our signigicance level.
+
+```{r}
+wine_model <- update(wine_model, .~. -Ash, data = wine_df)
+summary(wine_model)
+```
+
+
+##Interpretation
+
++ Our remaining 3 variables now have p-values less than our significance threshold.
++ The stepAIC function agrees with this model.
+```{r}
+stepAIC(wine_model)
+```
+
++ The coefficint for cultivars2 is -1.0989, which means on average we would expect the alcohol content to be 1.0989 less for cultivar #2, holding all the variables constant.
++ The coefficint for cultivars3 is -0.7535, which means on average we would expect the alcohol content to be 0.7535 less for cultivar #3, holding all the variables constant.
++ The coefficint for Color_intensity is 0.6118, which means on average we would expect for every 0.6118 increase in color intensity, the alcohol content to be one unit greater, holding all the variables constant.
++ The y-intercept's p-value is both near zero, which means that there is very little chance that it is not relevant to the model.
++ In this model, multiple $R^2$ is $0.6443$, which means that the model accounts for approximately $64\%$ of the variation in the alcohol content. 
+
+
+
+
+##Model Diagnostics
+
+Let's assess if this model is reliable.
+
+###Linearity: Do the variables have a linear relationship?
+
+The plots of the variables appear to show linear relationships.
+
+```{r}
+crPlots(wine_model)
+```
+
+###Nearly normal residuals: Are the model's residuals distributed normally?
+
+Yes, per the histogram and Q-Q plot, the residuals are fairly normally distributed.
+
+```{r hist-res, eval=TRUE}
+sresid <- studres(wine_model)
+hist(sresid, freq = FALSE, main = "Distribution of Studentized Residuals")
+xfit <- seq(min(sresid), max(sresid), length = 40)
+yfit <- dnorm(xfit)
+lines(xfit, yfit)
+```
+
+```{r qq-res, eval=TRUE}
+plot(wine_model, which = 2)
+```
+
+###Homoscedasticity: Is there constant variability among the residuals?
+
+Based on the scatter plot of the residuals shown above, the residuals evenly distributed.
+
+The Non-constant Variance Score Test has a p-value of >.05, which means that we fail to reject the null hypothesis of homoscedasticity.
+
+```{r residuals, eval=TRUE}
+plot(wine_model, which = 1)
+ncvTest(wine_model)
+```
+
+###Independent observations: Are the data from a random sample and not from a time series?
+
+The Durbin Watson test's p-value is >.05. Therefore, we fail to reject the null hypothesis of independence (no autocorrelation).
+
+```{r}
+durbinWatsonTest(wine_model)
+```
+
+###Conclusion
+
+Based upon my diagnostics and the gvlma function, the conditions for linear regression have been met.
+
+```{r}
+gvlma(wine_model)
+```
+
+
+
+</body>

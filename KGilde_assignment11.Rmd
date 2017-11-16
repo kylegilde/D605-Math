@@ -1,0 +1,173 @@
+---
+title: "DATA 605 FUNDAMENTALS OF COMPUTATIONAL MATHEMATICS" 
+subtitle: "Homework Week 11: Linear Regression"
+author: "Kyle Gilde"
+date: "11/11/2017"
+output: 
+  prettydoc::html_pretty:
+    theme: architect
+    highlight: github
+    toc: true
+    toc_depth: 2
+---
+<style type="text/css">
+body{
+  font-family: Helvetica;
+  font-size: 14pt;
+}
+</style>
+<body>
+
+```{r knitr_options, echo=FALSE}
+knitr::opts_chunk$set(
+                      warning = FALSE
+                      ,error = FALSE
+                      ,message = FALSE
+                      ,tidy = TRUE
+                      #,cache = TRUE
+                      )
+```
+
+
+```{r packages, echo=F, collapse=T, warning=FALSE} 
+packages <- c("prettydoc", "dplyr", "ggplot2", "datasets", "gvlma", "MASS", "lmtest", "car")
+installed_and_loaded <- function(pkg){
+  #CODE SOURCE: https://gist.github.com/stevenworthington/3178163
+  new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
+  if (length(new.pkg)) 
+    install.packages(new.pkg, dependencies = TRUE)
+  sapply(pkg, require, character.only = TRUE, quietly = TRUE, warn.conflicts = FALSE)
+}
+#excute function and display the loaded packages
+data.frame(installed_and_loaded(packages))
+```
+
+
+**Using R, build a  regression model for data that interests you.  Conduct residual analysis.  Was the linear model appropriate? Why or why not?**
+
+#Cars Data Set
+
+cars {datasets}	R Documentation
+Speed and Stopping Distances of Cars
+
+Description: The data give the speed of cars and the distances taken to stop. Note that the data were recorded in the 1920s.
+
+Format: A data frame with 50 observations on 2 variables.
+
+[,1]	 speed	 numeric	 Speed (mph)
+[,2]	 dist	 numeric	 Stopping distance (ft)
+
+Source: Ezekiel, M. (1930) Methods of Correlation Analysis. Wiley.
+
+```{r}
+cars_df <- cars
+glimpse(cars_df)
+```
+
+
+#Question
+
+**Is the measure of color intensity predictive of the cars's speed content?**
+
+#Model Summary
+
+```{r}
+cars_model <- lm(dist ~ speed, cars_df)
+summary(cars_model)
+
+intercept <- coef(cars_model)[1]
+slope <- coef(cars_model)[2]
+```
+
+```{r scatter}
+a <- ggplot(cars_model, aes(speed, dist))
+a + geom_point() + geom_abline(slope = slope, intercept = intercept, show.legend=TRUE)
+```
+
+
+#Model Interpretation
+
++ This linear model is expressed as $\widehat{StoppingDistance} = -17.5791 + 3.9324*{speed}$
+
++ For each additional increase in the miles per hour, the model expects an increase of 3.9 feet in stopping distance.
+
++ In this model, multiple $R^2$ is 0.6511, which means that the model's least-squares line accounts for approximately $65\%$ of the variation in the stopping distance. 
+
++ The speed's p-value is near zero and Y-intercept's p-value is ~1%, which means that there is very little chance that they are not relevant to the model.
+
+#Model Diagnostics
+
+Let's assess if this linear model is reliable.
+
+##Linearity: Do the variables have a linear relationship?
+
+The Component+Residual plot shows some deviation from a linear relationship.
+
+```{r}
+crPlots(cars_model)
+```
+
+
+##Normality: Are the model's residuals distributed nearly normally?
+
+No, per the histogram and Q-Q plot, the residuals are not normally distributed. There are some outliers on the left-side of the distribution.
+
+```{r hist-res, eval=TRUE}
+sresid <- studres(cars_model) 
+hist(sresid, freq=FALSE, breaks = 10,
+     main="Distribution of Studentized Residuals")
+xfit<-seq(min(sresid),max(sresid),length=40) 
+yfit<-dnorm(xfit) 
+lines(xfit, yfit)
+```
+
+```{r qq-res, eval=TRUE}
+plot(cars_model, which = 2)
+```
+
+##Homoscedasticity: Is there constant variability among the residuals?
+
++ Based on the scatter plot, the residuals do show some small deviation in variability. 
+
++ The Non-constant Variance Score Test has a p-value of <.05, which means that we reject the null hypothesis of homoscedasticity.
+
+```{r residuals, eval=TRUE}
+plot(cars_model, which = 1)
+ncvTest(cars_model) 
+```
+
+##Independence: Are the data from a random sample and not from a time series?
+
+The Durbin Watson test's p-value is >.05. Therefore, we fail to reject the null hypothesis of independence (no autocorrelation).
+
+```{r}
+durbinWatsonTest(cars_model)
+```
+
+#Conclusion
+
+Based upon my diagnostics and the gvlma function, the conditions for linear regression have not been met.
+
+```{r}
+gvlma(cars_model)
+plot(gvlma(cars_model))
+```
+
+
+
+#References
+[Global Validation of Linear Models Assumptions](https://www.rdocumentation.org/packages/gvlma/versions/1.0.0.2)
+
+http://r-statistics.co/Assumptions-of-Linear-Regression.html
+
+https://www.statmethods.net/stats/regression.html
+
+http://ademos.people.uic.edu/Chapter12.html#121_example_2:_a_thanksgiving_not_to_remember,_part_2
+
+http://rstatistics.net/how-to-test-a-regression-model-for-heteroscedasticity-and-if-present-how-to-correct-it/
+
+http://www.statisticshowto.com/durbin-watson-test-coefficient/
+
+http://www.ianruginski.com/regressionassumptionswithR_tutorial.html
+
+</body>
