@@ -23,7 +23,7 @@ knitr::opts_chunk$set(
                       warning = FALSE
                       ,error = FALSE
                       ,message = FALSE
-                       ,tidy = TRUE
+                      ,tidy = TRUE
                       ,cache = TRUE
                       )
 ```
@@ -46,16 +46,16 @@ data.frame(installed_and_loaded(packages))
 
 **The attached who.csv dataset contains real-world data from 2008. The variables included following:**
 
-Country: name of the country 
-LifeExp: average life expectancy for the country in years 
-InfantSurvival: proportion of those surviving to one year or more
-Under5Survival: proportion of those surviving to five years or more
-TBFree: proportion of the population without TB.
-PropMD: proportion of the population who are MDs
-PropRN: proportion of the population who are RNs
-PersExp: mean personal expenditures on healthcare in US dollars at average exchange rate
-GovtExp: mean government expenditures per capita on healthcare, US dollars at average exchange rate
-TotExp: sum of personal and government expenditures.
++ Country: name of the country 
++ LifeExp: average life expectancy for the country in years 
++ InfantSurvival: proportion of those surviving to one year or more
++ Under5Survival: proportion of those surviving to five years or more
++ TBFree: proportion of the population without TB.
++ PropMD: proportion of the population who are MDs
++ PropRN: proportion of the population who are RNs
++ PersExp: mean personal expenditures on healthcare in US dollars at average exchange rate
++ GovtExp: mean government expenditures per capita on healthcare, US dollars at average exchange rate
++ TotExp: sum of personal and government expenditures.
 
 ```{r}
 
@@ -125,7 +125,7 @@ crPlots(who_model)
 
 No, per the histogram and Q-Q plot, the residuals are not anywhere near normally distributed.
 
-```{r hist-res, eval=TRUE}
+```{r , eval=TRUE}
 sresid <- studres(who_model) 
 hist(sresid, freq=FALSE, breaks = 10,
      main="LifeExpribution of Studentized Residuals")
@@ -134,7 +134,7 @@ yfit<-dnorm(xfit)
 lines(xfit, yfit)
 ```
 
-```{r qq-res, eval=TRUE}
+```{r , eval=TRUE}
 plot(who_model, which = 2)
 ```
 
@@ -144,7 +144,7 @@ plot(who_model, which = 2)
 
 + The Non-constant Variance Score Test has a p-value of >.05, which indicates that we would fail to reject the null hypothesis of homoscedasticity.
 
-```{r residuals, eval=TRUE}
+```{r , eval=TRUE}
 plot(who_model, which = 1)
 ncvTest(who_model) 
 ```
@@ -178,8 +178,6 @@ options( digits = 6 )
 who_df$LifeExp4.6 <-  who_df$LifeExp^4.6
 who_df$TotExp.06 <- who_df$TotExp^.06
 
-summary(who_df[c("TotExp", "TotExp.06")])
-
 who_model <- lm(LifeExp4.6 ~ TotExp.06, who_df)
 summary(who_model)
 
@@ -187,7 +185,7 @@ intercept <- coef(who_model)[1]
 slope <- coef(who_model)[2]
 ```
 
-```{r scatter}
+```{r }
 a <- ggplot(who_model, aes(TotExp.06, LifeExp4.6))
 a + geom_point() + geom_abline(slope = slope, intercept = intercept, show.legend=TRUE)
 ```
@@ -197,7 +195,7 @@ a + geom_point() + geom_abline(slope = slope, intercept = intercept, show.legend
 
 + Using the point estimates of the coefficients, the linear model is expressed as $\widehat{LifeExp4.6} = 64.475 + 620060216*{TotExp.06} - 736527910$ 
 
-+ For each additional unit increase in TotExp.06, the model expects on average an unit increase of 620060216 in LifeExp4.6.
++ For each additional unit increase in TotExp.06, the model expects on average a unit increase of 620060216 in LifeExp4.6.
 
 + The y-intercept's standard error is more than 15 times smaller than its coefficient value. The TotExp.06's standard error is about 22 times smaller than its coefficient value. Both of these ratios are indicative of a good model with relatively little variance in its coefficients.
 
@@ -205,9 +203,14 @@ a + geom_point() + geom_abline(slope = slope, intercept = intercept, show.legend
 
 + Both the y-intercept & TotExp.06's p-values are near zero, which means that the probability of observing this relationship due to chance is very small.
 
-+ The Residual Standard Error is an acceptable size. This is the average amount that our response variable will deviate from the regression line.
++ The Residual Standard Error seems some what large given that 90500000^(1/4.6) = 53.6669 years. This is the average amount that our response variable will deviate from the regression line.
 
-+ In this model, multiple $R^2$ is 0.728, which means that $78\%$ of the variance in the response variable can be explained by the independent variable.
+```{r}
+90500000^(1/4.6)
+```
+
+
++ In this model, multiple $R^2$ is 0.728, which means that $72\%$ of the variance in the response variable can be explained by the independent variable.
 
 + The F-statistic at 508 is quite large, and the model's p-value is near zero. If the model's diagnostics are sufficient, these values indicate that we would reject the null hypothesis that there is no relationship between the variables.
 
@@ -226,7 +229,7 @@ crPlots(who_model)
 
 ####Normality: Are the model's residuals LifeExp4.6ributed nearly normally?
 
-Per the histogram and Q-Q plot, the residuals are much more normally distributed. However, they are left skewed.
+Per the histogram and Q-Q plot, the residuals are more normally distributed. However, they are left skewed.
 
 ```{r hist-res, eval=TRUE}
 sresid <- studres(who_model) 
@@ -237,7 +240,7 @@ yfit<-dnorm(xfit)
 lines(xfit, yfit)
 ```
 
-```{r qq-res, eval=TRUE}
+```{r , eval=TRUE}
 plot(who_model, which = 2)
 ```
 
@@ -247,7 +250,7 @@ plot(who_model, which = 2)
 
 + The Non-constant Variance Score Test has a p-value of >.05, which indicates that we would fail to reject the null hypothesis of homoscedasticity.
 
-```{r residuals, eval=TRUE}
+```{r , eval=TRUE}
 plot(who_model, which = 1)
 ncvTest(who_model) 
 ```
@@ -262,7 +265,7 @@ durbinWatsonTest(who_model)
 
 ####Conclusion
 
-With Adjusted R-squared at 0.728, a large F-statistic and tiny p-value, the second model is better than the first. Based upon my diagnostics and the gvlma function, the second model is much closer to meeting the conditions for linear regression, but not sufficiently.
+With Adjusted R-squared at 0.74, a large F-statistic and tiny p-value, the second model is better than the first. Based upon my diagnostics and the gvlma function, the second model is much closer to meeting the conditions for linear regression, but not sufficiently still.
 
 ```{r}
 gvlma(who_model)
@@ -273,21 +276,132 @@ plot(gvlma(who_model))
 ##3. Using the results from 3, forecast life expectancy when TotExp.06^.06 =1.5. Then forecast life expectancy when TotExp.06^.06=2.5.
 
 ```{r}
-intercept <- coef(who_model)[1]
-slope <- coef(who_model)[2]
-
 as.numeric(intercept + slope * 2.5)
 ```
 
 ##4. Build the following multiple regression model and interpret the F Statistics, R^2, standard error, and p-values. How good is the model?
 
 
-LifeExp4.6 = b0+b1 x PropMd + b2 x TotExp.06 +b3 x PropMD x TotExp.06
+LifeExp4.6 = b0 + b1 x PropMd + b2 x TotExp.06 + b3 x PropMD x TotExp.06
 
-##5. Forecast LifeExp4.6 when PropMD=.03 and TotExp.06 = 14. Does this forecast seem realistic? Why
-or why not?
+###Model Summary
+
+```{r}
+who_model <- lm(LifeExp4.6 ~ PropMD + TotExp.06 + PropMD * TotExp.06, who_df)
+
+summary(who_model)
+```
+###Model Interpretation
++ From the residual summary statistics, there may be a possibly skewed distribution not centered around zero, but we will confirm with further diagnostics.
+
++ Using the point estimates of the coefficients, the linear model is expressed as $\widehat{LifeExp4.6} = - 7.24e+08 + 4.73e+10PropMD + 6.05e+08TotExp.06 - 2.12e+10PropMD * TotExp.06 $ 
+
++ For each additional unit increase in PropMD, the model expects on average an  increase of 4.73e+10 in LifeExp4.6, holding all other variables constant. For each additional unit increase in TotExp.06, the model expects on average an increase of 6.05e+08 in LifeExp4.6, holding all other variables constant. For each additional unit increase in PropMD:TotExp.06, the model expects on average a decrease of 2.12e+10 in LifeExp4.6, holding all other variables constant.
+
++ The ratio of the coefficents to the standard errors is large for the y-intercept and TotExp.06, but is small for PropMD and PropMD:TotExp.06. Consequently, we can expect little variability in the coefficient estimates of the former 2 and greater variability in the later 2.
+
+```{r}
+
+coef(summary(who_model))[, 1] / coef(summary(who_model))[, 2]
+
+```
+
+
++ The coefficient's t-values are not very large for PropMD and PropMD:TotExp.06 and their p-values are not near zero like the other 2. PropMD:TotExp.06's p-value is larger than our significance thresdold. 
+
++ The Residual Standard Error seems rather large since 88500000^(1/4.6) = 53.4068 years. This is the average amount that our response variable will deviate from the regression line.
+
+```{r}
+88500000^(1/4.6)
+```
+
+
++ In this model, multiple $R^2$ is 0.74, which means that $74\%$ of the variance in the response variable can be explained by the independent variable.
+
++ The F-statistic at 180 is quite large, and the model's p-value is near zero. If the model's diagnostics are sufficient, these values indicate that we would reject the null hypothesis that there is no relationship between the variables.
+
+###Model Diagnostics
+
+Let's assess if this linear model is reliable.
+
+####Linearity: Do the variables have a linear relationship?
+
+The relationships between the independent variables and LifeExp4.6 all appear to be linear.
+
+```{r}
+who_df$PropMDTotExp.06 <- who_df$PropMD * who_df$TotExp.06
+pairs(subset(who_df, select = c(LifeExp4.6, PropMD, TotExp.06, PropMDTotExp.06 )))
+```
+
+
+####Normality: Are the model's residuals LifeExp4.6ributed nearly normally?
+
+Per the histogram and Q-Q plot, the residuals are left skewed.
+
+```{r , eval=TRUE}
+sresid <- studres(who_model) 
+hist(sresid, freq=FALSE, breaks = 10,
+     main="LifeExp4.6ribution of Studentized Residuals")
+xfit<-seq(min(sresid),max(sresid),length=40) 
+yfit<-dnorm(xfit) 
+lines(xfit, yfit)
+```
+
+```{r , eval=TRUE}
+plot(who_model, which = 2)
+```
+
+####Homoscedasticity: Is there constant variability among the residuals?
+
++ Based on the scatter plot, the residuals are somewhat curvilinear.
+
++ The Non-constant Variance Score Test has a p-value of >.05, which indicates that we would fail to reject the null hypothesis of homoscedasticity.
+
+```{r , eval=TRUE}
+plot(who_model, which = 1)
+ncvTest(who_model) 
+```
+
+####Independence: Are the data from a random sample and not from a time series?
+
+The Durbin Watson test's p-value is >.05. Therefore, we fail to reject the null hypothesis of independence, i.e. no autocorrelation).
+
+```{r}
+durbinWatsonTest(who_model)
+```
+
+####Conclusion
+
+While the Adjusted R-squared at .74 is slightly higher than the 2nd model, I would say that this more complex model is weaker because one of the coefficient p-values is greater than the significance threshold, and 2 of them have large standard errors.
+
+```{r}
+gvlma(who_model)
+plot(gvlma(who_model))
+```
+
+##5. Forecast LifeExp4.6 when PropMD=.03 and TotExp.06= 14. Does this forecast seem realistic? Why or why not?
+
+No,  Given that PropMD = .03 is near the max value and TotExp.06 = 14 is much greater than the variable's known range, a predicted value of 66.977, which is less than the mean and median does not seem realistic.
+
+```{r}
+options(scipen = 999)
+summary(subset(who_df, select = c(PropMD, TotExp.06, LifeExp)))
+
+PropMD <- .03 
+TotExp.06 <- 14
+coefs <- as.numeric(coef(who_model))
+
+predicted_value <- coefs[1] + coefs[2] * PropMD + coefs[3] * TotExp.06 + coefs[4] * PropMD * TotExp.06
+
+predicted_value^(1/4.6)
+```
+
+
 
 #References
+
+https://cran.r-project.org/doc/contrib/Faraway-PRA.pdf
+
 [Interpreting Model Output In R](https://feliperego.github.io/blog/2015/10/23/Interpreting-Model-Output-In-R)
 
 [Global Validation of Linear Models Assumptions](https://www.rdocumentation.org/packages/gvlma/versions/1.0.0.2)

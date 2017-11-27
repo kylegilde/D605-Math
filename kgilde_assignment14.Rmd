@@ -1,0 +1,173 @@
+---
+title: "DATA 605 FUNDAMENTALS OF COMPUTATIONAL MATHEMATICS" 
+subtitle: "Assignment 13: Calculus"
+author: "Kyle Gilde"
+date: "11/26/2017"
+output: 
+  prettydoc::html_pretty:
+    theme: architect
+    highlight: github
+    toc: true
+    toc_depth: 1
+---
+<style type="text/css">
+body{
+  font-family: Helvetica;
+  font-size: 14pt;
+}
+</style>
+<body>
+
+```{r knitr_options, echo=FALSE}
+knitr::opts_chunk$set(
+                      error = FALSE
+                      ,message = FALSE
+                      ,tidy = TRUE
+                      #,cache = TRUE
+                      )
+```
+
+
+```{r packages, echo=F, collapse=T} 
+packages <- c("prettydoc", "Deriv","rootSolve","rSymPy") 
+
+#see if we need to install any of them
+installed_and_loaded <- function(pkg){
+  #CODE SOURCE: https://gist.github.com/stevenworthington/3178163
+  new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
+  if (length(new.pkg)) 
+    install.packages(new.pkg, dependencies = TRUE)
+  sapply(pkg, require, character.only = TRUE, quietly = TRUE, warn.conflicts = FALSE)
+}
+#excute function and display the loaded packages
+data.frame(installed_and_loaded(packages))
+```
+
+###1. Use integration by substitution to solve the integral below.
+
+$\int 4e^{-7x} dx$
+
+```{r}
+x <- Var("x")
+sympy("integrate(4 * exp(-7 * x))")
+```
+
+
+###2. Biologists are treating a pond contaminated with bacteria. The level of contamination is changing at a rate of $dN/dt = -3150/t^4 - 220$ bacteria per cubic centimeter per day, where t is the number of days since treatment began. Find a function N( t ) to estimate the level of contamination if the level after 1 day was 6530 bacteria per cubic centimeter.
+
+```{r}
+ft <- function(t) -3150 * t^-4 - 220 
+#anti-derivative
+
+#F(t) = 1050 * t^-3 - 220 * t + C
+
+#solve for C: 
+
+#F(1) = 6530 = 1050 * t^-3 - 220 * t + C
+t <- 1
+(C <- 6530 - 1050 * t^-3 + 220 * t)
+#Integral
+(Ft <- function(t) 1050 * t^-3 - 220 * t + 5700)
+```
+
+
+###3. Find the total area of the red rectangles in the figure below, where the equation of the line is $f(x) = 2x-9$ 
+
+
+
+```{r}
+fx <- function(x) 2*x-9
+#f(0) = 2x-9
+
+#x = 4.5
+(lower <- 4.5)
+(upper <- lower + 4)
+stats::integrate(Vectorize(fx), lower, upper)
+```
+
+###4. Find the area of the region bounded by the graphs of the given equations.
+
+$y = x^2 -2x -2$
+
+$y = x + 2$
+
+```{r}
+s <- seq(-2, 5, by=.01)
+fx <- function(x) x^2 -2*x -2
+fx2 <- function(x) x + 2
+
+fx_values <- fx(s)
+fx2_values <- fx2(s)
+
+plot(s, fx_values,type="l", col="red")
+lines(s,fx2_values,col="green", type = "l")
+abline(0,0)
+
+#intersections
+is_equal <- fx2_values == fx_values
+mydf <- data.frame(cbind(s, is_equal))
+intersections <- subset(mydf, is_equal==1)
+
+#critical points
+roots <- uniroot.all(fx, c(-2, 5))
+lower1 <- roots[1]
+upper1 <- roots[2]
+lower2 <- intersections$s[1]
+upper2 <- intersections$s[2]
+
+#answer
+(integrate(Vectorize(fx2),lower2, upper2)$value - integrate(Vectorize(fx),lower2, upper2)$value)
+
+###Validate answer###
+Fx_neg <- abs(integrate(Vectorize(fx),lower1, upper1)$value)
+Fx_pos1 <- integrate(Vectorize(fx),lower2, lower1)$value
+Fx_pos2 <- integrate(Vectorize(fx),upper1, upper2)$value
+Fx2 <- integrate(Vectorize(fx2),lower2, upper2)$value
+Fx_neg + Fx2 - Fx_pos2 - Fx_pos1
+```
+
+###5. A beauty supply store expects to sell 110 flat irons during the next year. It costs \$3.75 to store one flat iron for one year. There is a fixed cost of $8.25 for each order. Find the lot size and the number of orders per year that will minimize inventory costs.
+
+```{r 21}
+#lotsize  = 110 / orders_per_year
+
+#cost = lotsize*3.75 + orders_per_year * 8.25
+
+total_cost <- function(orders_per_year) 110 / orders_per_year * 3.75 + 8.25 * orders_per_year
+(total_cost.prime <- Deriv(total_cost))
+ 
+(root <- uniroot.all(total_cost.prime, c(1, 110)))
+
+#calculate in whole number terms
+orders_per_year <- floor(root)
+lot_size <- ceiling(110/orders_per_year)
+total_units <- orders_per_year * lot_size
+min_cost <- lot_size  * 3.75 + 8.25 * orders_per_year
+
+paste(orders_per_year, "orders of", lot_size, "units each,", total_units,  "total units, for a minimum cost of", min_cost)
+```
+
+
+###6. Use integration by parts to solve the integral below.
+
+$\int ln( 9x ) * x^6 dx$
+
+```{r}
+x <- Var("x")
+sympy("integrate(log( 9 * x ) * x**6)")
+```
+
+
+###7. Determine whether f ( x ) is a probability density function on the interval [1, e^6] . If not, determine the value of the definite integral.
+$f ( x ) = 1/6x$
+```{r}
+fx <- function(x) 1/(6*x)
+lower <- 1
+upper <- exp(6)
+
+all.equal(1, integrate(Vectorize(fx),lower, upper)$value,
+          tolerance = 10^-8)
+```
+
+
+</body>

@@ -1,0 +1,81 @@
+---
+title: "DATA 605 FUNDAMENTALS OF COMPUTATIONAL MATHEMATICS" 
+subtitle: "Discussion 13: Calculus Ch. 4 & 7"
+author: "Kyle Gilde"
+date: "11/19/2017"
+output: 
+  prettydoc::html_pretty:
+    theme: architect
+    highlight: github
+    toc: true
+    toc_depth: 1
+---
+<style type="text/css">
+body{
+  font-family: Helvetica;
+  font-size: 14pt;
+}
+</style>
+<body>
+
+```{r knitr_options, echo=FALSE}
+knitr::opts_chunk$set(
+                      error = FALSE
+                      ,message = FALSE
+                      ,tidy = TRUE
+                      #,cache = TRUE
+                      )
+```
+
+
+```{r packages, echo=F, collapse=T} 
+packages <- c("prettydoc", "stats", "Deriv")
+
+#see if we need to install any of them
+installed_and_loaded <- function(pkg){
+  #CODE SOURCE: https://gist.github.com/stevenworthington/3178163
+  new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
+  if (length(new.pkg)) 
+    install.packages(new.pkg, dependencies = TRUE)
+  sapply(pkg, require, character.only = TRUE, quietly = TRUE, warn.conflicts = FALSE)
+}
+#excute function and display the loaded packages
+data.frame(installed_and_loaded(packages))
+```
+#Using R, provide the solution for any exercise in either Chapter 4 or Chapter 7 of the calculus textbook.  If you are unsure of your solution, post your concerns.
+
+##Chapter 4.3
+
+3. Find the maximum product of two numbers (not necessarily integers) that have a sum of 100.
+
+```{r}
+max_value <- 1000
+min_value <- -max_value
+
+fx <- function(x) {x * (100 - x)}
+fxprime <-Deriv(fx)
+out_root <- uniroot(fxprime, c(min_value, max_value))
+
+fx(out_root$root)
+
+x <- seq(min_value, max_value)
+plot(x, fx(x))
+abline(out_root$root, out_root$f.root, col = "red")
+```
+
+
+4. Find the minimum sum of two numbers whose product is 500.
+
+$\lim x \rightarrow 0^- f(x) = -\infty$
+
+```{r}
+max_value <- 100
+min_value <- -max_value
+
+fx <- function(x) {x + 500/x}
+fxprime <- Deriv(fx)
+(out_root <- uniroot(fx, c(min_value, max_value)))
+```
+
+
+</body>
