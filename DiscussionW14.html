@@ -12,50 +12,12 @@
 
 <meta name="author" content="Kyle Gilde" />
 
-<meta name="date" content="2017-11-19" />
+<meta name="date" content="2017-11-29" />
 
 <title>DATA 605 FUNDAMENTALS OF COMPUTATIONAL MATHEMATICS</title>
 
 
 
-<style type="text/css">code{white-space: pre;}</style>
-<style type="text/css">
-div.sourceCode { overflow-x: auto; }
-table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
-  margin: 0; padding: 0; vertical-align: baseline; border: none; }
-table.sourceCode { width: 100%; line-height: 100%; }
-td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
-td.sourceCode { padding-left: 5px; }
-code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code > span.dt { color: #902000; } /* DataType */
-code > span.dv { color: #40a070; } /* DecVal */
-code > span.bn { color: #40a070; } /* BaseN */
-code > span.fl { color: #40a070; } /* Float */
-code > span.ch { color: #4070a0; } /* Char */
-code > span.st { color: #4070a0; } /* String */
-code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code > span.ot { color: #007020; } /* Other */
-code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code > span.fu { color: #06287e; } /* Function */
-code > span.er { color: #ff0000; font-weight: bold; } /* Error */
-code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-code > span.cn { color: #880000; } /* Constant */
-code > span.sc { color: #4070a0; } /* SpecialChar */
-code > span.vs { color: #4070a0; } /* VerbatimString */
-code > span.ss { color: #bb6688; } /* SpecialString */
-code > span.im { } /* Import */
-code > span.va { color: #19177c; } /* Variable */
-code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code > span.op { color: #666666; } /* Operator */
-code > span.bu { } /* BuiltIn */
-code > span.ex { } /* Extension */
-code > span.pp { color: #bc7a00; } /* Preprocessor */
-code > span.at { color: #7d9029; } /* Attribute */
-code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-</style>
 
 
 
@@ -71,18 +33,13 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <header>
 <div class="inner">
 <h1 class="title toc-ignore">DATA 605 FUNDAMENTALS OF COMPUTATIONAL MATHEMATICS</h1>
-<h2 class="subtitle">Discussion 13: Calculus Ch. 4 &amp; 7</h2>
+<h2 class="subtitle">Discussion 14: Calculus Ch. 8.8</h2>
 <h3 class="author">Kyle Gilde</h3>
-<h3 class="date">11/19/2017</h3>
+<h3 class="date">11/29/2017</h3>
 </div>
 </header>
 
 
-<div id="TOC" class="toc">
-<ul>
-<li><a href="#using-r-provide-the-solution-for-any-exercise-in-either-chapter-4-or-chapter-7-of-the-calculus-textbook.-if-you-are-unsure-of-your-solution-post-your-concerns.">Using R, provide the solution for any exercise in either Chapter 4 or Chapter 7 of the calculus textbook. If you are unsure of your solution, post your concerns.</a></li>
-</ul>
-</div>
 
 <div id="content-wrapper">
   <div class="inner clearfix">
@@ -95,61 +52,18 @@ body{
 </style>
 <body>
 <pre><code>##           installed_and_loaded.packages.
-## prettydoc                           TRUE
-## stats                               TRUE
-## Deriv                               TRUE</code></pre>
-<div id="using-r-provide-the-solution-for-any-exercise-in-either-chapter-4-or-chapter-7-of-the-calculus-textbook.-if-you-are-unsure-of-your-solution-post-your-concerns." class="section level1">
-<h1>Using R, provide the solution for any exercise in either Chapter 4 or Chapter 7 of the calculus textbook. If you are unsure of your solution, post your concerns.</h1>
-<div id="chapter-4.3" class="section level2">
-<h2>Chapter 4.3</h2>
-<ol start="3" style="list-style-type: decimal">
-<li>Find the maximum product of two numbers (not necessarily integers) that have a sum of 100.</li>
-</ol>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">max_value &lt;-<span class="st"> </span><span class="dv">1000</span>
-min_value &lt;-<span class="st"> </span>-max_value
-
-fx &lt;-<span class="st"> </span>function(x) {
-    x *<span class="st"> </span>(<span class="dv">100</span> -<span class="st"> </span>x)
-}
-fxprime &lt;-<span class="st"> </span><span class="kw">Deriv</span>(fx)
-out_root &lt;-<span class="st"> </span><span class="kw">uniroot</span>(fxprime, <span class="kw">c</span>(min_value, max_value))
-
-<span class="kw">fx</span>(out_root$root)</code></pre></div>
-<pre><code>## [1] 2500</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x &lt;-<span class="st"> </span><span class="kw">seq</span>(min_value, max_value)
-<span class="kw">plot</span>(x, <span class="kw">fx</span>(x))
-<span class="kw">abline</span>(out_root$root, out_root$f.root, <span class="dt">col =</span> <span class="st">&quot;red&quot;</span>)</code></pre></div>
-<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAqAAAAHgCAMAAABNUi8GAAAAY1BMVEUAAAAAADoAAGYAOpAAZrY6AAA6ADo6AGY6Ojo6kNtmAABmADpmAGZmOpBmZmZmtttmtv+QOgCQOmaQ2/+2ZgC2/7a2///bkDrb2//b/9vb////AAD/tmb/25D//7b//9v////JJl37AAAACXBIWXMAAA7DAAAOwwHHb6hkAAAUh0lEQVR4nO2djXbbOpKEK3Fyd6z52XjjiXY9jqz3f8oVRUm2Y7PVIBooAKrvnJ3jtYvVTXRdiJQZGXshGgbsBoSwALsBISzAbkAIC7AbEMIC7AaEsAC7ASEswG5ACAuwGxDCAuwGhLAAuwEhLMBuQAgLsBsQwgLsBoSwALsBISzAbkAIC7AbEMIC7AaEsAC7ASEswG5ACAuwGxDCAuwGhLAAuwEhLMBuQAgLsBsQwgLsBoSwALsBISzAbkAIC7AbEMIC7AaEsAC7ASEswG5ACAuwGxDCAuwGhLAAuwEhLMBuQAgLsBsQwgLsBoSwALsBISzAbkAIC7AbEMIC7AaEsAC7ASEswG5ACAuwGxDCAuwGhLAAuwEhLMBuQAgLsBsQwgLsBoSwALsBISzAbkAIC7AbEMIC7AaEsAC7ASEswG5ACAuwGxDCAuwGhLAAuwEhLMBuQAgLsBsQwgLsBoSwALsBISzAbkAIC7AbEMIC7AaEsAC7ASEswG5ACAuwGxDCAuwGhLAAuwEhLMBuQAgLsBsQwgLsBoSwALsBISzAbkAIC7AbEMIC7AaEsECwnRAuWAGNtROjgnAhxU6MCsKFFDsxKggXUuzEqCBcSLETo4JwIcVOjArChRQ7MSoIF1LsxiL9TcBxQbiQYtc9kW9ZDwXChRS7jin1m5VBQLiQYtcnqdm8xZQiXGi7nPmPEC7qBrSUXV+s3zlvbydFuJBi1w9x4byNkCJcSLHrhLTUKaN7BbQieSm71YwiXEixa56obN1cRhEupNg1TnCmbimiCBdS7FqmTJpuJaMIF1Ls2qVkjG4hoggXUuxapXiCho8owoUUuzapE56xI4pwIcWuQWrmZuCMIlxIsWuO6okZNaEIF1LsGoOyoY25iyJcSLFrCl5QBowowoUUu5aghmS4hCJcSLFrB35A+B1EgnAhxa4V2ghHG13EgHAhxa4N2glGO53kgnAhxa4JmgpFU81kgHAhxa4BmktEcw2tAuFCih2dJtPQZFOJIFxIsWPTahJa7csPwoUUOy4N71QNt+YD4UKKHZW2M9B2d1dBuJBiR6T9ALTfoQHChRQ7Hl0Mv4smPwfhwgO7zf3hf58Pi/H1V4Bdw/SyOfXS50cQLtyfArq9e5q++pFv1y4djb2jVt+BcOF+DugpmseYZtq1Sl/bUl/dXkC4cD8H9Pf3Y0CfF17kU+wapbuBd9fwBMKF+xvZQTscd4ctlwrotALf9ufbpUy7Fulx1vse20a4cOaQ0S8/DzfyC/nsPaDdzflCb50jXEixq0xvU35LZ70jXEixq0p/r5Pv6Kt9hAuPvDzM5z/iG/VdzfdTejoDhAsntudrz8WL0CS7puhpukt0dA4IF+6n/fMSy+HeZupotgb9nAXChft3v+Ac7I36fgZ7jV7OBOHC/cA7aC9T9dDJuSBcOLHFaQsd6xq0j5G66eJ0EC48Mv8uCVjYP/sMaBcDTaGHE0K4kGJXgx7GmUgHp4RwIcWuPJ1csiXS/lkhXHhh6QZ+pR2X5ge5ltZPDOHCCyMFtPUxZtD4qSFceGGggDY+xDzaPjmEC2e28xl/+Rljx6XtEWbT9OkhXHhhmB205fnF0PAZIlx4YZSANjy9MNo9R4QLL3wW0HYXYpEOW15Bs2eJcCHFrhhNX59F0uqJIlxIsStFq2MrQKOninDhmd0Gd0+Pff+juUaHVoY2TxbhwhPPX35u7576/mfHbY6sGE2eLsKFM9MjodOzoNuOH1hucmAlafGEES6cmR6qnwLa8RP1DU6rOO2dM8KFM+cd9LHbJ+rbm1UNmjtrhAtPzNegl0frc+2q09ykKtHaeSNceOb4UH23v4tvbU71aOzMES6k2EXT2JSq0ta5I1xIsQumrRnVpqmzR7jwyPS03fz5oD3exTc1IQItnT/ChRPbw7XnbjN9QGiPAW1pPhwaWgF3B27h/vzBDS8Pfb5R39B0aLSzBu4G3ML960ffPN499RfQdmbDpJlVcNd3C/dvPvrm8Vt3AW1mMmRaWQd3ebdw4hzL3WbpE0KT7CrSylz4NLIS7upu4ZHzb5BeHvoKaCNTaYI21sJd3C2k2EXRxExaoYnFcBd3C1958ymMEXYVaGIk7dDCcrhru4WvdBfQFgbSFA0siLu0W/hKbwGdBqF8vmNeDuaSuCu7ha90FlD+MBqE/h+tu7Bb+EpfAW3g5axF2MvirusWUuzyYQ+iWcgL4y7rFlLsslE+F+EujbuqW0ixywUK6CLctXEXdQspdpkonxbU1XHXdAspdnkonzbM9XGXdAspdnkon1dQQKkon1fhLZG7oltIsctB+XRAWyR3QbeQYpeB8umCtUzuem4hxW49yqcT0kK5y7mFFLvV6AbeC2ml3NXcQordWpRPP5y1chdzCyl2K1E+U6CslruWW0ixW4nymYQCWhnlMxHCgrlLuYUUu1Uon8nUXzJ3JbeQYrcG5XMF1RfNXcgtpNit6UD5XEPtZXPXcQspdms6UEDXoIBWQvlcSeWFc5dxCyl26fWVz7XUXTp3FbeQYpdcXvlcT9XFcxdxCyl2qdWVzxxqLp+7hltIsUssroBmUXP93CXcQopdYnHlMw8FtCjKZzb1ltBdwS20XRoIRwMt9E+1RXQXcAspdimVlc8Iai2j298tpNglFFZAQ6i1jm57t5Bil1BY+YxBAS2C8hlGnaV0u7uFFDt3WeUzjiqL6TZ3Cyl23qrKZyQ1ltPt7RZS7LxVFdBIFNBglM9gKiyo2zq4h2A7X03lM5ryS+p2Dm4h2M5VUvmMp/iiuo2DOwi2c5VUQONRQOMqKp8lKL2sbt/gBoLtHAWVzzIUXli3bXD9YLvr9ZTPUpRdWrdrcPlgu+v1FNBSKKAR5ZTPchRdXLdpcPVgu2vVlM+SlFxet2dw8WC7K8WUz7IUXGC3ZXDtYLsrxRTQsiigebWUz9KUW2K3Y3DpYDuzlPJZnmKL7DYMrhxsZ5ZSQMujgK6vpHzWoNQyu/1ehc+nTn5UqZuL8lmJQgvttjsJdxt8m796ecDXX+XrZqJ8VqPMUrvdZuHuH28z+f7/K1M3EwW0Gk0E1Mduc7+fLwUW99gUuwyUz4oUWWy32UX48r9XtceAbu+epq8WrlTddbNQPqtSYrndXhfhbjNfhL78z+Lr+xTQUzSPMc2pm4XyWZcmAnp46f7y85A84xZpCujv78eAPi+o3HVz0AZamQIL7rZ6Izzcvx+4X9Y2soMqn9WJX3K301vhlFDrXdDdZurx2/58u5RTNwPlsz5NBPQR+O8HLGyNJw4ZPVwIPC/us+6669EGSiB80d1GF+EhevObSBlv09cIqPJJIXrZ3T4X4e6f89Zp3MVH1l1fQfmkQA+oi/k+ivlGvTZQEsEL77aZhc5fdW7P156LF6HuuitRPmnELr3b5SR0PSzy8nCJJettJuWTBzWge8/jdm9+wUl6o14bKJHQxXebpFSj76DKJ5XI5Xd7XISOh0UO16CnLZRzDap8kgkcgNviInQ8LHL+XRKW3813112D8kmGGlDHwyKRddd4K6Bs4kbgdngjvPqwSGTdFdbKJ5+wIbgN3gqvPSwys3QDn1Y3HeWzBZgB9TwssqcF9LgqCiibqDG4j78I3Q+LEAOqfPIJmoP7+IvQ97DIdu5uup3Kq5uKrkAbIWgQ7sNn4W7zY/f3pdD9AWUHVT6bIWYU7qNn4W5z30dAC9mLBBgBPb90T6y5BkXMf1aLaANtiJBhuA++CN07aEzdNFflsyUixuE+NqdIebuzq/LZFE0HdLfB3dNj1X80pw20MQIG4j40tcbzl5/bu6eq/+xY+WyO/JG4j0wsMT0SOj0Luq34wLLy2R7NBnR6qH4KaMUn6rWBNkj2UNwHJlY476CP1Z6oVz6bJHcs7uNSC8zXoNulp55S7a6jfLZJqwGdH6qv97v44xoooO2RORj3YSv9K9lpA22XvMm4D1vpX8lOV6Dtkjca91Fp9o+Hm/ff3+u9xCufDZM1HPdBSe7HfP71s95n1CufLdNcQI+/P3o8/uvkOh/coDukpskZj/uYFPNp3zx9ukidN+q1gbZNxnzcxySZT7vntt4Oqny2zvoJuQ9J8t5tvv46bqHPS3dJSXZX0At886wfkfuIROvTR+B9C7Iz0QbaPqtn5D4i3bqWnTbQDlg9JPcByc7vPoUxwm7RShtoB6ydkvuAZOdaAVU++2DlnNz6VON9pYDqBb4TVg7KLU/0nagWUOWzB9ZNyi1P9J2oEVAooL2wblRudZptLTvlsyNWDcstTnKtZqd89sTtBVR3SF2xZlxubYppNTttoH2xYl5ubYppLTtdgXbGioG5pQmeteyUz+5IH5lb6besZqd89sctBVR3SB2SPLR4YTU7baA9kjq1eGEtO12Bdknq2Ly6dgOabSSqcisBVT57JW1yTllzAdULfLekjc6nShHWsVM+++UWAqq3mDomaQt1iZKEVey0gfbM+AHVFWjXpIzPo0kTVrBTPjsnYYAOSaKwgp3y2TmDB1R3SN3jT+h1RaqwvJ020P4ZOaC6Ah0A9xCvCpKFxe2UzxEYN6DK5xg453jt5+nC0nYK6BiMGlDlcxR8k7zy4xVC2yX3Dkd3SMPgG6X90zXCsnbK5ziMGFBtoAPhGqb5w1XConbK50iMF1BtoEPhGaf1s3XCknbK51iMFlBtoIPhGKjxo5XCgnbK52iMFVDlczyuznT5J2uFxez0Aj8gV4e6+IPVwmJ2yueIjBPQ41kooKNxbaxL318vLGWnDXRMrsx16fvrhYXsdAU6KFcGu/DtDGEhO+VzVMYIqPI5LuZsP/9ujrCMnQI6LiMEVPkcGWu6n34zS1jETgEdmf4DqnyOjTHfz773uUdUM2vsFNCx6T2gyufoLE/4k28tWIQ1k2yn9+iHZ3nEH7+zZBHXTaqd8jk+84D7DKg20BvglM+PQ/7wjUWHwG7S7JTPW2Bpyh++sWgQ2EySnTbQm6ByQB+//tr//g58+Zltp3zeBlVvko75/OsQzt3mR6adNtBboeLbTLvN/SGk36Yvt3dPeXbK522DcOF+3jdfHu6nL58Pe2mOnTbQGwfhwolp99yG7KDK542DcOHEbvP113ELfV66S3LaKZ+3DsKFM89zsL5l2imgtw7ChZF2yufNg3BhpJ0CevMgXHjk5WFO1sI9vNNO+RQIF05scT9/8Xz+YpWdAioQLtzvz++BTuS8zaR8inJv1J/IeaNeARUt76DKpyh3DXraQnOuQRVQUewufreZw7Wwf3rslE+xb/l9UAVU7BsOqPIpJhAuvLB0A++zU0DFBMKFF7ICqnyKIwgXXlBART4IF85s53yt/UdzyqeYQbjwQsYOCgVUzCBceCEgoMk1xWggXHjhs4DCtTdqAxVnEC4MsFM+xRmEC/PttIGKCwgXntltcPf0uPCsiCugqRXFgCBceOL5y8/t3dPxM0YS7bSBilcQLpyZHgmdngXdpj+wrHyKVxAunJkeqp8Cmv5EvTZQ8QaEC2fOO+hj8hP1yqd4A8KFJ+Zr0Muj9X47BVS8AeHCM8eH6tN/F698ircgXJhpp4CKtyBcmGenfIp3IFyYZ6eAincgXJhlp3yK9yBcuH/9R8cTae+DKqDiPQgXTrw8WM+CLtspn+IPEC488vKw+NnKlp0CKv4A4cKZ56V36C075VP8CcKFGXYKqPgThAvX2ymf4gMIF77y5lMYXXYKqPgAwoWvJAZU+RQfQbjwFQVUZINw4StpAT0kU/kUf4Jw4SupAZ0Tml5HDAzChWvttIGKT0C4cK2dNlDxCQgXrrbTBio+gnDhejvlU3wA4UKKnRgVhAspdmJUEC6k2IlRQbiQYidGBeFCip0YFYQLKXZiVBAupNiJUUG4kGInRgXhQqedEC5IAaXVUP1B62cd3FAN1R+0ftbBDdVQ/UHrZx3cUA3VH7R+1sEN1VD9QetnHdxQDdUftH7WwQ3VUP1B62cd3FAN1R+0ftbBDdVQ/UHrZx0sRGnAbkAIC7AbEMIC7AaEsAC7ASEswG5ACAuwGxDCAuwGhLAAuwEhLMBuQAgLsBsQwgLsBoSwALsBISxQyPf3fx3/7Owz8OXn51+UZv7bzN8otd/AqEk/+cDpI7q3md3m+HeRnw/dTP/3yRfF+f3XqQqh9iuMmnv2yUdOH0U6fJ7/oPz890Aev33yRXmeT386nFH7AqPmBPXkQ6ePMh3eH1fo9/fpbyNvv/76+EWJsu/ZntaBUfsCo+YE8+Rjp48iPZ7+E55faA5ffvyiUNk3PP7tcBV2/1kT5WtfYNScIJ984PRRpMFTF/PlxuF/P35RqOwru83d02FQ9580Ubz2K4yae/7JB04fRRpsIKCXNm4xoKfitJPvJaDUl/gjh6uem3yJn4vTTr7dl/jtfOlzbpFzk3Rp4rhIN3mTNBennXwvN0nMt5nmxTi0cYtvM7FPPnD6KNHf/ryPM9+oP67D4T7hJt+oJ5984PRRpsPzhcb2/Kutj18U5/HwSv+DVPsVRs09++QDp4/o3oSIBOwGhLAAuwEhLMBuQAgLsBsQwgLsBoSwALsBISzAbkAIC7AbEMIC7AaEsAC7ASEswG5ACAuwGxDCAuwGhLAAuwEhLMBuQAgLsBsQwgLsBoSwALsBISzAbkAIC7AbEMIC7AaEsAC7ASEswG5ACAuwGxDCAuwGhLAAuwEhLMBuQAgLsBsQwgLsBoSwALuBwZk+Tni3uWe30S9gNzA404cKb6c/uSHWAXYDo/P89d9/p/yNj0EAu4HheUT1P4Q4EmA3MDzP80dxi3WA3cDovDz8i/NHaAYB7AZGZ3v3fw+6iV8P2A0Mzm7zg/WH5sYA7AYG5/Hu6fAqr9uk1YDdgBAWYDcghAXYDQhhAXYDQliA3YAQFmA3IIQF2A0IYQF2A0JYgN2AEBZgNyCEBdgNCGEBdgNCWIDdgBAWYDcghAXYDQhhAXYDQliA3YAQFmA3IIQF2A0IYQF2A0JYgN2AEBZgNyCEBdgNCGEBdgNCWPw/jOVxVo0C9HwAAAAASUVORK5CYII=" /><!-- --></p>
-<ol start="4" style="list-style-type: decimal">
-<li>Find the minimum sum of two numbers whose product is 500.</li>
-</ol>
-<p><span class="math inline">\(\lim x \rightarrow 0^- f(x) = -\infty\)</span></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">max_value &lt;-<span class="st"> </span><span class="dv">100</span>
-min_value &lt;-<span class="st"> </span>-max_value
-
-fx &lt;-<span class="st"> </span>function(x) {
-    x +<span class="st"> </span><span class="dv">500</span>/x
-}
-fxprime &lt;-<span class="st"> </span><span class="kw">Deriv</span>(fx)
-(out_root &lt;-<span class="st"> </span><span class="kw">uniroot</span>(fx, <span class="kw">c</span>(min_value, max_value)))</code></pre></div>
-<pre><code>## Warning in uniroot(fx, c(min_value, max_value)): NA/Inf replaced by maximum
-## positive value</code></pre>
-<pre><code>## $root
-## [1] -9.536737e-05
-## 
-## $f.root
-## [1] -5242883
-## 
-## $iter
-## [1] 22
-## 
-## $init.it
-## [1] NA
-## 
-## $estim.prec
-## [1] 9.536737e-05</code></pre>
+## prettydoc                           TRUE</code></pre>
+<div id="key-idea-32-gives-the-n-th-term-of-the-taylor-series-of-common-funcoons.-in-exercises-3---6-verify-the-formula-given-in-the-key-idea-by-finding-the-first-few-terms-of-the-taylor-series-of-the-given-funcoon-and-idenifying-a-pattern." class="section level3">
+<h3>Key Idea 32 gives the n th term of the Taylor series of common funcOons. In Exercises 3 - 6, verify the formula given in the Key Idea by finding the first few terms of the Taylor series of the given funcOon and idenifying a pattern.</h3>
+<p><strong>4. f(x) = sin x; c = 0</strong></p>
+<span class="math display">\[\begin{equation} \sin x = \sum_{n=0}^{\infty} (-1)^n \frac{x^{2n+1}}{(2n + 1)!} \end{equation}\]</span>
+<span class="math display">\[\begin{equation} f(x) = (-1)^0 \frac{x^{2 * 0 + 1}}{(2*0 + 1)!} + (-1)^1 \frac{x^{2*1+1}}{(2*1 + 1)!} + (-1)^2 \frac{x^{2*2+1}}{(2*2 + 1)!} + (-1)^3 \frac{x^{2*3+1}}{(2*3+1} + ...
+\end{equation}\]</span>
+<span class="math display">\[\begin{equation} f(x) = 1 * \frac{x^{1}}{(1)!} + -1 * \frac{x^{3}}{(3)!} + 1 * \frac{x^{5}}{(5)!} + -1 * \frac{x^{7}}{(7)!} + ...
+\end{equation}\]</span>
+<span class="math display">\[\begin{equation} f(x) = x - \frac{x^3}{3!} + \frac{x^5}{5!} - \frac{x^7}{7!} + ...
+\end{equation}\]</span>
 </body>
-</div>
 </div>
     </section>
   </div>

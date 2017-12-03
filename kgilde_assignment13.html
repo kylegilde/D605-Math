@@ -12,7 +12,7 @@
 
 <meta name="author" content="Kyle Gilde" />
 
-<meta name="date" content="2017-11-19" />
+<meta name="date" content="2017-11-26" />
 
 <title>DATA 605 FUNDAMENTALS OF COMPUTATIONAL MATHEMATICS</title>
 
@@ -71,18 +71,13 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <header>
 <div class="inner">
 <h1 class="title toc-ignore">DATA 605 FUNDAMENTALS OF COMPUTATIONAL MATHEMATICS</h1>
-<h2 class="subtitle">Discussion 13: Calculus Ch. 4 &amp; 7</h2>
+<h2 class="subtitle">Assignment 13: Calculus</h2>
 <h3 class="author">Kyle Gilde</h3>
-<h3 class="date">11/19/2017</h3>
+<h3 class="date">11/26/2017</h3>
 </div>
 </header>
 
 
-<div id="TOC" class="toc">
-<ul>
-<li><a href="#using-r-provide-the-solution-for-any-exercise-in-either-chapter-4-or-chapter-7-of-the-calculus-textbook.-if-you-are-unsure-of-your-solution-post-your-concerns.">Using R, provide the solution for any exercise in either Chapter 4 or Chapter 7 of the calculus textbook. If you are unsure of your solution, post your concerns.</a></li>
-</ul>
-</div>
 
 <div id="content-wrapper">
   <div class="inner clearfix">
@@ -96,60 +91,125 @@ body{
 <body>
 <pre><code>##           installed_and_loaded.packages.
 ## prettydoc                           TRUE
-## stats                               TRUE
-## Deriv                               TRUE</code></pre>
-<div id="using-r-provide-the-solution-for-any-exercise-in-either-chapter-4-or-chapter-7-of-the-calculus-textbook.-if-you-are-unsure-of-your-solution-post-your-concerns." class="section level1">
-<h1>Using R, provide the solution for any exercise in either Chapter 4 or Chapter 7 of the calculus textbook. If you are unsure of your solution, post your concerns.</h1>
-<div id="chapter-4.3" class="section level2">
-<h2>Chapter 4.3</h2>
-<ol start="3" style="list-style-type: decimal">
-<li>Find the maximum product of two numbers (not necessarily integers) that have a sum of 100.</li>
-</ol>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">max_value &lt;-<span class="st"> </span><span class="dv">1000</span>
-min_value &lt;-<span class="st"> </span>-max_value
-
-fx &lt;-<span class="st"> </span>function(x) {
-    x *<span class="st"> </span>(<span class="dv">100</span> -<span class="st"> </span>x)
-}
-fxprime &lt;-<span class="st"> </span><span class="kw">Deriv</span>(fx)
-out_root &lt;-<span class="st"> </span><span class="kw">uniroot</span>(fxprime, <span class="kw">c</span>(min_value, max_value))
-
-<span class="kw">fx</span>(out_root$root)</code></pre></div>
-<pre><code>## [1] 2500</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x &lt;-<span class="st"> </span><span class="kw">seq</span>(min_value, max_value)
-<span class="kw">plot</span>(x, <span class="kw">fx</span>(x))
-<span class="kw">abline</span>(out_root$root, out_root$f.root, <span class="dt">col =</span> <span class="st">&quot;red&quot;</span>)</code></pre></div>
-<p><img src="data:image/png;base64,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" /><!-- --></p>
-<ol start="4" style="list-style-type: decimal">
-<li>Find the minimum sum of two numbers whose product is 500.</li>
-</ol>
-<p><span class="math inline">\(\lim x \rightarrow 0^- f(x) = -\infty\)</span></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">max_value &lt;-<span class="st"> </span><span class="dv">100</span>
-min_value &lt;-<span class="st"> </span>-max_value
-
-fx &lt;-<span class="st"> </span>function(x) {
-    x +<span class="st"> </span><span class="dv">500</span>/x
-}
-fxprime &lt;-<span class="st"> </span><span class="kw">Deriv</span>(fx)
-(out_root &lt;-<span class="st"> </span><span class="kw">uniroot</span>(fx, <span class="kw">c</span>(min_value, max_value)))</code></pre></div>
-<pre><code>## Warning in uniroot(fx, c(min_value, max_value)): NA/Inf replaced by maximum
-## positive value</code></pre>
-<pre><code>## $root
-## [1] -9.536737e-05
-## 
-## $f.root
-## [1] -5242883
-## 
-## $iter
-## [1] 22
-## 
-## $init.it
-## [1] NA
-## 
-## $estim.prec
-## [1] 9.536737e-05</code></pre>
-</body>
+## Deriv                               TRUE
+## rootSolve                           TRUE
+## rSymPy                              TRUE</code></pre>
+<div id="use-integration-by-substitution-to-solve-the-integral-below." class="section level3">
+<h3>1. Use integration by substitution to solve the integral below.</h3>
+<p><span class="math inline">\(\int 4e^{-7x} dx\)</span></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x &lt;-<span class="st"> </span><span class="kw">Var</span>(<span class="st">&quot;x&quot;</span>)
+<span class="kw">sympy</span>(<span class="st">&quot;integrate(4 * exp(-7 * x))&quot;</span>)</code></pre></div>
+<pre><code>## [1] &quot;-4*exp(-7*x)/7&quot;</code></pre>
 </div>
+<div id="biologists-are-treating-a-pond-contaminated-with-bacteria.-the-level-of-contamination-is-changing-at-a-rate-of-dndt--3150t4---220-bacteria-per-cubic-centimeter-per-day-where-t-is-the-number-of-days-since-treatment-began.-find-a-function-n-t-to-estimate-the-level-of-contamination-if-the-level-after-1-day-was-6530-bacteria-per-cubic-centimeter." class="section level3">
+<h3>2. Biologists are treating a pond contaminated with bacteria. The level of contamination is changing at a rate of <span class="math inline">\(dN/dt = -3150/t^4 - 220\)</span> bacteria per cubic centimeter per day, where t is the number of days since treatment began. Find a function N( t ) to estimate the level of contamination if the level after 1 day was 6530 bacteria per cubic centimeter.</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ft &lt;-<span class="st"> </span>function(t) -<span class="dv">3150</span> *<span class="st"> </span>t^-<span class="dv">4</span> -<span class="st"> </span><span class="dv">220</span>
+<span class="co"># anti-derivative</span>
+
+<span class="co"># F(t) = 1050 * t^-3 - 220 * t + C</span>
+
+<span class="co"># solve for C:</span>
+
+<span class="co"># F(1) = 6530 = 1050 * t^-3 - 220 * t + C</span>
+t &lt;-<span class="st"> </span><span class="dv">1</span>
+(C &lt;-<span class="st"> </span><span class="dv">6530</span> -<span class="st"> </span><span class="dv">1050</span> *<span class="st"> </span>t^-<span class="dv">3</span> +<span class="st"> </span><span class="dv">220</span> *<span class="st"> </span>t)</code></pre></div>
+<pre><code>## [1] 5700</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Integral</span>
+(Ft &lt;-<span class="st"> </span>function(t) <span class="dv">1050</span> *<span class="st"> </span>t^-<span class="dv">3</span> -<span class="st"> </span><span class="dv">220</span> *<span class="st"> </span>t +<span class="st"> </span><span class="dv">5700</span>)</code></pre></div>
+<pre><code>## function(t) 1050 * t^-3 - 220 * t + 5700</code></pre>
+</div>
+<div id="find-the-total-area-of-the-red-rectangles-in-the-figure-below-where-the-equation-of-the-line-is-fx-2x-9" class="section level3">
+<h3>3. Find the total area of the red rectangles in the figure below, where the equation of the line is <span class="math inline">\(f(x) = 2x-9\)</span></h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fx &lt;-<span class="st"> </span>function(x) <span class="dv">2</span> *<span class="st"> </span>x -<span class="st"> </span><span class="dv">9</span>
+<span class="co"># f(0) = 2x-9</span>
+
+<span class="co"># x = 4.5</span>
+(lower &lt;-<span class="st"> </span><span class="fl">4.5</span>)</code></pre></div>
+<pre><code>## [1] 4.5</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">(upper &lt;-<span class="st"> </span>lower +<span class="st"> </span><span class="dv">4</span>)</code></pre></div>
+<pre><code>## [1] 8.5</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">stats::<span class="kw">integrate</span>(<span class="kw">Vectorize</span>(fx), lower, upper)</code></pre></div>
+<pre><code>## 16 with absolute error &lt; 1.8e-13</code></pre>
+</div>
+<div id="find-the-area-of-the-region-bounded-by-the-graphs-of-the-given-equations." class="section level3">
+<h3>4. Find the area of the region bounded by the graphs of the given equations.</h3>
+<p><span class="math inline">\(y = x^2 -2x -2\)</span></p>
+<p><span class="math inline">\(y = x + 2\)</span></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">s &lt;-<span class="st"> </span><span class="kw">seq</span>(-<span class="dv">2</span>, <span class="dv">5</span>, <span class="dt">by =</span> <span class="fl">0.01</span>)
+fx &lt;-<span class="st"> </span>function(x) x^<span class="dv">2</span> -<span class="st"> </span><span class="dv">2</span> *<span class="st"> </span>x -<span class="st"> </span><span class="dv">2</span>
+fx2 &lt;-<span class="st"> </span>function(x) x +<span class="st"> </span><span class="dv">2</span>
+
+fx_values &lt;-<span class="st"> </span><span class="kw">fx</span>(s)
+fx2_values &lt;-<span class="st"> </span><span class="kw">fx2</span>(s)
+
+<span class="kw">plot</span>(s, fx_values, <span class="dt">type =</span> <span class="st">&quot;l&quot;</span>, <span class="dt">col =</span> <span class="st">&quot;red&quot;</span>)
+<span class="kw">lines</span>(s, fx2_values, <span class="dt">col =</span> <span class="st">&quot;green&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;l&quot;</span>)
+<span class="kw">abline</span>(<span class="dv">0</span>, <span class="dv">0</span>)</code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># intersections</span>
+is_equal &lt;-<span class="st"> </span>fx2_values ==<span class="st"> </span>fx_values
+mydf &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="kw">cbind</span>(s, is_equal))
+intersections &lt;-<span class="st"> </span><span class="kw">subset</span>(mydf, is_equal ==<span class="st"> </span><span class="dv">1</span>)
+
+<span class="co"># critical points</span>
+roots &lt;-<span class="st"> </span><span class="kw">uniroot.all</span>(fx, <span class="kw">c</span>(-<span class="dv">2</span>, <span class="dv">5</span>))
+lower1 &lt;-<span class="st"> </span>roots[<span class="dv">1</span>]
+upper1 &lt;-<span class="st"> </span>roots[<span class="dv">2</span>]
+lower2 &lt;-<span class="st"> </span>intersections$s[<span class="dv">1</span>]
+upper2 &lt;-<span class="st"> </span>intersections$s[<span class="dv">2</span>]
+
+<span class="co"># answer</span>
+(<span class="kw">integrate</span>(<span class="kw">Vectorize</span>(fx2), lower2, upper2)$value -<span class="st"> </span><span class="kw">integrate</span>(<span class="kw">Vectorize</span>(fx), 
+    lower2, upper2)$value)</code></pre></div>
+<pre><code>## [1] 20.83333</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">### Validate answer###
+Fx_neg &lt;-<span class="st"> </span><span class="kw">abs</span>(<span class="kw">integrate</span>(<span class="kw">Vectorize</span>(fx), lower1, upper1)$value)
+Fx_pos1 &lt;-<span class="st"> </span><span class="kw">integrate</span>(<span class="kw">Vectorize</span>(fx), lower2, lower1)$value
+Fx_pos2 &lt;-<span class="st"> </span><span class="kw">integrate</span>(<span class="kw">Vectorize</span>(fx), upper1, upper2)$value
+Fx2 &lt;-<span class="st"> </span><span class="kw">integrate</span>(<span class="kw">Vectorize</span>(fx2), lower2, upper2)$value
+Fx_neg +<span class="st"> </span>Fx2 -<span class="st"> </span>Fx_pos2 -<span class="st"> </span>Fx_pos1</code></pre></div>
+<pre><code>## [1] 20.83333</code></pre>
+</div>
+<div id="a-beauty-supply-store-expects-to-sell-110-flat-irons-during-the-next-year.-it-costs-3.75-to-store-one-flat-iron-for-one-year.-there-is-a-fixed-cost-of-8.25-for-each-order.-find-the-lot-size-and-the-number-of-orders-per-year-that-will-minimize-inventory-costs." class="section level3">
+<h3>5. A beauty supply store expects to sell 110 flat irons during the next year. It costs $3.75 to store one flat iron for one year. There is a fixed cost of $8.25 for each order. Find the lot size and the number of orders per year that will minimize inventory costs.</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># lotsize = 110 / orders_per_year</span>
+
+<span class="co"># cost = lotsize*3.75 + orders_per_year * 8.25</span>
+
+total_cost &lt;-<span class="st"> </span>function(orders_per_year) <span class="dv">110</span>/orders_per_year *<span class="st"> </span><span class="fl">3.75</span> +<span class="st"> </span><span class="fl">8.25</span> *<span class="st"> </span>
+<span class="st">    </span>orders_per_year
+(total_cost.prime &lt;-<span class="st"> </span><span class="kw">Deriv</span>(total_cost))</code></pre></div>
+<pre><code>## function (orders_per_year) 
+## 8.25 - 412.5/orders_per_year^2</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">(root &lt;-<span class="st"> </span><span class="kw">uniroot.all</span>(total_cost.prime, <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">110</span>)))</code></pre></div>
+<pre><code>## [1] 7.071079</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># calculate in whole number terms</span>
+orders_per_year &lt;-<span class="st"> </span><span class="kw">floor</span>(root)
+lot_size &lt;-<span class="st"> </span><span class="kw">ceiling</span>(<span class="dv">110</span>/orders_per_year)
+total_units &lt;-<span class="st"> </span>orders_per_year *<span class="st"> </span>lot_size
+min_cost &lt;-<span class="st"> </span>lot_size *<span class="st"> </span><span class="fl">3.75</span> +<span class="st"> </span><span class="fl">8.25</span> *<span class="st"> </span>orders_per_year
+
+<span class="kw">paste</span>(orders_per_year, <span class="st">&quot;orders of&quot;</span>, lot_size, <span class="st">&quot;units each,&quot;</span>, total_units, <span class="st">&quot;total units, for a minimum cost of&quot;</span>, 
+    min_cost)</code></pre></div>
+<pre><code>## [1] &quot;7 orders of 16 units each, 112 total units, for a minimum cost of 117.75&quot;</code></pre>
+</div>
+<div id="use-integration-by-parts-to-solve-the-integral-below." class="section level3">
+<h3>6. Use integration by parts to solve the integral below.</h3>
+<p><span class="math inline">\(\int ln( 9x ) * x^6 dx\)</span></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x &lt;-<span class="st"> </span><span class="kw">Var</span>(<span class="st">&quot;x&quot;</span>)
+<span class="kw">sympy</span>(<span class="st">&quot;integrate(log( 9 * x ) * x**6)&quot;</span>)</code></pre></div>
+<pre><code>## [1] &quot;x**7*log(9)/7 + x**7*log(x)/7 - x**7/49&quot;</code></pre>
+</div>
+<div id="determine-whether-f-x-is-a-probability-density-function-on-the-interval-1-e6-.-if-not-determine-the-value-of-the-definite-integral." class="section level3">
+<h3>7. Determine whether f ( x ) is a probability density function on the interval [1, e^6] . If not, determine the value of the definite integral.</h3>
+<p><span class="math inline">\(f ( x ) = 1/6x\)</span></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fx &lt;-<span class="st"> </span>function(x) <span class="dv">1</span>/(<span class="dv">6</span> *<span class="st"> </span>x)
+lower &lt;-<span class="st"> </span><span class="dv">1</span>
+upper &lt;-<span class="st"> </span><span class="kw">exp</span>(<span class="dv">6</span>)
+
+<span class="kw">all.equal</span>(<span class="dv">1</span>, <span class="kw">integrate</span>(<span class="kw">Vectorize</span>(fx), lower, upper)$value, <span class="dt">tolerance =</span> <span class="dv">10</span>^-<span class="dv">8</span>)</code></pre></div>
+<pre><code>## [1] TRUE</code></pre>
+</body>
 </div>
     </section>
   </div>

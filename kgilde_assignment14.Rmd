@@ -2,7 +2,7 @@
 title: "DATA 605 FUNDAMENTALS OF COMPUTATIONAL MATHEMATICS" 
 subtitle: "Assignment 13: Calculus"
 author: "Kyle Gilde"
-date: "11/26/2017"
+date: "12/2/2017"
 output: 
   prettydoc::html_pretty:
     theme: architect
@@ -29,7 +29,7 @@ knitr::opts_chunk$set(
 
 
 ```{r packages, echo=F, collapse=T} 
-packages <- c("prettydoc", "Deriv","rootSolve","rSymPy") 
+packages <- c("prettydoc", "Ryacas",'Deriv') 
 
 #see if we need to install any of them
 installed_and_loaded <- function(pkg){
@@ -43,131 +43,199 @@ installed_and_loaded <- function(pkg){
 data.frame(installed_and_loaded(packages))
 ```
 
-###1. Use integration by substitution to solve the integral below.
+##Computing the Taylor Series expansion
 
-$\int 4e^{-7x} dx$
+This week, we'll work out some Taylor Series expansions of popular functions.
 
-```{r}
-x <- Var("x")
-sympy("integrate(4 * exp(-7 * x))")
-```
+$f(x) = 1/(1-x)$
 
+$f(x) = e^x$
 
-###2. Biologists are treating a pond contaminated with bacteria. The level of contamination is changing at a rate of $dN/dt = -3150/t^4 - 220$ bacteria per cubic centimeter per day, where t is the number of days since treatment began. Find a function N( t ) to estimate the level of contamination if the level after 1 day was 6530 bacteria per cubic centimeter.
+$f(x) = ln(1 + x)$
 
-```{r}
-ft <- function(t) -3150 * t^-4 - 220 
-#anti-derivative
+For each function, only consider its valid ranges as indicated in the notes when you are computing the Taylor Series expansion. Please submit your assignment as a R-Markdown document
 
-#F(t) = 1050 * t^-3 - 220 * t + C
+###$f(x) = 1/(1-x)$
 
-#solve for C: 
+$f(c) = \frac{1}{(1-c)}$
 
-#F(1) = 6530 = 1050 * t^-3 - 220 * t + C
-t <- 1
-(C <- 6530 - 1050 * t^-3 + 220 * t)
-#Integral
-(Ft <- function(t) 1050 * t^-3 - 220 * t + 5700)
-```
+$f'(c) = \frac{1}{(1-c)^2}$
 
+$f''(c) = \frac{2}{(1-c)^3}$
 
-###3. Find the total area of the red rectangles in the figure below, where the equation of the line is $f(x) = 2x-9$ 
+$f'''(c) = \frac{6}{(1-c)^4}$
 
+$f''''(c) = \frac{24}{(1-c)^5}$
 
+\begin{equation}
+f(x) =
+\frac{1}{(1-c) 0!}  (x-c)^0 + 
+\frac{1}{(1-c)^2 1!}  (x-c)^1 + 
+\frac{2}{(1-c)^3 2!}  (x-c)^2  + 
+\frac{6}{(1-c)^4 3!}  (x-c)^3  + 
+\frac{24}{(1-c)^5 4!}  (x-c)^4  + ...
+\end{equation}
 
-```{r}
-fx <- function(x) 2*x-9
-#f(0) = 2x-9
+\begin{equation}
+=
+\frac{1}{(1-c)} + 
+\frac{1}{(1-c)^2} (x-c) + 
+\frac{1}{(1-c)^3} (x-c)^2  + 
+\frac{1}{(1-c)^4} (x-c)^3  + 
+\frac{1}{(1-c)^5} (x-c)^4  +...
+\end{equation}
 
-#x = 4.5
-(lower <- 4.5)
-(upper <- lower + 4)
-stats::integrate(Vectorize(fx), lower, upper)
-```
+$= \sum_{n=0}^{\infty} \frac{(x-c)^n}{(1-c)^{n+1}}$
 
-###4. Find the area of the region bounded by the graphs of the given equations.
+**Ratio test:**
 
-$y = x^2 -2x -2$
+\begin{equation}
+L = \lim_{n\to\infty}\frac{a_{n+1}}{a_n}
+\end{equation}
 
-$y = x + 2$
+\begin{equation}
+L = lim_{n\to\infty}
 
-```{r}
-s <- seq(-2, 5, by=.01)
-fx <- function(x) x^2 -2*x -2
-fx2 <- function(x) x + 2
+\frac{
+  \frac{(x-c)^{n+1}}{(1-c)^{n+2}}
+}{
+  \frac{(x-c)^n}{(1-c)^{n+1}}
+}
+\end{equation}
 
-fx_values <- fx(s)
-fx2_values <- fx2(s)
+\begin{equation}
+L = lim_{n\to\infty}
+  \frac{(x-c)^{n+1}(1-c)^{n+1}}{(x-c)^n(1-c)^{n+2}}
+  = \frac{x-c}{1-c}
+  = x
+\end{equation}
 
-plot(s, fx_values,type="l", col="red")
-lines(s,fx2_values,col="green", type = "l")
-abline(0,0)
+The series will only converge (L < 1) when the range is between -1 and 1.
 
-#intersections
-is_equal <- fx2_values == fx_values
-mydf <- data.frame(cbind(s, is_equal))
-intersections <- subset(mydf, is_equal==1)
+###$f(x) = e^x$
 
-#critical points
-roots <- uniroot.all(fx, c(-2, 5))
-lower1 <- roots[1]
-upper1 <- roots[2]
-lower2 <- intersections$s[1]
-upper2 <- intersections$s[2]
+$f(c) = e^c$
 
-#answer
-(integrate(Vectorize(fx2),lower2, upper2)$value - integrate(Vectorize(fx),lower2, upper2)$value)
+$f'(c) = e^c$
 
-###Validate answer###
-Fx_neg <- abs(integrate(Vectorize(fx),lower1, upper1)$value)
-Fx_pos1 <- integrate(Vectorize(fx),lower2, lower1)$value
-Fx_pos2 <- integrate(Vectorize(fx),upper1, upper2)$value
-Fx2 <- integrate(Vectorize(fx2),lower2, upper2)$value
-Fx_neg + Fx2 - Fx_pos2 - Fx_pos1
-```
+$f''(c) = e^c$
 
-###5. A beauty supply store expects to sell 110 flat irons during the next year. It costs \$3.75 to store one flat iron for one year. There is a fixed cost of $8.25 for each order. Find the lot size and the number of orders per year that will minimize inventory costs.
+$f'''(c) = e^c$
 
-```{r 21}
-#lotsize  = 110 / orders_per_year
+$f''''(c) = e^c$
 
-#cost = lotsize*3.75 + orders_per_year * 8.25
+\begin{equation}
+f(x) =
+\frac{e^c}{0!}  (x-c)^0 + 
+\frac{e^c}{1!}   (x-c)^1 + 
+\frac{e^c}{2!}   (x-c)^2  + 
+\frac{e^c}{3!}   (x-c)^3  + 
+\frac{e^c}{4!}   (x-c)^4  + ...
+\end{equation}
 
-total_cost <- function(orders_per_year) 110 / orders_per_year * 3.75 + 8.25 * orders_per_year
-(total_cost.prime <- Deriv(total_cost))
- 
-(root <- uniroot.all(total_cost.prime, c(1, 110)))
+\begin{equation}
+f(x) =
+e^c + 
+e^c   (x-c) + 
+\frac{e^c}{2!}   (x-c)^2  + 
+\frac{e^c}{3!}   (x-c)^3  + 
+\frac{e^c}{4!}   (x-c)^4  + ...
+\end{equation}
 
-#calculate in whole number terms
-orders_per_year <- floor(root)
-lot_size <- ceiling(110/orders_per_year)
-total_units <- orders_per_year * lot_size
-min_cost <- lot_size  * 3.75 + 8.25 * orders_per_year
-
-paste(orders_per_year, "orders of", lot_size, "units each,", total_units,  "total units, for a minimum cost of", min_cost)
-```
+$f(x) = \sum_{n=0}^{\infty} \frac{e^c(x-c)^n}{n!}$
 
 
-###6. Use integration by parts to solve the integral below.
+**Ratio test:**
 
-$\int ln( 9x ) * x^6 dx$
+\begin{equation}
+L = \lim_{n\to\infty}\frac{a_{n+1}}{a_n}
+\end{equation}
 
-```{r}
-x <- Var("x")
-sympy("integrate(log( 9 * x ) * x**6)")
-```
+\begin{equation}
+L = lim_{n\to\infty}
 
+\frac{
+  \frac{e^c(x-c)^(n+1)}{(n+1)!}
+}{
+  \frac{e^c(x-c)^n}{n!}
+}
+\end{equation}
 
-###7. Determine whether f ( x ) is a probability density function on the interval [1, e^6] . If not, determine the value of the definite integral.
-$f ( x ) = 1/6x$
-```{r}
-fx <- function(x) 1/(6*x)
-lower <- 1
-upper <- exp(6)
+\begin{equation}
+L = lim_{n\to\infty}
+  \frac{e^c(x-c)^{n+1}n!}{e^c(x-c)^n(n+1)!}
+  =  \frac{x-c}{n!}
+  = 0
+\end{equation}
 
-all.equal(1, integrate(Vectorize(fx),lower, upper)$value,
-          tolerance = 10^-8)
-```
+Since $lim_{n\to\infty} = 0$, the series will converge (L < 1) when the range is $(-\infty, \infty)$.
 
+###$f(x) = ln(1 + x)$
 
+$f(c) = ln(1 + c)$
+
+$f'(c) = 1/(1 + c)$
+
+$f''(c) = -1/(1 + c)^2$
+
+$f'''(c) = 2/(1 + c)^3$
+
+$f''''(c) = -6/(1 + c)^4$
+
+\begin{equation}
+f(x) =
+\frac{ln(1 + c)}{0!}  (x-c)^0 + 
+\frac{1}{(1 + c)1!}   (x-c)^1 + 
+\frac{-1}{(1 + c)^2 2!}   (x-c)^2  + 
+\frac{2}{(1 + c)^3 3!}   (x-c)^3  + 
+\frac{-6}{(1 + c)^4 4!}   (x-c)^4  + ...
+\end{equation}
+
+\begin{equation}
+f(x) =
+ln(1 + c) + 
+\frac{x-c}{(1 + c)}    - 
+\frac{(x-c)^2}{2(1 + c)^2}     + 
+\frac{(x-c)^3}{3(1 + c)^3}    - 
+\frac{(x-c)^4}{4(1 + c)^4}     + ...
+\end{equation}
+
+$f(x) = ln(1 + c) + \sum_{n=1}^{\infty} (-1)^{n+1}\frac{(x-c)^n}{n(1 + c)^n}$
+
+**Ratio test:**
+
+\begin{equation}
+L = \lim_{n\to\infty}\frac{a_{n+1}}{a_n}
+\end{equation}
+
+\begin{equation}
+L = lim_{n\to\infty}
+
+\frac{
+  ln(1 + c) + \frac{(-1)^{n+2}(x-c)^{n+1}}{(n+1)(1 + c)^{n+1}}
+}{
+  ln(1 + c) + \frac{(-1)^{n+1}(x-c)^n}{n(1 + c)^n}
+}
+\end{equation}
+
+\begin{equation}
+L = 
+lim_{n\to\infty} 
+1 + \frac{n(1 + c)^n(-1)^{n+2}(x-c)^{n+1}}{(n+1)(1 + c)^{n+1}(-1)^{n+1}(x-c)^n} = 
+\end{equation}
+
+\begin{equation}
+L = 
+lim_{n\to\infty} 
+1 - \frac{n(x-c)}{(n+1)(1 + c)} 
+= 
+lim_{n\to\infty} 
+1 - \frac{nx}{n+1} 
+= 1 - x
+\end{equation}
+
+The series will only converge (L < 1) when the range is between -1 and 1.
+
+###References
+http://www.wolframalpha.com/widget/widgetPopup.jsp?p=v&id=f9476968629e1163bd4a3ba839d60925&title=Taylor%20Series&theme=blue&i0=ln(1%20%2B%20x)%20&i1=x&i2=0&i3=10&podSelect=&showAssumptions=1&showWarnings=1
 </body>

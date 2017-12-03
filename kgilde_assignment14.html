@@ -12,50 +12,11 @@
 
 <meta name="author" content="Kyle Gilde" />
 
-<meta name="date" content="2017-11-26" />
 
 <title>DATA 605 FUNDAMENTALS OF COMPUTATIONAL MATHEMATICS</title>
 
 
 
-<style type="text/css">code{white-space: pre;}</style>
-<style type="text/css">
-div.sourceCode { overflow-x: auto; }
-table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
-  margin: 0; padding: 0; vertical-align: baseline; border: none; }
-table.sourceCode { width: 100%; line-height: 100%; }
-td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
-td.sourceCode { padding-left: 5px; }
-code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code > span.dt { color: #902000; } /* DataType */
-code > span.dv { color: #40a070; } /* DecVal */
-code > span.bn { color: #40a070; } /* BaseN */
-code > span.fl { color: #40a070; } /* Float */
-code > span.ch { color: #4070a0; } /* Char */
-code > span.st { color: #4070a0; } /* String */
-code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code > span.ot { color: #007020; } /* Other */
-code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code > span.fu { color: #06287e; } /* Function */
-code > span.er { color: #ff0000; font-weight: bold; } /* Error */
-code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-code > span.cn { color: #880000; } /* Constant */
-code > span.sc { color: #4070a0; } /* SpecialChar */
-code > span.vs { color: #4070a0; } /* VerbatimString */
-code > span.ss { color: #bb6688; } /* SpecialString */
-code > span.im { } /* Import */
-code > span.va { color: #19177c; } /* Variable */
-code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code > span.op { color: #666666; } /* Operator */
-code > span.bu { } /* BuiltIn */
-code > span.ex { } /* Extension */
-code > span.pp { color: #bc7a00; } /* Preprocessor */
-code > span.at { color: #7d9029; } /* Attribute */
-code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-</style>
 
 
 
@@ -73,7 +34,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <h1 class="title toc-ignore">DATA 605 FUNDAMENTALS OF COMPUTATIONAL MATHEMATICS</h1>
 <h2 class="subtitle">Assignment 13: Calculus</h2>
 <h3 class="author">Kyle Gilde</h3>
-<h3 class="date">11/26/2017</h3>
+<h3 class="date">12/2/2017</h3>
 </div>
 </header>
 
@@ -89,129 +50,165 @@ body{
 }
 </style>
 <body>
-<pre><code>## Warning: package 'Deriv' was built under R version 3.3.3
-## Warning: package 'rJava' was built under R version 3.3.3
-##           installed_and_loaded.packages.
+<pre><code>##           installed_and_loaded.packages.
 ## prettydoc                           TRUE
-## Deriv                               TRUE
-## rootSolve                           TRUE
-## rSymPy                              TRUE</code></pre>
-<div id="use-integration-by-substitution-to-solve-the-integral-below." class="section level3">
-<h3>1. Use integration by substitution to solve the integral below.</h3>
-<p><span class="math inline">\(\int 4e^{-7x} dx\)</span></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x &lt;-<span class="st"> </span><span class="kw">Var</span>(<span class="st">&quot;x&quot;</span>)
-<span class="kw">sympy</span>(<span class="st">&quot;integrate(4 * exp(-7 * x))&quot;</span>)</code></pre></div>
-<pre><code>## [1] &quot;-4*exp(-7*x)/7&quot;</code></pre>
+## Ryacas                              TRUE
+## Deriv                               TRUE</code></pre>
+<div id="computing-the-taylor-series-expansion" class="section level2">
+<h2>Computing the Taylor Series expansion</h2>
+<p>This week, we’ll work out some Taylor Series expansions of popular functions.</p>
+<p><span class="math inline">\(f(x) = 1/(1-x)\)</span></p>
+<p><span class="math inline">\(f(x) = e^x\)</span></p>
+<p><span class="math inline">\(f(x) = ln(1 + x)\)</span></p>
+<p>For each function, only consider its valid ranges as indicated in the notes when you are computing the Taylor Series expansion. Please submit your assignment as a R-Markdown document</p>
+<div id="fx-11-x" class="section level3">
+<h3><span class="math inline">\(f(x) = 1/(1-x)\)</span></h3>
+<p><span class="math inline">\(f(c) = \frac{1}{(1-c)}\)</span></p>
+<p><span class="math inline">\(f'(c) = \frac{1}{(1-c)^2}\)</span></p>
+<p><span class="math inline">\(f''(c) = \frac{2}{(1-c)^3}\)</span></p>
+<p><span class="math inline">\(f'''(c) = \frac{6}{(1-c)^4}\)</span></p>
+<p><span class="math inline">\(f''''(c) = \frac{24}{(1-c)^5}\)</span></p>
+<span class="math display">\[\begin{equation}
+f(x) =
+\frac{1}{(1-c) 0!}  (x-c)^0 + 
+\frac{1}{(1-c)^2 1!}  (x-c)^1 + 
+\frac{2}{(1-c)^3 2!}  (x-c)^2  + 
+\frac{6}{(1-c)^4 3!}  (x-c)^3  + 
+\frac{24}{(1-c)^5 4!}  (x-c)^4  + ...
+\end{equation}\]</span>
+<span class="math display">\[\begin{equation}
+=
+\frac{1}{(1-c)} + 
+\frac{1}{(1-c)^2} (x-c) + 
+\frac{1}{(1-c)^3} (x-c)^2  + 
+\frac{1}{(1-c)^4} (x-c)^3  + 
+\frac{1}{(1-c)^5} (x-c)^4  +...
+\end{equation}\]</span>
+<p><span class="math inline">\(= \sum_{n=0}^{\infty} \frac{(x-c)^n}{(1-c)^{n+1}}\)</span></p>
+<p><strong>Ratio test:</strong></p>
+<span class="math display">\[\begin{equation}
+L = \lim_{n\to\infty}\frac{a_{n+1}}{a_n}
+\end{equation}\]</span>
+<span class="math display">\[\begin{equation}
+L = lim_{n\to\infty}
+
+\frac{
+  \frac{(x-c)^{n+1}}{(1-c)^{n+2}}
+}{
+  \frac{(x-c)^n}{(1-c)^{n+1}}
+}
+\end{equation}\]</span>
+<span class="math display">\[\begin{equation}
+L = lim_{n\to\infty}
+  \frac{(x-c)^{n+1}(1-c)^{n+1}}{(x-c)^n(1-c)^{n+2}}
+  = \frac{x-c}{1-c}
+  = x
+\end{equation}\]</span>
+<p>The series will only converge (L &lt; 1) when the range is between -1 and 1.</p>
 </div>
-<div id="biologists-are-treating-a-pond-contaminated-with-bacteria.-the-level-of-contamination-is-changing-at-a-rate-of-dndt--3150t4---220-bacteria-per-cubic-centimeter-per-day-where-t-is-the-number-of-days-since-treatment-began.-find-a-function-n-t-to-estimate-the-level-of-contamination-if-the-level-after-1-day-was-6530-bacteria-per-cubic-centimeter." class="section level3">
-<h3>2. Biologists are treating a pond contaminated with bacteria. The level of contamination is changing at a rate of <span class="math inline">\(dN/dt = -3150/t^4 - 220\)</span> bacteria per cubic centimeter per day, where t is the number of days since treatment began. Find a function N( t ) to estimate the level of contamination if the level after 1 day was 6530 bacteria per cubic centimeter.</h3>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ft &lt;-<span class="st"> </span>function(t) -<span class="dv">3150</span> *<span class="st"> </span>t^-<span class="dv">4</span> -<span class="st"> </span><span class="dv">220</span>
-<span class="co"># anti-derivative</span>
+<div id="fx-ex" class="section level3">
+<h3><span class="math inline">\(f(x) = e^x\)</span></h3>
+<p><span class="math inline">\(f(c) = e^c\)</span></p>
+<p><span class="math inline">\(f'(c) = e^c\)</span></p>
+<p><span class="math inline">\(f''(c) = e^c\)</span></p>
+<p><span class="math inline">\(f'''(c) = e^c\)</span></p>
+<p><span class="math inline">\(f''''(c) = e^c\)</span></p>
+<span class="math display">\[\begin{equation}
+f(x) =
+\frac{e^c}{0!}  (x-c)^0 + 
+\frac{e^c}{1!}   (x-c)^1 + 
+\frac{e^c}{2!}   (x-c)^2  + 
+\frac{e^c}{3!}   (x-c)^3  + 
+\frac{e^c}{4!}   (x-c)^4  + ...
+\end{equation}\]</span>
+<span class="math display">\[\begin{equation}
+f(x) =
+e^c + 
+e^c   (x-c) + 
+\frac{e^c}{2!}   (x-c)^2  + 
+\frac{e^c}{3!}   (x-c)^3  + 
+\frac{e^c}{4!}   (x-c)^4  + ...
+\end{equation}\]</span>
+<p><span class="math inline">\(f(x) = \sum_{n=0}^{\infty} \frac{e^c(x-c)^n}{n!}\)</span></p>
+<p><strong>Ratio test:</strong></p>
+<span class="math display">\[\begin{equation}
+L = \lim_{n\to\infty}\frac{a_{n+1}}{a_n}
+\end{equation}\]</span>
+<span class="math display">\[\begin{equation}
+L = lim_{n\to\infty}
 
-<span class="co"># F(t) = 1050 * t^-3 - 220 * t + C</span>
-
-<span class="co"># solve for C:</span>
-
-<span class="co"># F(1) = 6530 = 1050 * t^-3 - 220 * t + C</span>
-t &lt;-<span class="st"> </span><span class="dv">1</span>
-(C &lt;-<span class="st"> </span><span class="dv">6530</span> -<span class="st"> </span><span class="dv">1050</span> *<span class="st"> </span>t^-<span class="dv">3</span> +<span class="st"> </span><span class="dv">220</span> *<span class="st"> </span>t)</code></pre></div>
-<pre><code>## [1] 5700</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Integral</span>
-(Ft &lt;-<span class="st"> </span>function(t) <span class="dv">1050</span> *<span class="st"> </span>t^-<span class="dv">3</span> -<span class="st"> </span><span class="dv">220</span> *<span class="st"> </span>t +<span class="st"> </span><span class="dv">5700</span>)</code></pre></div>
-<pre><code>## function(t) 1050 * t^-3 - 220 * t + 5700</code></pre>
+\frac{
+  \frac{e^c(x-c)^(n+1)}{(n+1)!}
+}{
+  \frac{e^c(x-c)^n}{n!}
+}
+\end{equation}\]</span>
+<span class="math display">\[\begin{equation}
+L = lim_{n\to\infty}
+  \frac{e^c(x-c)^{n+1}n!}{e^c(x-c)^n(n+1)!}
+  =  \frac{x-c}{n!}
+  = 0
+\end{equation}\]</span>
+<p>Since <span class="math inline">\(lim_{n\to\infty} = 0\)</span>, the series will converge (L &lt; 1) when the range is <span class="math inline">\((-\infty, \infty)\)</span>.</p>
 </div>
-<div id="find-the-total-area-of-the-red-rectangles-in-the-figure-below-where-the-equation-of-the-line-is-fx-2x-9" class="section level3">
-<h3>3. Find the total area of the red rectangles in the figure below, where the equation of the line is <span class="math inline">\(f(x) = 2x-9\)</span></h3>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fx &lt;-<span class="st"> </span>function(x) <span class="dv">2</span> *<span class="st"> </span>x -<span class="st"> </span><span class="dv">9</span>
-<span class="co"># f(0) = 2x-9</span>
+<div id="fx-ln1-x" class="section level3">
+<h3><span class="math inline">\(f(x) = ln(1 + x)\)</span></h3>
+<p><span class="math inline">\(f(c) = ln(1 + c)\)</span></p>
+<p><span class="math inline">\(f'(c) = 1/(1 + c)\)</span></p>
+<p><span class="math inline">\(f''(c) = -1/(1 + c)^2\)</span></p>
+<p><span class="math inline">\(f'''(c) = 2/(1 + c)^3\)</span></p>
+<p><span class="math inline">\(f''''(c) = -6/(1 + c)^4\)</span></p>
+<span class="math display">\[\begin{equation}
+f(x) =
+\frac{ln(1 + c)}{0!}  (x-c)^0 + 
+\frac{1}{(1 + c)1!}   (x-c)^1 + 
+\frac{-1}{(1 + c)^2 2!}   (x-c)^2  + 
+\frac{2}{(1 + c)^3 3!}   (x-c)^3  + 
+\frac{-6}{(1 + c)^4 4!}   (x-c)^4  + ...
+\end{equation}\]</span>
+<span class="math display">\[\begin{equation}
+f(x) =
+ln(1 + c) + 
+\frac{x-c}{(1 + c)}    - 
+\frac{(x-c)^2}{2(1 + c)^2}     + 
+\frac{(x-c)^3}{3(1 + c)^3}    - 
+\frac{(x-c)^4}{4(1 + c)^4}     + ...
+\end{equation}\]</span>
+<p><span class="math inline">\(f(x) = ln(1 + c) + \sum_{n=1}^{\infty} (-1)^{n+1}\frac{(x-c)^n}{n(1 + c)^n}\)</span></p>
+<p><strong>Ratio test:</strong></p>
+<span class="math display">\[\begin{equation}
+L = \lim_{n\to\infty}\frac{a_{n+1}}{a_n}
+\end{equation}\]</span>
+<span class="math display">\[\begin{equation}
+L = lim_{n\to\infty}
 
-<span class="co"># x = 4.5</span>
-(lower &lt;-<span class="st"> </span><span class="fl">4.5</span>)</code></pre></div>
-<pre><code>## [1] 4.5</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">(upper &lt;-<span class="st"> </span>lower +<span class="st"> </span><span class="dv">4</span>)</code></pre></div>
-<pre><code>## [1] 8.5</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">stats::<span class="kw">integrate</span>(<span class="kw">Vectorize</span>(fx), lower, upper)</code></pre></div>
-<pre><code>## 16 with absolute error &lt; 1.8e-13</code></pre>
+\frac{
+  ln(1 + c) + \frac{(-1)^{n+2}(x-c)^{n+1}}{(n+1)(1 + c)^{n+1}}
+}{
+  ln(1 + c) + \frac{(-1)^{n+1}(x-c)^n}{n(1 + c)^n}
+}
+\end{equation}\]</span>
+<span class="math display">\[\begin{equation}
+L = 
+lim_{n\to\infty} 
+1 + \frac{n(1 + c)^n(-1)^{n+2}(x-c)^{n+1}}{(n+1)(1 + c)^{n+1}(-1)^{n+1}(x-c)^n} = 
+\end{equation}\]</span>
+<span class="math display">\[\begin{equation}
+L = 
+lim_{n\to\infty} 
+1 - \frac{n(x-c)}{(n+1)(1 + c)} 
+= 
+lim_{n\to\infty} 
+1 - \frac{nx}{n+1} 
+= 1 - x
+\end{equation}\]</span>
+<p>The series will only converge (L &lt; 1) when the range is between -1 and 1.</p>
 </div>
-<div id="find-the-area-of-the-region-bounded-by-the-graphs-of-the-given-equations." class="section level3">
-<h3>4. Find the area of the region bounded by the graphs of the given equations.</h3>
-<p><span class="math inline">\(y = x^2 -2x -2\)</span></p>
-<p><span class="math inline">\(y = x + 2\)</span></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">s &lt;-<span class="st"> </span><span class="kw">seq</span>(-<span class="dv">2</span>, <span class="dv">5</span>, <span class="dt">by =</span> <span class="fl">0.01</span>)
-fx &lt;-<span class="st"> </span>function(x) x^<span class="dv">2</span> -<span class="st"> </span><span class="dv">2</span> *<span class="st"> </span>x -<span class="st"> </span><span class="dv">2</span>
-fx2 &lt;-<span class="st"> </span>function(x) x +<span class="st"> </span><span class="dv">2</span>
-
-fx_values &lt;-<span class="st"> </span><span class="kw">fx</span>(s)
-fx2_values &lt;-<span class="st"> </span><span class="kw">fx2</span>(s)
-
-<span class="kw">plot</span>(s, fx_values, <span class="dt">type =</span> <span class="st">&quot;l&quot;</span>, <span class="dt">col =</span> <span class="st">&quot;red&quot;</span>)
-<span class="kw">lines</span>(s, fx2_values, <span class="dt">col =</span> <span class="st">&quot;green&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;l&quot;</span>)
-<span class="kw">abline</span>(<span class="dv">0</span>, <span class="dv">0</span>)</code></pre></div>
-<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAqAAAAHgCAMAAABNUi8GAAAAYFBMVEUAAAAAADoAAGYAOpAAZrYA/wA6AAA6ADo6AGY6Ojo6kNtmAABmADpmOpBmtttmtv+QOgCQOjqQOmaQZgCQ2/+2ZgC2///bkDrb2//b////AAD/tmb/25D//7b//9v///+nJw3RAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAPbElEQVR4nO3djXLbNhpGYSZ2s629u/Zuo2htWeL93+WKlGRbjiiRwAfg/YDzzHQm06YUBRyDP/px1wPCutI7AFxDoJBGoJBGoJBGoJBGoJBGoJBGoJBGoJBGoJBGoJBGoJBGoJBGoJBGoJBGoJBGoJBGoJBGoJBGoJBGoJBGoJBGoJBGoJBGoJBGoJBGoJBGoJBGoJBGoJBGoJBGoJBGoJBGoJBGoJBGoJBGoJBGoJBGoJBGoJBGoJBGoJBGoJBGoJBGoJBGoJBGoJBGoJBGoJBGoJBGoJBGoJBGoJBGoJBGoJBGoJBGoJBGoJBGoJBGoJBGoJBGoJBGoJBGoJBGoJBGoJBGoJBGoJBGoJBGoJBGoJBGoJBGoJBGoJBGoJBGoJBGoJBmHGgHzFIqUNvNoVYECmkECmkECmkECmkECmkECmkECmkECmkECmkEChmvF/4dgULFpT4JFDIIFMou9kmgUEGgkEagUHa5TwKFhok+CRQSpvokUEggUEgjUCib7JNAoYBAoWy6TwJFeVf6JFCUR6CQRqBQdq1PAkVpV/skUBR2vU8CRWEECmkECmU3+iRQFHWrTwJFUQQKaQQKZTf7JFCURKBQdrtPAkU5M/okUJRDoJBGoFA2p08CRSmz+iRQFDKvTwJFIQQKaQQKZTP7JFAUMbdPAkUJs/skUJRAoJBGoFA2v08CRX4L+iRQ5CcQ6O65G33/ZbI5VKV8oOvu4fCHzekPUZtDVZb0mSbQ3fN7luu7l+jNoSqL+kwT6Pbx6fTHzcRBnkBbtaxPVlBkphDo/hz0uIRyDoovJALdH+QPV/ET6yeBNmthn9wHRVZL+8wdaPfOZHPwRj3QVJuDD4v7JFDkJBLo6RLpyoudBNqi5X0mWkF3z5MvwodsDnUI6DPdm0XuLTeHKggF2m+6p6v/nUAbpBRo5s3BgZA+CRS5BPVJoMgkrE8CRSYECmkECmWBfRIosgjtk0CRQ3CfBIocCBTSCBTKwvskUKQX0SeBIrmYPgkUyREopBEolEX1SaBILK5PAkViBAplkX0SKJKK7ZNAkRSBQll0nwSKlAgUyuL7JFCkY9AngSIZiz4JFMkQKKQRKJSZ9EmgSMSmTwJFGkZ9EijSIFAos+qTQJGCWZ8EihQIFNIIFMrs+iRQ2DPsk0BhzrJPAoU5AoUy0z4JFMZs+yRQGCNQKDPuk0Bhi0ChzLpPAoWliD7/2LvwrwkUhgIDnYhzEBDo9vGhX3fd3UvYzix8XDgS0ueVOAcBga7uXt5+3Per+4C9Wf648GNpn3/ciHOwPNDt41O/6fb/fP+1cH+CHhduLOtzRpyDsEBX+zjXBIozswOds3KehBzi77ePdy/bRw7xODMr0CVxDoIukrpvP3fPUX0SaH1u97mwzRG3mWDjRp9LV84TAoWJK32GtjkKCXR/jL97WT2EPuSyx4UPE4FGxTkICHTz7ed6uEiKKpRA63Kpz9g2R8sD3T0/9PtAuc2ED7/1Gb1ynoTdBx0C5UY9Ts77tGpzFL6CrqJejCfQmnwEahrnIPgcdN09ZXlc6Dv2aR7nIPAqvuu+/czzuJD3anjK+Rup+6Dmb8dGDqnaHBEoIqRbOU9CruK7gwRX8RTqyLHNxHMWvILG3WWaelwK9eFj4Uw9Y+GH+CTvqCdQfedHdd1A09yop1BlF045dQNN81Ingaq6fD2UfL6CA031jnoKFTR5rZ5+tsKv4lN97JhCtVy7k5RhrqTugx5QqIxbdzkJFMXMuAWfY6YEA6XQ0ma+PpRlnhYG+v4yUppXko4otJwFL14qBprncQm0jGUvrOeZJclAKTS/xW/7yDRHYV/ccOMQf/hA3eba37nxuBSaU8hbknLNUNi3263v+7cf0++oHwMdPhYyfoAp6HEpNI/g98vpBjrUtxk+1Tl9p374K8c0p/4WgQqIeDNntvkJ+1Tn25+/xn8mDIEeV9gvbyn5uAdw6/EoNKnIdxrnm52wT3Vu//nzVqCRKyiFphP/LviMcxNwDjq8jWn1cP0QP6yR9/3pcinscSk0AZuPaGgHOrxVeZ/g9fv043c07i/kp74fh0DzM/v8UM6Z0bwPekChZkw/3JZ1XpQDpVAbxp+8zDsrIVfxcd+tvORxKTRSio8Fqwfar+K/V4RAM0j0mfXMcxJ2iN+crtJTPy6Fhkn3fQq5ZyT4HHT3nOXrFyl0sbTf9uEj0GwraP9KoUuk/iaa/NMR8kpSvnPQAYXOk/5rkorMhfZV/IhCb8rQ5shFoJ/s/hO8kBKolRwr51GJmXAQKIVOytfmoMg8eAiUQi/JG2dfahZcBEqhX2SPc0Cg0wj0XcZTznOF5sBHoBR6UCrOvtwMOAmUQoutnAfFxp9AHSjb5ohAb2m00MIL50m50Q94qfN/WR/3XYOFasTZFx378Jc6d//N/MtkmypUZOU8KPmOnYBD/GZ8q8g64bfbTWilUKk4+8LjHnIOOr6fafLzmsaP+1kDhYq1OSg76kEXSUOhUb/rOPQzeHUXqrZyHvkLdNV1/35O9ksUrqk3UM02B4XHPOi3fBy+XDH7OWhffLTS0I2zLz/iAYH+67B0Zr+KH5UeL2vScfYC4734O+qfhi8Oy/i4XxUfMTOip5znig/34kAfSgdafMgseGizlxjspYf4dY7f8nFd+UGL4yTOgcBQB5yDll1BJUYtmKM4e42Rlv7ysAkK47aci1POMxLj7DFQjZFbxF2cvcoouwxUZOzm8bdyHmkMMoGm5DbOXmaMfQaqcP/jFsdt9kID7DRQmR/wy3zHOZAZXgI15vmo/kFndN0GKjSGH6qIs5caW7+BKo1iX8vKeaA0so4D1RnHmuLshS6QBp4DlSi0rjYHCqP6wXWgpceyvjgHBGq3uYJjWWecvVqfzgMtc7pU2SnnGanzz4HzQPP/wNfb5kitTwJdoOaV80iuT/+BZhrT+tsc6PVZQaDpT5vaiLOX7LOGQJOOazNx9pp9VhFoopFt4JTzjGSfdQRqP7atxTkg0HSbMz0NbbDNXvAG6FEdgZr9+Le4co5E86wnUIMRbrXNEYGm3VzsIarpOHWP731FgQYvAs0e1T/o5llVoAHjTJwjAk2+udGyAxVtHgkf3/u6Ap2/FLByfpDOs7ZA54w2bZ4j0BybO7lxuCLOr7SP7311gV5ZEIjzEvU+2wiUU84p8n3WF+jXgxZtTpM/vvc1BvppWSDO6xz0WWegw8AT5y0e1s86A+WUcw4XeVYY6CFOJ6NfkpMhqinQTyunj8NXQW4GqJZAfzuse5mAMvyMTg2BXjzldLNElOBocLwHeuWCyM8k5OZpZDwHeuti3dM85ORo/XQb6Lw7SZ4mIh9fo+Iw0AV3OV2tFZk4GxJngS69B+9sNjLwNiKOAg16fYg19Iy/4XASaMSLl+6mJCV/g+Eg0MhX1v0tGsl4HArtQG3e9uFwWpLw2KdyoHbvSfI4MfZ8jkKiQHfP3ej7r6DNWb9hzuXaYczpEKQJdN09HP6wOf1h/uaSvJnT6ewY8joCSQLdPb9nub57WbC5dO80bnwN9fv0kwS6fXw6/XFzfpDvgGVSBBq8gibldhGJ5vmZpzoHPS6hAeeg6fg9zsVx/bQTXcVvHw/r88T6WSbQNgt1/qSF74Om4Huygjh/yq0F6ny6FnP/hBsLtIIZW8T/k20u0JYKreGpthdoDcvKPFU8zxYDrWPmbqph/Ww00Erm7qpanmKbgVYzfZOqeYKNBlrRDF5Uz5NrNtCaC63pqbUbaF3z+FlVT6vlQOsstLIn1XSg1c1mX9ny2TcfaG2FVvZ0egKta8mpr08CrWhWq3kinxFoX8siWmWfBDqqYG4reAoXEeiB9+mttU8CPXE9w653/joCfed2ll/d7vkMBPqJz3muOU8CPedwrh3u8iIEes7ZfFd9dB8R6FeeptzRroYi0N+4KdTNjsYg0AtczHz9R/cRgV4kP/nyO2iFQCdIFyC9c7YIdJJsBY0c3A8I9ArJECR3Kh0CvUquBrkdSo1Ab5AqQmpn8iDQm1RO+V5VdiQrAp1DoIwm6+wJdK7CeTRaZ0+g8xVspN08CXSJMkfZVo/tRwS6SO5aGq+zJ9Dl8jVDnT2BBslRDnUeEGiYtP1Q5zsCDZbqxjl1fkagMcwbbfPVomsINNarVVTEeQmBWoiN1Czy+hComdeQzIL+p5YQqLHX11nNvc78e80j0EReryu9e24QKKQRKKQRKKQRKKQRKKQRKKQRKKQRKKQRKKQRKKQRKKQVCxSYpVCgaR+DDWXckMguESgbSr0lAmVDCTYksksEyoZSb4lA2VCCDYnsEoGyodRbIlA2lGBDIrtEoGwo9ZYIlA0l2JDILvHaJKQRKKQRKKQRKKQRKKQRKKQRKKQRKKQRKKQRKKQRKKQRKKQRKKRlCHT33HXdg8223v78Fb2NTdd9+2mwL73N7lgO0NruqfX96u4lfiPbx+EzxvfhG0gf6O55P2brmH38sH38Hl3EZr87G5tptNgdywFa73fH6KkNP8cWgb79I3J30gf69uOpP4xdtP3aF72Z3fOwVq0sfl4sdqc3HKDt48Pw/EyWgmHpswh0E/u0cp2DWvxgb7qH6Odr+PNisjsfWzNa+awCXd/9bRHoOnZvcgW6splKg0DHY45RWYaBGg1Qv7YJfT9MJuegq78iz68zBboxukqKL+KwUhmtV3aBGg3QxuhqazgRsgh0+zhsZBWxT3kC3dhcI9UbqNkA7dMyOTLvN2Kygo5ihilLoFbrZ7WHeLsBsvnZGwfJLtDDeX+YpIGuD+cf6+jhX59OZJQukkx2ZxQ/QJ/E1HCyPn5HYvyWRjH3mjKsoGur59lbFGF4m8kqUKsBOqRpdtphsYLG71KO+6CGy4PB6BveqLeJwW6AhqQOP4BWW4vfyLASaF8kHQ8XOlclhq8HmgRqOEAru8Oy1Tlo7C7xZhFII1BII1BII1BII1BII1BII1BII1BII1BII1BII1BII1BII1BII1BII1BII1BII1BII1BII1BII1BII1BII1BII1BII1BII1BII1BII1BII1BII1BII1BII9DE3n5YfiViewg0rfErhjcUGoxA0zL8TUptItC0bH6dZ8MINLHxVxlzhA9GoBms7H5HdnMINIPtI0toKAJNa/yFN2a/w71BBJrYxuxX8LSJQCGNQCGNQCGNQCGNQCGNQCGNQCGNQCGNQCGNQCGNQCGNQCGNQCGNQCGNQCGNQCGNQCGNQCGNQCGNQCGNQCGNQCGNQCGNQCHt/4Bt9S1/FHm9AAAAAElFTkSuQmCC" /><!-- --></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># intersections</span>
-is_equal &lt;-<span class="st"> </span>fx2_values ==<span class="st"> </span>fx_values
-mydf &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="kw">cbind</span>(s, is_equal))
-intersections &lt;-<span class="st"> </span><span class="kw">subset</span>(mydf, is_equal ==<span class="st"> </span><span class="dv">1</span>)
-
-<span class="co"># critical points</span>
-roots &lt;-<span class="st"> </span><span class="kw">uniroot.all</span>(fx, <span class="kw">c</span>(-<span class="dv">2</span>, <span class="dv">5</span>))
-lower1 &lt;-<span class="st"> </span>roots[<span class="dv">1</span>]
-upper1 &lt;-<span class="st"> </span>roots[<span class="dv">2</span>]
-lower2 &lt;-<span class="st"> </span>intersections$s[<span class="dv">1</span>]
-upper2 &lt;-<span class="st"> </span>intersections$s[<span class="dv">2</span>]
-
-<span class="co"># answer</span>
-(<span class="kw">integrate</span>(<span class="kw">Vectorize</span>(fx2), lower2, upper2)$value -<span class="st"> </span><span class="kw">integrate</span>(<span class="kw">Vectorize</span>(fx), 
-    lower2, upper2)$value)</code></pre></div>
-<pre><code>## [1] 20.83333</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">### Validate answer###
-Fx_neg &lt;-<span class="st"> </span><span class="kw">abs</span>(<span class="kw">integrate</span>(<span class="kw">Vectorize</span>(fx), lower1, upper1)$value)
-Fx_pos1 &lt;-<span class="st"> </span><span class="kw">integrate</span>(<span class="kw">Vectorize</span>(fx), lower2, lower1)$value
-Fx_pos2 &lt;-<span class="st"> </span><span class="kw">integrate</span>(<span class="kw">Vectorize</span>(fx), upper1, upper2)$value
-Fx2 &lt;-<span class="st"> </span><span class="kw">integrate</span>(<span class="kw">Vectorize</span>(fx2), lower2, upper2)$value
-Fx_neg +<span class="st"> </span>Fx2 -<span class="st"> </span>Fx_pos2 -<span class="st"> </span>Fx_pos1</code></pre></div>
-<pre><code>## [1] 20.83333</code></pre>
-</div>
-<div id="a-beauty-supply-store-expects-to-sell-110-flat-irons-during-the-next-year.-it-costs-3.75-to-store-one-flat-iron-for-one-year.-there-is-a-fixed-cost-of-8.25-for-each-order.-find-the-lot-size-and-the-number-of-orders-per-year-that-will-minimize-inventory-costs." class="section level3">
-<h3>5. A beauty supply store expects to sell 110 flat irons during the next year. It costs $3.75 to store one flat iron for one year. There is a fixed cost of $8.25 for each order. Find the lot size and the number of orders per year that will minimize inventory costs.</h3>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># lotsize = 110 / orders_per_year</span>
-
-<span class="co"># cost = lotsize*3.75 + orders_per_year * 8.25</span>
-
-total_cost &lt;-<span class="st"> </span>function(orders_per_year) <span class="dv">110</span>/orders_per_year *<span class="st"> </span><span class="fl">3.75</span> +<span class="st"> </span><span class="fl">8.25</span> *<span class="st"> </span>
-<span class="st">    </span>orders_per_year
-(total_cost.prime &lt;-<span class="st"> </span><span class="kw">Deriv</span>(total_cost))</code></pre></div>
-<pre><code>## function (orders_per_year) 
-## 8.25 - 412.5/orders_per_year^2</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">(root &lt;-<span class="st"> </span><span class="kw">uniroot.all</span>(total_cost.prime, <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">110</span>)))</code></pre></div>
-<pre><code>## [1] 7.071079</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># calculate in whole number terms</span>
-orders_per_year &lt;-<span class="st"> </span><span class="kw">floor</span>(root)
-lot_size &lt;-<span class="st"> </span><span class="kw">ceiling</span>(<span class="dv">110</span>/orders_per_year)
-total_units &lt;-<span class="st"> </span>orders_per_year *<span class="st"> </span>lot_size
-min_cost &lt;-<span class="st"> </span>lot_size *<span class="st"> </span><span class="fl">3.75</span> +<span class="st"> </span><span class="fl">8.25</span> *<span class="st"> </span>orders_per_year
-
-<span class="kw">paste</span>(orders_per_year, <span class="st">&quot;orders of&quot;</span>, lot_size, <span class="st">&quot;units each,&quot;</span>, total_units, <span class="st">&quot;total units, for a minimum cost of&quot;</span>, 
-    min_cost)</code></pre></div>
-<pre><code>## [1] &quot;7 orders of 16 units each, 112 total units, for a minimum cost of 117.75&quot;</code></pre>
-</div>
-<div id="use-integration-by-parts-to-solve-the-integral-below." class="section level3">
-<h3>6. Use integration by parts to solve the integral below.</h3>
-<p><span class="math inline">\(\int ln( 9x ) * x^6 dx\)</span></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x &lt;-<span class="st"> </span><span class="kw">Var</span>(<span class="st">&quot;x&quot;</span>)
-<span class="kw">sympy</span>(<span class="st">&quot;integrate(log( 9 * x ) * x**6)&quot;</span>)</code></pre></div>
-<pre><code>## [1] &quot;x**7*log(9)/7 + x**7*log(x)/7 - x**7/49&quot;</code></pre>
-</div>
-<div id="determine-whether-f-x-is-a-probability-density-function-on-the-interval-1-e6-.-if-not-determine-the-value-of-the-definite-integral." class="section level3">
-<h3>7. Determine whether f ( x ) is a probability density function on the interval [1, e^6] . If not, determine the value of the definite integral.</h3>
-<p><span class="math inline">\(f ( x ) = 1/6x\)</span></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fx &lt;-<span class="st"> </span>function(x) <span class="dv">1</span>/(<span class="dv">6</span> *<span class="st"> </span>x)
-lower &lt;-<span class="st"> </span><span class="dv">1</span>
-upper &lt;-<span class="st"> </span><span class="kw">exp</span>(<span class="dv">6</span>)
-
-<span class="kw">all.equal</span>(<span class="dv">1</span>, <span class="kw">integrate</span>(<span class="kw">Vectorize</span>(fx), lower, upper)$value, <span class="dt">tolerance =</span> <span class="dv">10</span>^-<span class="dv">8</span>)</code></pre></div>
-<pre><code>## [1] TRUE</code></pre>
+<div id="references" class="section level3">
+<h3>References</h3>
+<a href="http://www.wolframalpha.com/widget/widgetPopup.jsp?p=v&amp;id=f9476968629e1163bd4a3ba839d60925&amp;title=Taylor%20Series&amp;theme=blue&amp;i0=ln(1%20%2B%20x)%20&amp;i1=x&amp;i2=0&amp;i3=10&amp;podSelect">http://www.wolframalpha.com/widget/widgetPopup.jsp?p=v&amp;id=f9476968629e1163bd4a3ba839d60925&amp;title=Taylor%20Series&amp;theme=blue&amp;i0=ln(1%20%2B%20x)%20&amp;i1=x&amp;i2=0&amp;i3=10&amp;podSelect</a>=&amp;showAssumptions=1&amp;showWarnings=1
 </body>
+</div>
 </div>
     </section>
   </div>
