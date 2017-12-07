@@ -1,0 +1,241 @@
+---
+title: "DATA 605 FUNDAMENTALS OF COMPUTATIONAL MATHEMATICS" 
+subtitle: "Assignment 14: Calculus & Taylor Series Expansion"
+author: "Kyle Gilde"
+date: "12/2/2017"
+output: 
+  prettydoc::html_pretty:
+    theme: architect
+    highlight: github
+    toc: true
+    toc_depth: 1
+---
+<style type="text/css">
+body{
+  font-family: Helvetica;
+  font-size: 14pt;
+}
+</style>
+<body>
+
+```{r knitr_options, echo=FALSE}
+knitr::opts_chunk$set(
+                      error = FALSE
+                      ,message = FALSE
+                      ,tidy = TRUE
+                      #,cache = TRUE
+                      )
+```
+
+
+```{r packages, echo=F, collapse=T} 
+packages <- c("prettydoc", "Ryacas",'Deriv') 
+
+#see if we need to install any of them
+installed_and_loaded <- function(pkg){
+  #CODE SOURCE: https://gist.github.com/stevenworthington/3178163
+  new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
+  if (length(new.pkg)) 
+    install.packages(new.pkg, dependencies = TRUE)
+  sapply(pkg, require, character.only = TRUE, quietly = TRUE, warn.conflicts = FALSE)
+}
+#excute function and display the loaded packages
+data.frame(installed_and_loaded(packages))
+```
+
+##Computing the Taylor Series expansion
+
+This week, we'll work out some Taylor Series expansions of popular functions.
+
+$f(x) = 1/(1-x)$
+
+$f(x) = e^x$
+
+$f(x) = ln(1 + x)$
+
+For each function, only consider its valid ranges as indicated in the notes when you are computing the Taylor Series expansion. Please submit your assignment as a R-Markdown document
+
+###$f(x) = 1/(1-x)$
+
+$f(c) = \frac{1}{(1-c)}$
+
+$f'(c) = \frac{1}{(1-c)^2}$
+
+$f''(c) = \frac{2}{(1-c)^3}$
+
+$f'''(c) = \frac{6}{(1-c)^4}$
+
+$f''''(c) = \frac{24}{(1-c)^5}$
+
+\begin{equation}
+f(x) =
+\frac{1}{(1-c) 0!}  (x-c)^0 + 
+\frac{1}{(1-c)^2 1!}  (x-c)^1 + 
+\frac{2}{(1-c)^3 2!}  (x-c)^2  + 
+\frac{6}{(1-c)^4 3!}  (x-c)^3  + 
+\frac{24}{(1-c)^5 4!}  (x-c)^4  + ...
+\end{equation}
+
+\begin{equation}
+=
+\frac{1}{(1-c)} + 
+\frac{1}{(1-c)^2} (x-c) + 
+\frac{1}{(1-c)^3} (x-c)^2  + 
+\frac{1}{(1-c)^4} (x-c)^3  + 
+\frac{1}{(1-c)^5} (x-c)^4  +...
+\end{equation}
+
+$= \sum_{n=0}^{\infty} \frac{(x-c)^n}{(1-c)^{n+1}}$
+
+**Ratio test:**
+
+\begin{equation}
+L = \lim_{n\to\infty}\frac{a_{n+1}}{a_n}
+\end{equation}
+
+\begin{equation}
+L = lim_{n\to\infty}
+
+\frac{
+  \frac{(x-c)^{n+1}}{(1-c)^{n+2}}
+}{
+  \frac{(x-c)^n}{(1-c)^{n+1}}
+}
+\end{equation}
+
+\begin{equation}
+L = lim_{n\to\infty}
+  \frac{(x-c)^{n+1}(1-c)^{n+1}}{(x-c)^n(1-c)^{n+2}}
+  = \frac{x-c}{1-c}
+  = x
+\end{equation}
+
+The series will only converge (L < 1) when the range is between -1 and 1.
+
+###$f(x) = e^x$
+
+$f(c) = e^c$
+
+$f'(c) = e^c$
+
+$f''(c) = e^c$
+
+$f'''(c) = e^c$
+
+$f''''(c) = e^c$
+
+\begin{equation}
+f(x) =
+\frac{e^c}{0!}  (x-c)^0 + 
+\frac{e^c}{1!}   (x-c)^1 + 
+\frac{e^c}{2!}   (x-c)^2  + 
+\frac{e^c}{3!}   (x-c)^3  + 
+\frac{e^c}{4!}   (x-c)^4  + ...
+\end{equation}
+
+\begin{equation}
+f(x) =
+e^c + 
+e^c   (x-c) + 
+\frac{e^c}{2!}   (x-c)^2  + 
+\frac{e^c}{3!}   (x-c)^3  + 
+\frac{e^c}{4!}   (x-c)^4  + ...
+\end{equation}
+
+$f(x) = \sum_{n=0}^{\infty} \frac{e^c(x-c)^n}{n!}$
+
+
+**Ratio test:**
+
+\begin{equation}
+L = \lim_{n\to\infty}\frac{a_{n+1}}{a_n}
+\end{equation}
+
+\begin{equation}
+L = lim_{n\to\infty}
+
+\frac{
+  \frac{e^c(x-c)^(n+1)}{(n+1)!}
+}{
+  \frac{e^c(x-c)^n}{n!}
+}
+\end{equation}
+
+\begin{equation}
+L = lim_{n\to\infty}
+  \frac{e^c(x-c)^{n+1}n!}{e^c(x-c)^n(n+1)!}
+  =  \frac{x-c}{n!}
+  = 0
+\end{equation}
+
+Since $lim_{n\to\infty} = 0$, the series will converge (L < 1) when the range is $(-\infty, \infty)$.
+
+###$f(x) = ln(1 + x)$
+
+$f(c) = ln(1 + c)$
+
+$f'(c) = 1/(1 + c)$
+
+$f''(c) = -1/(1 + c)^2$
+
+$f'''(c) = 2/(1 + c)^3$
+
+$f''''(c) = -6/(1 + c)^4$
+
+\begin{equation}
+f(x) =
+\frac{ln(1 + c)}{0!}  (x-c)^0 + 
+\frac{1}{(1 + c)1!}   (x-c)^1 + 
+\frac{-1}{(1 + c)^2 2!}   (x-c)^2  + 
+\frac{2}{(1 + c)^3 3!}   (x-c)^3  + 
+\frac{-6}{(1 + c)^4 4!}   (x-c)^4  + ...
+\end{equation}
+
+\begin{equation}
+f(x) =
+ln(1 + c) + 
+\frac{x-c}{(1 + c)}    - 
+\frac{(x-c)^2}{2(1 + c)^2}     + 
+\frac{(x-c)^3}{3(1 + c)^3}    - 
+\frac{(x-c)^4}{4(1 + c)^4}     + ...
+\end{equation}
+
+$f(x) = ln(1 + c) + \sum_{n=1}^{\infty} (-1)^{n+1}\frac{(x-c)^n}{n(1 + c)^n}$
+
+**Ratio test:**
+
+\begin{equation}
+L = \lim_{n\to\infty}\frac{a_{n+1}}{a_n}
+\end{equation}
+
+\begin{equation}
+L = lim_{n\to\infty}
+
+\frac{
+  ln(1 + c) + \frac{(-1)^{n+2}(x-c)^{n+1}}{(n+1)(1 + c)^{n+1}}
+}{
+  ln(1 + c) + \frac{(-1)^{n+1}(x-c)^n}{n(1 + c)^n}
+}
+\end{equation}
+
+\begin{equation}
+L = 
+lim_{n\to\infty} 
+1 + \frac{n(1 + c)^n(-1)^{n+2}(x-c)^{n+1}}{(n+1)(1 + c)^{n+1}(-1)^{n+1}(x-c)^n} = 
+\end{equation}
+
+\begin{equation}
+L = 
+lim_{n\to\infty} 
+1 - \frac{n(x-c)}{(n+1)(1 + c)} 
+= 
+lim_{n\to\infty} 
+1 - \frac{nx}{n+1} 
+= 1 - x
+\end{equation}
+
+The series will only converge (L < 1) when the range is between -1 and 1.
+
+###References
+http://www.wolframalpha.com/widget/widgetPopup.jsp?p=v&id=f9476968629e1163bd4a3ba839d60925&title=Taylor%20Series&theme=blue&i0=ln(1%20%2B%20x)%20&i1=x&i2=0&i3=10&podSelect=&showAssumptions=1&showWarnings=1
+</body>

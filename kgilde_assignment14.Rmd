@@ -1,8 +1,8 @@
 ---
 title: "DATA 605 FUNDAMENTALS OF COMPUTATIONAL MATHEMATICS" 
-subtitle: "Assignment 13: Calculus"
+subtitle: "Assignment 15: Calculus Week 3"
 author: "Kyle Gilde"
-date: "12/2/2017"
+date: "12/6/2017"
 output: 
   prettydoc::html_pretty:
     theme: architect
@@ -29,7 +29,7 @@ knitr::opts_chunk$set(
 
 
 ```{r packages, echo=F, collapse=T} 
-packages <- c("prettydoc", "Ryacas",'Deriv') 
+packages <- c("prettydoc",'Deriv', 'rootSolve') 
 
 #see if we need to install any of them
 installed_and_loaded <- function(pkg){
@@ -43,199 +43,91 @@ installed_and_loaded <- function(pkg){
 data.frame(installed_and_loaded(packages))
 ```
 
-##Computing the Taylor Series expansion
+1. Find the equation of the regression line for the given points. Round any final values to the nearest hundredth, if necessary.
+( 5.6, 8.8 ), ( 6.3, 12.4 ), ( 7, 14.8 ), ( 7.7, 18.2 ), ( 8.4, 20.8 )
 
-This week, we'll work out some Taylor Series expansions of popular functions.
+```{r}
+given_points <- c(5.6, 8.8 ,  6.3, 12.4 ,  7, 14.8 ,  7.7, 18.2 ,  8.4, 20.8)
+D <- matrix(d, ncol = 2, byrow = TRUE)
 
-$f(x) = 1/(1-x)$
+df <- data.frame(D)
+names(df) <- c('x', 'y')
 
-$f(x) = e^x$
+the_model <- lm(y ~ x, df)
 
-$f(x) = ln(1 + x)$
+b <- the_model$coefficients[1]
+m <- the_model$coefficients[2]
 
-For each function, only consider its valid ranges as indicated in the notes when you are computing the Taylor Series expansion. Please submit your assignment as a R-Markdown document
-
-###$f(x) = 1/(1-x)$
-
-$f(c) = \frac{1}{(1-c)}$
-
-$f'(c) = \frac{1}{(1-c)^2}$
-
-$f''(c) = \frac{2}{(1-c)^3}$
-
-$f'''(c) = \frac{6}{(1-c)^4}$
-
-$f''''(c) = \frac{24}{(1-c)^5}$
-
-\begin{equation}
-f(x) =
-\frac{1}{(1-c) 0!}  (x-c)^0 + 
-\frac{1}{(1-c)^2 1!}  (x-c)^1 + 
-\frac{2}{(1-c)^3 2!}  (x-c)^2  + 
-\frac{6}{(1-c)^4 3!}  (x-c)^3  + 
-\frac{24}{(1-c)^5 4!}  (x-c)^4  + ...
-\end{equation}
-
-\begin{equation}
-=
-\frac{1}{(1-c)} + 
-\frac{1}{(1-c)^2} (x-c) + 
-\frac{1}{(1-c)^3} (x-c)^2  + 
-\frac{1}{(1-c)^4} (x-c)^3  + 
-\frac{1}{(1-c)^5} (x-c)^4  +...
-\end{equation}
-
-$= \sum_{n=0}^{\infty} \frac{(x-c)^n}{(1-c)^{n+1}}$
-
-**Ratio test:**
-
-\begin{equation}
-L = \lim_{n\to\infty}\frac{a_{n+1}}{a_n}
-\end{equation}
-
-\begin{equation}
-L = lim_{n\to\infty}
-
-\frac{
-  \frac{(x-c)^{n+1}}{(1-c)^{n+2}}
-}{
-  \frac{(x-c)^n}{(1-c)^{n+1}}
-}
-\end{equation}
-
-\begin{equation}
-L = lim_{n\to\infty}
-  \frac{(x-c)^{n+1}(1-c)^{n+1}}{(x-c)^n(1-c)^{n+2}}
-  = \frac{x-c}{1-c}
-  = x
-\end{equation}
-
-The series will only converge (L < 1) when the range is between -1 and 1.
-
-###$f(x) = e^x$
-
-$f(c) = e^c$
-
-$f'(c) = e^c$
-
-$f''(c) = e^c$
-
-$f'''(c) = e^c$
-
-$f''''(c) = e^c$
-
-\begin{equation}
-f(x) =
-\frac{e^c}{0!}  (x-c)^0 + 
-\frac{e^c}{1!}   (x-c)^1 + 
-\frac{e^c}{2!}   (x-c)^2  + 
-\frac{e^c}{3!}   (x-c)^3  + 
-\frac{e^c}{4!}   (x-c)^4  + ...
-\end{equation}
-
-\begin{equation}
-f(x) =
-e^c + 
-e^c   (x-c) + 
-\frac{e^c}{2!}   (x-c)^2  + 
-\frac{e^c}{3!}   (x-c)^3  + 
-\frac{e^c}{4!}   (x-c)^4  + ...
-\end{equation}
-
-$f(x) = \sum_{n=0}^{\infty} \frac{e^c(x-c)^n}{n!}$
+paste0('y = ', round(m, 2), 'x + ', b)
+```
 
 
-**Ratio test:**
+2. Find all local maxima, local minima, and saddle points for the function given below. Write your answer(s) in the form ( x, y, z ). Separate multiple points with a comma. 
 
-\begin{equation}
-L = \lim_{n\to\infty}\frac{a_{n+1}}{a_n}
-\end{equation}
+$f ( x, y ) = 24x - 6xy^2 - 8y^3$
 
-\begin{equation}
-L = lim_{n\to\infty}
+```{r}
+interval <- 10000
 
-\frac{
-  \frac{e^c(x-c)^(n+1)}{(n+1)!}
-}{
-  \frac{e^c(x-c)^n}{n!}
-}
-\end{equation}
+fxy <- function(x, y) {24*x - 6*x*y^2 - 8*y^3}
+(fxy_prime <- Deriv(fxy))
+(fxy_dblprime <- Deriv(fxy_prime))
 
-\begin{equation}
-L = lim_{n\to\infty}
-  \frac{e^c(x-c)^{n+1}n!}{e^c(x-c)^n(n+1)!}
-  =  \frac{x-c}{n!}
-  = 0
-\end{equation}
+f_x <- function(x, y) 24 - 6 * y^2
+f_y  <- function(x, y) -(y * (12 * x + 24 * y))
 
-Since $lim_{n\to\infty} = 0$, the series will converge (L < 1) when the range is $(-\infty, \infty)$.
 
-###$f(x) = ln(1 + x)$
+```
 
-$f(c) = ln(1 + c)$
 
-$f'(c) = 1/(1 + c)$
 
-$f''(c) = -1/(1 + c)^2$
+3. A grocery store sells two brands of a product, the "house" brand and a "name" brand. The manager estimates that if she sells the "house" brand for x dollars and the "name" brand for y dollars, she will be able to sell $81 - 21x + 17y$ units of the "house" brand and $40 + 11x - 23y$ units of the "name" brand.
 
-$f'''(c) = 2/(1 + c)^3$
+Step 1. Find the revenue function R ( x, y ).
 
-$f''''(c) = -6/(1 + c)^4$
+$R (x, y) = x(81 - 21x + 17y) + y(40 + 11x - 23y)$
 
-\begin{equation}
-f(x) =
-\frac{ln(1 + c)}{0!}  (x-c)^0 + 
-\frac{1}{(1 + c)1!}   (x-c)^1 + 
-\frac{-1}{(1 + c)^2 2!}   (x-c)^2  + 
-\frac{2}{(1 + c)^3 3!}   (x-c)^3  + 
-\frac{-6}{(1 + c)^4 4!}   (x-c)^4  + ...
-\end{equation}
+$R (x, y) = -21x^2 + 81x + 28xy + 40y - 23y^2$
 
-\begin{equation}
-f(x) =
-ln(1 + c) + 
-\frac{x-c}{(1 + c)}    - 
-\frac{(x-c)^2}{2(1 + c)^2}     + 
-\frac{(x-c)^3}{3(1 + c)^3}    - 
-\frac{(x-c)^4}{4(1 + c)^4}     + ...
-\end{equation}
+Step 2. What is the revenue if she sells the "house" brand for $2.30 and the "name" brand for $4.10?
 
-$f(x) = ln(1 + c) + \sum_{n=1}^{\infty} (-1)^{n+1}\frac{(x-c)^n}{n(1 + c)^n}$
+```{r}
+x <- 2.30
+y <- 4.10
+fxy <- function(x, y) -21*x^2 + 81*x + 28*x*y + 40*y - 23*y^2
 
-**Ratio test:**
+fxy(x, y)
+```
 
-\begin{equation}
-L = \lim_{n\to\infty}\frac{a_{n+1}}{a_n}
-\end{equation}
 
-\begin{equation}
-L = lim_{n\to\infty}
 
-\frac{
-  ln(1 + c) + \frac{(-1)^{n+2}(x-c)^{n+1}}{(n+1)(1 + c)^{n+1}}
-}{
-  ln(1 + c) + \frac{(-1)^{n+1}(x-c)^n}{n(1 + c)^n}
-}
-\end{equation}
+4. A company has a plant in Los Angeles and a plant in Denver. The firm is committed to produce a total of 96 units of a product each week. The total weekly cost is given by $C(x, y) = 1/6x^2 + 1/6y^2 + 7x + 25y + 700$, where x is the number of units produced in Los Angeles and y is the number of units produced in Denver. How many units should be produced in each plant to minimize the total weekly cost?
 
-\begin{equation}
-L = 
-lim_{n\to\infty} 
-1 + \frac{n(1 + c)^n(-1)^{n+2}(x-c)^{n+1}}{(n+1)(1 + c)^{n+1}(-1)^{n+1}(x-c)^n} = 
-\end{equation}
+$96 = x + y \rightarrow y = 96 - x$
 
-\begin{equation}
-L = 
-lim_{n\to\infty} 
-1 - \frac{n(x-c)}{(n+1)(1 + c)} 
-= 
-lim_{n\to\infty} 
-1 - \frac{nx}{n+1} 
-= 1 - x
-\end{equation}
+$1/6x^2 + 1/6y^2 + 7x + 25y + 700 \rightarrow 1/6x^2 + 1/6(96 - x)^2 + 7x + 25(96 - x) + 700$
 
-The series will only converge (L < 1) when the range is between -1 and 1.
 
-###References
-http://www.wolframalpha.com/widget/widgetPopup.jsp?p=v&id=f9476968629e1163bd4a3ba839d60925&title=Taylor%20Series&theme=blue&i0=ln(1%20%2B%20x)%20&i1=x&i2=0&i3=10&podSelect=&showAssumptions=1&showWarnings=1
+```{r}
+Cx <- function(x) 1/6*x^2 + 1/6*(96 - x)^2 + 7*x + 25*(96 - x) + 700
+Cx_prime <- Deriv(Cx)
+
+s <- seq(-100, 100, by = 1)
+plot(s, Cx_prime(s), type = "l", col = "red")
+abline(0, 0)
+
+(x <- uniroot(Cx_prime, c(-100, 100))$root)
+(y <- 96 - x)
+```
+
+
+5. Evaluate the double integral on the given region. Write your answer in exact form without decimals
+
+$\iint(e^{8x + 3y dA})$
+
+$R: 2 \leq x \leq 4 $
+and
+$2\leq  y \leq 4$
+
+
 </body>

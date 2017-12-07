@@ -32,9 +32,9 @@
 <header>
 <div class="inner">
 <h1 class="title toc-ignore">DATA 605 FUNDAMENTALS OF COMPUTATIONAL MATHEMATICS</h1>
-<h2 class="subtitle">Assignment 14: Calculus &amp; Taylor Series Expansion</h2>
+<h2 class="subtitle">Discussion 15: Multivariate Calculus</h2>
 <h3 class="author">Kyle Gilde</h3>
-<h3 class="date">12/2/2017</h3>
+<h3 class="date">12/4/2017</h3>
 </div>
 </header>
 
@@ -51,164 +51,20 @@ body{
 </style>
 <body>
 <pre><code>##           installed_and_loaded.packages.
-## prettydoc                           TRUE
-## Ryacas                              TRUE
-## Deriv                               TRUE</code></pre>
-<div id="computing-the-taylor-series-expansion" class="section level2">
-<h2>Computing the Taylor Series expansion</h2>
-<p>This week, we’ll work out some Taylor Series expansions of popular functions.</p>
-<p><span class="math inline">\(f(x) = 1/(1-x)\)</span></p>
-<p><span class="math inline">\(f(x) = e^x\)</span></p>
-<p><span class="math inline">\(f(x) = ln(1 + x)\)</span></p>
-<p>For each function, only consider its valid ranges as indicated in the notes when you are computing the Taylor Series expansion. Please submit your assignment as a R-Markdown document</p>
-<div id="fx-11-x" class="section level3">
-<h3><span class="math inline">\(f(x) = 1/(1-x)\)</span></h3>
-<p><span class="math inline">\(f(c) = \frac{1}{(1-c)}\)</span></p>
-<p><span class="math inline">\(f'(c) = \frac{1}{(1-c)^2}\)</span></p>
-<p><span class="math inline">\(f''(c) = \frac{2}{(1-c)^3}\)</span></p>
-<p><span class="math inline">\(f'''(c) = \frac{6}{(1-c)^4}\)</span></p>
-<p><span class="math inline">\(f''''(c) = \frac{24}{(1-c)^5}\)</span></p>
-<span class="math display">\[\begin{equation}
-f(x) =
-\frac{1}{(1-c) 0!}  (x-c)^0 + 
-\frac{1}{(1-c)^2 1!}  (x-c)^1 + 
-\frac{2}{(1-c)^3 2!}  (x-c)^2  + 
-\frac{6}{(1-c)^4 3!}  (x-c)^3  + 
-\frac{24}{(1-c)^5 4!}  (x-c)^4  + ...
-\end{equation}\]</span>
-<span class="math display">\[\begin{equation}
-=
-\frac{1}{(1-c)} + 
-\frac{1}{(1-c)^2} (x-c) + 
-\frac{1}{(1-c)^3} (x-c)^2  + 
-\frac{1}{(1-c)^4} (x-c)^3  + 
-\frac{1}{(1-c)^5} (x-c)^4  +...
-\end{equation}\]</span>
-<p><span class="math inline">\(= \sum_{n=0}^{\infty} \frac{(x-c)^n}{(1-c)^{n+1}}\)</span></p>
-<p><strong>Ratio test:</strong></p>
-<span class="math display">\[\begin{equation}
-L = \lim_{n\to\infty}\frac{a_{n+1}}{a_n}
-\end{equation}\]</span>
-<span class="math display">\[\begin{equation}
-L = lim_{n\to\infty}
-
-\frac{
-  \frac{(x-c)^{n+1}}{(1-c)^{n+2}}
-}{
-  \frac{(x-c)^n}{(1-c)^{n+1}}
-}
-\end{equation}\]</span>
-<span class="math display">\[\begin{equation}
-L = lim_{n\to\infty}
-  \frac{(x-c)^{n+1}(1-c)^{n+1}}{(x-c)^n(1-c)^{n+2}}
-  = \frac{x-c}{1-c}
-  = x
-\end{equation}\]</span>
-<p>The series will only converge (L &lt; 1) when the range is between -1 and 1.</p>
-</div>
-<div id="fx-ex" class="section level3">
-<h3><span class="math inline">\(f(x) = e^x\)</span></h3>
-<p><span class="math inline">\(f(c) = e^c\)</span></p>
-<p><span class="math inline">\(f'(c) = e^c\)</span></p>
-<p><span class="math inline">\(f''(c) = e^c\)</span></p>
-<p><span class="math inline">\(f'''(c) = e^c\)</span></p>
-<p><span class="math inline">\(f''''(c) = e^c\)</span></p>
-<span class="math display">\[\begin{equation}
-f(x) =
-\frac{e^c}{0!}  (x-c)^0 + 
-\frac{e^c}{1!}   (x-c)^1 + 
-\frac{e^c}{2!}   (x-c)^2  + 
-\frac{e^c}{3!}   (x-c)^3  + 
-\frac{e^c}{4!}   (x-c)^4  + ...
-\end{equation}\]</span>
-<span class="math display">\[\begin{equation}
-f(x) =
-e^c + 
-e^c   (x-c) + 
-\frac{e^c}{2!}   (x-c)^2  + 
-\frac{e^c}{3!}   (x-c)^3  + 
-\frac{e^c}{4!}   (x-c)^4  + ...
-\end{equation}\]</span>
-<p><span class="math inline">\(f(x) = \sum_{n=0}^{\infty} \frac{e^c(x-c)^n}{n!}\)</span></p>
-<p><strong>Ratio test:</strong></p>
-<span class="math display">\[\begin{equation}
-L = \lim_{n\to\infty}\frac{a_{n+1}}{a_n}
-\end{equation}\]</span>
-<span class="math display">\[\begin{equation}
-L = lim_{n\to\infty}
-
-\frac{
-  \frac{e^c(x-c)^(n+1)}{(n+1)!}
-}{
-  \frac{e^c(x-c)^n}{n!}
-}
-\end{equation}\]</span>
-<span class="math display">\[\begin{equation}
-L = lim_{n\to\infty}
-  \frac{e^c(x-c)^{n+1}n!}{e^c(x-c)^n(n+1)!}
-  =  \frac{x-c}{n!}
-  = 0
-\end{equation}\]</span>
-<p>Since <span class="math inline">\(lim_{n\to\infty} = 0\)</span>, the series will converge (L &lt; 1) when the range is <span class="math inline">\((-\infty, \infty)\)</span>.</p>
-</div>
-<div id="fx-ln1-x" class="section level3">
-<h3><span class="math inline">\(f(x) = ln(1 + x)\)</span></h3>
-<p><span class="math inline">\(f(c) = ln(1 + c)\)</span></p>
-<p><span class="math inline">\(f'(c) = 1/(1 + c)\)</span></p>
-<p><span class="math inline">\(f''(c) = -1/(1 + c)^2\)</span></p>
-<p><span class="math inline">\(f'''(c) = 2/(1 + c)^3\)</span></p>
-<p><span class="math inline">\(f''''(c) = -6/(1 + c)^4\)</span></p>
-<span class="math display">\[\begin{equation}
-f(x) =
-\frac{ln(1 + c)}{0!}  (x-c)^0 + 
-\frac{1}{(1 + c)1!}   (x-c)^1 + 
-\frac{-1}{(1 + c)^2 2!}   (x-c)^2  + 
-\frac{2}{(1 + c)^3 3!}   (x-c)^3  + 
-\frac{-6}{(1 + c)^4 4!}   (x-c)^4  + ...
-\end{equation}\]</span>
-<span class="math display">\[\begin{equation}
-f(x) =
-ln(1 + c) + 
-\frac{x-c}{(1 + c)}    - 
-\frac{(x-c)^2}{2(1 + c)^2}     + 
-\frac{(x-c)^3}{3(1 + c)^3}    - 
-\frac{(x-c)^4}{4(1 + c)^4}     + ...
-\end{equation}\]</span>
-<p><span class="math inline">\(f(x) = ln(1 + c) + \sum_{n=1}^{\infty} (-1)^{n+1}\frac{(x-c)^n}{n(1 + c)^n}\)</span></p>
-<p><strong>Ratio test:</strong></p>
-<span class="math display">\[\begin{equation}
-L = \lim_{n\to\infty}\frac{a_{n+1}}{a_n}
-\end{equation}\]</span>
-<span class="math display">\[\begin{equation}
-L = lim_{n\to\infty}
-
-\frac{
-  ln(1 + c) + \frac{(-1)^{n+2}(x-c)^{n+1}}{(n+1)(1 + c)^{n+1}}
-}{
-  ln(1 + c) + \frac{(-1)^{n+1}(x-c)^n}{n(1 + c)^n}
-}
-\end{equation}\]</span>
-<span class="math display">\[\begin{equation}
-L = 
-lim_{n\to\infty} 
-1 + \frac{n(1 + c)^n(-1)^{n+2}(x-c)^{n+1}}{(n+1)(1 + c)^{n+1}(-1)^{n+1}(x-c)^n} = 
-\end{equation}\]</span>
-<span class="math display">\[\begin{equation}
-L = 
-lim_{n\to\infty} 
-1 - \frac{n(x-c)}{(n+1)(1 + c)} 
-= 
-lim_{n\to\infty} 
-1 - \frac{nx}{n+1} 
-= 1 - x
-\end{equation}\]</span>
-<p>The series will only converge (L &lt; 1) when the range is between -1 and 1.</p>
-</div>
-<div id="references" class="section level3">
-<h3>References</h3>
-<a href="http://www.wolframalpha.com/widget/widgetPopup.jsp?p=v&amp;id=f9476968629e1163bd4a3ba839d60925&amp;title=Taylor%20Series&amp;theme=blue&amp;i0=ln(1%20%2B%20x)%20&amp;i1=x&amp;i2=0&amp;i3=10&amp;podSelect">http://www.wolframalpha.com/widget/widgetPopup.jsp?p=v&amp;id=f9476968629e1163bd4a3ba839d60925&amp;title=Taylor%20Series&amp;theme=blue&amp;i0=ln(1%20%2B%20x)%20&amp;i1=x&amp;i2=0&amp;i3=10&amp;podSelect</a>=&amp;showAssumptions=1&amp;showWarnings=1
+## prettydoc                           TRUE</code></pre>
+<div id="give-the-domain-and-range-of-the-multivariable-function." class="section level2">
+<h2>Give the domain and range of the multivariable function.</h2>
+<ol start="8" style="list-style-type: decimal">
+<li><span class="math inline">\(f(x, y) = x + 2y\)</span></li>
+</ol>
+<p>domain: <span class="math inline">\(\mathbb{R}^2\)</span></p>
+<p>range: <span class="math inline">\(\mathbb{R}\)</span></p>
+<ol start="14" style="list-style-type: decimal">
+<li><span class="math inline">\(f(x, y) = \frac{1}{\sqrt{x^2 + y^2 - 9}}\)</span></li>
+</ol>
+<p>domain: <span class="math inline">\(\{(x, y)|x^2 + y^2 &gt; 9\}\)</span> , i.e., the domain lies outside of a circle centered at the origin with radius 3.</p>
+<p>range: <span class="math inline">\(z &gt; 0\)</span></p>
 </body>
-</div>
 </div>
     </section>
   </div>

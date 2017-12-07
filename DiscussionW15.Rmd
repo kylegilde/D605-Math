@@ -1,0 +1,61 @@
+---
+title: "DATA 605 FUNDAMENTALS OF COMPUTATIONAL MATHEMATICS" 
+subtitle: "Discussion 15: Multivariate Calculus"
+author: "Kyle Gilde"
+date: "12/4/2017"
+output: 
+  prettydoc::html_pretty:
+    theme: architect
+    highlight: github
+    toc: true
+    toc_depth: 1
+---
+<style type="text/css">
+body{
+  font-family: Helvetica;
+  font-size: 14pt;
+}
+</style>
+<body>
+
+```{r knitr_options, echo=FALSE}
+knitr::opts_chunk$set(
+                      error = FALSE
+                      ,message = FALSE
+                      ,tidy = TRUE
+                      #,cache = TRUE
+                      )
+```
+
+
+```{r packages, echo=F, collapse=T} 
+packages <- c("prettydoc") 
+
+#see if we need to install any of them
+installed_and_loaded <- function(pkg){
+  #CODE SOURCE: https://gist.github.com/stevenworthington/3178163
+  new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
+  if (length(new.pkg)) 
+    install.packages(new.pkg, dependencies = TRUE)
+  sapply(pkg, require, character.only = TRUE, quietly = TRUE, warn.conflicts = FALSE)
+}
+#excute function and display the loaded packages
+data.frame(installed_and_loaded(packages))
+```
+
+##Give the domain and range of the multivariable function.
+
+8. $f(x, y) = x + 2y$
+
+domain: $\mathbb{R}^2$
+
+range: $\mathbb{R}$
+
+14. $f(x, y) = \frac{1}{\sqrt{x^2 + y^2 - 9}}$
+
+domain: $\{(x, y)|x^2 + y^2 > 9\}$ , i.e., the domain lies outside of a circle centered at the origin with radius 3.
+
+range: $z > 0$
+
+
+</body>

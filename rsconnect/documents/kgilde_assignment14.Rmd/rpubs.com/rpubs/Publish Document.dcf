@@ -4,7 +4,7 @@ username:
 account: rpubs
 server: rpubs.com
 hostUrl: rpubs.com
-appId: https://api.rpubs.com/api/v1/document/334337/330484a730f84a5882d48cd464c5d588
-bundleId: https://api.rpubs.com/api/v1/document/334337/330484a730f84a5882d48cd464c5d588
-url: http://rpubs.com/kylegilde/334337
-when: 1511759280.13912
+appId: https://api.rpubs.com/api/v1/document/337072/d33dfe43eb6545b490382d9a8c9dffa4
+bundleId: https://api.rpubs.com/api/v1/document/337072/d33dfe43eb6545b490382d9a8c9dffa4
+url: http://rpubs.com/publish/claim/337072/0d848c12b87642369cc6cee8f631200f
+when: 1512331341.81569
