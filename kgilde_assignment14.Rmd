@@ -73,8 +73,10 @@ fxy <- function(x, y) {24*x - 6*x*y^2 - 8*y^3}
 (fxy_prime <- Deriv(fxy))
 (fxy_dblprime <- Deriv(fxy_prime))
 
-f_x <- function(x, y) 24 - 6 * y^2
+f_x <- function(y) 24 - 6 * y^2
 f_y  <- function(x, y) -(y * (12 * x + 24 * y))
+
+(f_x_critical_points <- uniroot.all(f_x, c(-interval, interval)))
 
 
 ```
