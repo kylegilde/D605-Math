@@ -1,0 +1,194 @@
+---
+title: "DATA 605 FUNDAMENTALS OF COMPUTATIONAL MATHEMATICS" 
+subtitle: "Assignment 15: Calculus Week 3"
+author: "Kyle Gilde"
+date: "12/6/2017"
+output: 
+  prettydoc::html_pretty:
+    theme: architect
+    highlight: github
+    toc: true
+    toc_depth: 1
+---
+<style type="text/css">
+body{
+  font-family: Helvetica;
+  font-size: 14pt;
+}
+</style>
+<body>
+
+```{r knitr_options, echo=FALSE}
+knitr::opts_chunk$set(
+                      error = FALSE
+                      ,message = FALSE
+                      ,tidy = TRUE
+                      ,cache = TRUE
+                      )
+```
+
+
+```{r packages, echo=F, collapse=T} 
+if (!require("pacman")) install.packages("pacman")
+pacman::p_load(prettydoc, Deriv, rootSolve)
+```
+
+1. Find the equation of the regression line for the given points. Round any final values to the nearest hundredth, if necessary.
+( 5.6, 8.8 ), ( 6.3, 12.4 ), ( 7, 14.8 ), ( 7.7, 18.2 ), ( 8.4, 20.8 )
+
+```{r}
+given_points <- c(5.6, 8.8 ,  6.3, 12.4 ,  7, 14.8 ,  7.7, 18.2 ,  8.4, 20.8)
+D <- matrix(given_points, ncol = 2, byrow = TRUE)
+
+df <- data.frame(D)
+names(df) <- c('x', 'y')
+
+the_model <- lm(y ~ x, df)
+
+b <- the_model$coefficients[1]
+m <- the_model$coefficients[2]
+
+paste0('y = ', round(m, 2), 'x + ', b)
+```
+
+
+2. Find all local maxima, local minima, and saddle points for the function given below. Write your answer(s) in the form ( x, y, z ). Separate multiple points with a comma. 
+
+$f ( x, y ) = 24x - 6xy^2 - 8y^3$
+
+```{r}
+interval <- 10000
+
+fxy <- function(x, y) {24*x - 6*x*y^2 - 8*y^3}
+(fxy_prime <- Deriv(fxy))
+
+#f_x critical points
+f_x <- function(y) 24 - 6*y^2
+f_x_critical_points <- uniroot.all(f_x, c(-interval, interval))
+
+#f_y critical points
+f_y_critical_points <- c(NA, NA)
+f_y  <- function(x, y) -12*x*y - 24*y^2
+f_y_critical_points[1] <- uniroot.all(f_y, c(-interval, interval), y = f_x_critical_points[1])
+f_y_critical_points[2] <- uniroot.all(f_y, c(-interval, interval), y = f_x_critical_points[2])
+
+(critical_points <- expand.grid(f_x_critical_points, f_y_critical_points))
+
+#2nd partial derivatives
+(fxy_dblprime <- Deriv(fxy_prime))
+f_xx <- function(x, y) 0
+f_xy  <- function(x, y) -(12 * y)
+f_yy <- function(x, y) -(12 * x + 48 * y)
+f_yx  <- function(x, y) -(12 * y)
+
+D <- function(x, y) f_xx(x, y) * f_yy(x, y) - f_xy(x, y) * f_yx(x, y)
+
+assess_points <- function(critical_points){
+  r <- nrow(critical_points)
+  for (i in 1:r){
+    D_result <- round(D(critical_points[i, 1], critical_points[i, 2]), 4)
+    z <- fxy(critical_points[i, 1], critical_points[i, 2])
+    point <- paste(round(c(critical_points[i, 1], critical_points[i, 2], z), 4), collapse = ' ')
+    
+    if (D_result == 0){
+      conclusion <- paste0(point, '; D = ', D_result, ' ;Inconclusive')
+    } else if (D_result < 0){
+      conclusion <- paste0(point, '; D = ', D_result, ' ;Saddle Point')
+    } else {
+      f_xx_result <- f_xx(critical_points[i, 1], critical_points[i, 2])
+      if (f_xx_result > 0){
+        paste0(point, '; D = ', D_result, ' ;f_xx > 0; ', 'Local Minimum')
+      } else if (f_xx_result < 0) {
+        conclusion <- paste0(point, '; D = ', D_result, ' ;f_xx < 0; ', 'Local Maximum')
+      }
+    }
+    print(conclusion)
+  }
+}
+assess_points(critical_points)
+```
+
+
+
+3. A grocery store sells two brands of a product, the "house" brand and a "name" brand. The manager estimates that if she sells the "house" brand for x dollars and the "name" brand for y dollars, she will be able to sell $81 - 21x + 17y$ units of the "house" brand and $40 + 11x - 23y$ units of the "name" brand.
+
+Step 1. Find the revenue function R ( x, y ).
+
+$R (x, y) = x(81 - 21x + 17y) + y(40 + 11x - 23y)$
+
+$R (x, y) = -21x^2 + 81x + 28xy + 40y - 23y^2$
+
+Step 2. What is the revenue if she sells the "house" brand for $2.30 and the "name" brand for $4.10?
+
+```{r}
+x <- 2.30
+y <- 4.10
+fxy <- function(x, y) -21*x^2 + 81*x + 28*x*y + 40*y - 23*y^2
+
+fxy(x, y)
+```
+
+
+
+4. A company has a plant in Los Angeles and a plant in Denver. The firm is committed to produce a total of 96 units of a product each week. The total weekly cost is given by $C(x, y) = 1/6x^2 + 1/6y^2 + 7x + 25y + 700$, where x is the number of units produced in Los Angeles and y is the number of units produced in Denver. How many units should be produced in each plant to minimize the total weekly cost?
+
+$96 = x + y \rightarrow y = 96 - x$
+
+$1/6x^2 + 1/6y^2 + 7x + 25y + 700 \rightarrow 1/6x^2 + 1/6(96 - x)^2 + 7x + 25(96 - x) + 700$
+
+
+```{r}
+Cx <- function(x) 1/6*x^2 + 1/6*(96 - x)^2 + 7*x + 25*(96 - x) + 700
+Cx_prime <- Deriv(Cx)
+
+s <- seq(-100, 100, by = 1)
+plot(s, Cx_prime(s), type = "l", col = "red")
+abline(0, 0)
+
+(x <- uniroot(Cx_prime, c(-100, 100))$root)
+(y <- 96 - x)
+```
+
+
+5. Evaluate the double integral on the given region. Write your answer in exact form without decimals
+
+$\iint(e^{8x + 3y }dA)$
+
+$R: 2 \leq x \leq 4$
+
+and
+
+$2\leq  y \leq 4$
+
+
+\begin{equation}
+
+\iint(e^{8x + 3y} dA) = \int_{2}^{4}\int_{2}^{4}e^{8x + 3y} dydx
+
+\end{equation}
+
+\begin{equation}
+
+= \int_{2}^{4}\left(\left[1/3e^{8x + 3y}|_2^4 \right]\right)dx
+
+\end{equation}
+
+\begin{equation}
+
+= \int_{2}^{4}\left( 1/3(e^{8x + 12} - e^{8x + 6}) \right)dx
+
+\end{equation}
+
+\begin{equation}
+
+= \left( 1/24(e^{8x + 12} - e^{8x + 6})\right)|_{2}^{4}
+
+\end{equation}
+
+\begin{equation}
+
+=  1/24\left(e^{44} - e^{38} - e^{28} + e^{22}\right)
+
+\end{equation}
+
+</body>
