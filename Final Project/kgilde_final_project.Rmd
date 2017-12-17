@@ -29,7 +29,7 @@ knitr::opts_chunk$set(
 
 
 ```{r packages, echo=F, collapse=T} 
-packages <- c("prettydoc",'dplyr', 'psych', 'knitr', 'ggplot2', 'MASS') 
+packages <- c("prettydoc",'dplyr', 'psych', 'knitr', 'ggplot2', 'MASS', 'MLmetrics') 
 
 installed_and_loaded <- function(pkg){
   ### See if we need to install and load any packages ###
@@ -41,7 +41,7 @@ installed_and_loaded <- function(pkg){
 }
 
 #excute function and display the loaded packages
-data.frame(installed_and_loaded(packages))
+data.frame(loaded_packages=installed_and_loaded(packages))
 ```
 
 Your final is due by the end of day on 12/27/2017.  You should post your solutions to your GitHub account.  You are also expected to make a short presentation during our last meeting (3-5 minutes) or post a recording to the board.  This project will show off your ability to understand the elements of the class. 
@@ -208,15 +208,28 @@ hist(rand_samp)
 Build some type of regression model and submit your model to the competition board.  Provide your complete model summary and results with analysis.  Report your Kaggle.com  user name and score.
 
 ```{r}
-glimpse(train_df)
-table(train_df)
+str(train_df)
+pairs(train_df)
+df_len <- nrow(train_df)
+NA_ct = rapply(train_df, function(x) sum(is.na(x)))
+df_summary <- data.frame(
+  NA_ct = NA_ct,
+  NA_percent = NA_ct / df_len,
+  class_type = rapply(train_df, class),
+  uniq_value_ct = rapply(train_df,function(x)length(unique(x))),
+  uniq_values = rapply(train_df, function(x) paste(sort(unique(x)), collapse = ','))
+  
+)
+metrics <- data.frame(describe(train_df))
+df_summary <- cbind(df_summary, metrics)
 
-rapply(train_df,function(x)length(unique(x)))
-
-
+View(df_summary)
 vars <- paste(names(train_df)[2:80], collapse = "+")
 
 model1 <- lm(as.formula(paste0('SalePrice ~', vars)), data = train_df)
+
+RMSLE(y_pred, y_true)
+
 
 ```
 
