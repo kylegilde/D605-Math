@@ -29,16 +29,17 @@ knitr::opts_chunk$set(
 
 
 ```{r packages, echo=F, collapse=T} 
-packages <- c("prettydoc",'dplyr', 'psych', 'knitr') 
+packages <- c("prettydoc",'dplyr', 'psych', 'knitr', 'ggplot2', 'MASS') 
 
-#see if we need to install any of them
 installed_and_loaded <- function(pkg){
+  ### See if we need to install and load any packages ###
   #CODE SOURCE: https://gist.github.com/stevenworthington/3178163
   new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
   if (length(new.pkg)) 
     install.packages(new.pkg, dependencies = TRUE)
   sapply(pkg, require, character.only = TRUE, quietly = TRUE, warn.conflicts = FALSE)
 }
+
 #excute function and display the loaded packages
 data.frame(installed_and_loaded(packages))
 ```
@@ -54,22 +55,19 @@ Pick one of the quantitative independent variables from the training data set (t
 #Probability.  
 
 ```{r get_data}
-options(scipen = 999)
-
-csv_file <- read.csv('train.csv')
-test_csv <- read.csv('test.csv')
-glimpse(csv_file)
-
-X <- csv_file$X1stFlrSF
-Y <- csv_file$SalePrice 
-t(describe(X, quant = c(.25,.75)))
-t(describe(Y))
+train_df <- read.csv('train.csv')
+test_df <- read.csv('test.csv')
+#glimpse(train_df)
 ```
 
 
 Calculate as a minimum the below probabilities a through c.  Assume the small letter "x" is estimated as the 1st quartile of the X variable, and the small letter "y" is estimated as the 2d quartile of the Y variable.  Interpret the meaning of all probabilities.  
 
 ```{r thresholds}
+X <- train_df$X1stFlrSF
+Y <- train_df$SalePrice 
+XY <- cbind(X, Y)
+
 x <- quantile(X, .25)
 y <- median(Y)
 ```
@@ -77,28 +75,110 @@ y <- median(Y)
 
 a. P(X>x | Y>y)	
 ```{r a}
+Y_greater_y <- data.frame(subset(XY, Y > y))
 
+len_Y_greater_y <- nrow(Y_greater_y)
 
+X_greater_x <- subset(Y_greater_y, X > x)
 
+len_X_greater_x <- nrow(X_greater_x)
+
+(prob_a <- len_X_greater_x / len_Y_greater_y)
 ```
 
 b.  P(X>x, Y>y)		
 
 ```{r b}
-sum(X>x) / length(X) * sum(Y>y) / length(Y)
+#(prob_b <- sum(X > x) / length(X) * sum(Y > y) / length(Y))
+(prob_b <- nrow(subset(XY, Y > y & X > x))/ nrow(XY))
 ```
 
 c.  P(X<x | Y>y)		
 ```{r c}
 
+Y_greater_y <- data.frame(subset(XY, Y > y))
 
+len_Y_greater_y <- nrow(Y_greater_y)
 
+X_greater_x <- subset(Y_greater_y, X < x)
+
+len_X_greater_x <- nrow(X_greater_x)
+
+len_X_greater_x / len_Y_greater_y
 ``` 
+
+
 Does splitting the training data in this fashion make them independent? In other words, does  P(X|Y)=P(X)P(Y))?   Check mathematically, and then evaluate by running a Chi Square test for association.  You might have to research this.  
+
+**No, it does not make them independent.**
+
+$P(X|Y) \neq P(X)P(Y))$
+
+
+```{r d}
+prob_a
+prob_b
+prob_a == prob_b
+```
+
+**Because the p-value is near zero, we reject the null hypothesis that X and Y have no association**
+
+
+```{r chi}
+chi_results <- chisq.test(XY)
+chi_results
+```
 
 #Descriptive and Inferential Statistics. 
 
 Provide univariate descriptive statistics and appropriate plots for both variables.   Provide a scatterplot of X and Y.  Transform both variables simultaneously using Box-Cox transformations.  You might have to research this.
+
+```{r desc}
+options(scipen = 999)
+kable(t(round(describe(XY, quant = c(.25,.75)), 2)))
+
+XY_df <- data.frame(XY)
+
+a <- ggplot(XY_df, aes(X, Y))
+a + geom_point()
+
+hist(XY_df$X, freq = FALSE, breaks = 20, main = "Variable X")
+xfit <- seq(min(XY_df$X), max(XY_df$X), by = 1)
+yfit <- dnorm(xfit, mean(XY_df$X), sd(XY_df$X))
+lines(xfit, yfit)
+
+
+hist(XY_df$Y, freq = FALSE, breaks = 20, main = "Variable Y")
+xfit <- seq(min(XY_df$Y), max(XY_df$Y), by = 1)
+yfit <- dnorm(xfit, mean(XY_df$Y), sd(XY_df$Y))
+lines(xfit, yfit)
+
+XY_BC <- boxcox(Y ~ X, data = XY_df)
+
+
+```
+
+```{r transform}
+XY_BC <- boxcox(Y ~ X, data = XY_df)
+
+a <- ggplot(XY_BC, aes(X, Y))
+a + geom_point()
+
+hist(XY_BC$x, freq = FALSE, breaks = 20, main = "Variable X")
+xfit <- seq(min(XY_BC$x), max(XY_BC$x), by = 1)
+yfit <- dnorm(xfit, mean(XY_BC$x), sd(XY_BC$x))
+lines(xfit, yfit)
+
+
+hist(XY_BC$Y, freq = FALSE, breaks = 20, main = "Variable Y")
+xfit <- seq(min(XY_BC$Y), max(XY_BC$Y), by = 1)
+yfit <- dnorm(xfit, mean(XY_BC$Y), sd(XY_BC$Y))
+lines(xfit, yfit)
+
+
+
+```
+
 
 #Linear Algebra and Correlation.   
 
@@ -106,12 +186,39 @@ Using at least three untransformed variables, build a correlation matrix.  Inver
 
 #Calculus-Based Probability & Statistics. 
 
-Many times, it makes sense to fit a closed form distribution to data.  For your non-transformed independent variable, location shift (if necessary)  it so that the minimum value is above zero.  Then load the MASS package and run fitdistr to fit a density function of your choice.  (See  https://stat.ethz.ch/R-manual/R-devel/library/MASS/html/fitdistr.html ).  Find the optimal value of the parameters for this distribution, and then take 1000 samples from this distribution (e.g., rexp(1000, ??) for an exponential).  Plot a histogram and compare it with a histogram of your non-transformed original variable.   
+Many times, it makes sense to fit a closed form distribution to data.  For your non-transformed independent variable, location shift (if necessary)  it so that the minimum value is above zero.  Then load the MASS package and run fitdistr to fit a density function of your choice.  (See https://stat.ethz.ch/R-manual/R-devel/library/MASS/html/fitdistr.html ).  Find the optimal value of the parameters for this distribution, and then take 1000 samples from this distribution (e.g., rexp(1000, ??) for an exponential).  Plot a histogram and compare it with a histogram of your non-transformed original variable.   
+
+```{r calculus}
+X_fit_f <- fitdistr(X, "exponential")
+X_fit_f$vcov
+hist(X_fit_f)
+
+
+rand_samp <- rexp(1000)
+hist(rand_samp)
+
+
+
+
+```
+
 
 #Modeling.  
 
 Build some type of regression model and submit your model to the competition board.  Provide your complete model summary and results with analysis.  Report your Kaggle.com  user name and score.
 
+```{r}
+glimpse(train_df)
+table(train_df)
+
+rapply(train_df,function(x)length(unique(x)))
+
+
+vars <- paste(names(train_df)[2:80], collapse = "+")
+
+model1 <- lm(as.formula(paste0('SalePrice ~', vars)), data = train_df)
+
+```
 
 
 

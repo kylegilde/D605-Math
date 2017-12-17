@@ -112,6 +112,7 @@ body{
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">options</span>(<span class="dt">scipen =</span> <span class="dv">999</span>)
 
 csv_file &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;train.csv&quot;</span>)
+test_csv &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;test.csv&quot;</span>)
 <span class="kw">glimpse</span>(csv_file)</code></pre></div>
 <pre><code>## Observations: 1,460
 ## Variables: 81
@@ -196,75 +197,51 @@ csv_file &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span cl
 ## $ SaleType      &lt;fctr&gt; WD, WD, WD, WD, WD, WD, WD, WD, WD, WD, WD, New...
 ## $ SaleCondition &lt;fctr&gt; Normal, Normal, Normal, Abnorml, Normal, Normal...
 ## $ SalePrice     &lt;int&gt; 208500, 181500, 223500, 140000, 250000, 143000, ...</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Y &lt;-<span class="st"> </span>csv_file$SalePrice
-<span class="kw">kable</span>(<span class="kw">t</span>(<span class="kw">describe</span>(Y)))</code></pre></div>
-<table>
-<thead>
-<tr class="header">
-<th></th>
-<th align="right">X1</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>vars</td>
-<td align="right">1.000000</td>
-</tr>
-<tr class="even">
-<td>n</td>
-<td align="right">1460.000000</td>
-</tr>
-<tr class="odd">
-<td>mean</td>
-<td align="right">180921.195890</td>
-</tr>
-<tr class="even">
-<td>sd</td>
-<td align="right">79442.502883</td>
-</tr>
-<tr class="odd">
-<td>median</td>
-<td align="right">163000.000000</td>
-</tr>
-<tr class="even">
-<td>trimmed</td>
-<td align="right">170783.291096</td>
-</tr>
-<tr class="odd">
-<td>mad</td>
-<td align="right">56338.800000</td>
-</tr>
-<tr class="even">
-<td>min</td>
-<td align="right">34900.000000</td>
-</tr>
-<tr class="odd">
-<td>max</td>
-<td align="right">755000.000000</td>
-</tr>
-<tr class="even">
-<td>range</td>
-<td align="right">720100.000000</td>
-</tr>
-<tr class="odd">
-<td>skew</td>
-<td align="right">1.879009</td>
-</tr>
-<tr class="even">
-<td>kurtosis</td>
-<td align="right">6.496789</td>
-</tr>
-<tr class="odd">
-<td>se</td>
-<td align="right">2079.105324</td>
-</tr>
-</tbody>
-</table>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">X &lt;-<span class="st"> </span>csv_file$X1stFlrSF
+Y &lt;-<span class="st"> </span>csv_file$SalePrice
+<span class="kw">t</span>(<span class="kw">describe</span>(X, <span class="dt">quant =</span> <span class="kw">c</span>(<span class="fl">0.25</span>, <span class="fl">0.75</span>)))</code></pre></div>
+<pre><code>##                 [,1]
+## vars        1.000000
+## n        1460.000000
+## mean     1162.626712
+## sd        386.587738
+## median   1087.000000
+## trimmed  1129.990582
+## mad       347.669700
+## min       334.000000
+## max      4692.000000
+## range    4358.000000
+## skew        1.373929
+## kurtosis    5.710132
+## se         10.117464
+## Q0.25     882.000000
+## Q0.75    1391.250000</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">t</span>(<span class="kw">describe</span>(Y))</code></pre></div>
+<pre><code>##                     X1
+## vars          1.000000
+## n          1460.000000
+## mean     180921.195890
+## sd        79442.502883
+## median   163000.000000
+## trimmed  170783.291096
+## mad       56338.800000
+## min       34900.000000
+## max      755000.000000
+## range    720100.000000
+## skew          1.879009
+## kurtosis      6.496789
+## se         2079.105324</code></pre>
 <p>Calculate as a minimum the below probabilities a through c. Assume the small letter “x” is estimated as the 1st quartile of the X variable, and the small letter “y” is estimated as the 2d quartile of the Y variable. Interpret the meaning of all probabilities.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x &lt;-<span class="st"> </span><span class="kw">quantile</span>(X, <span class="fl">0.25</span>)
+y &lt;-<span class="st"> </span><span class="kw">median</span>(Y)</code></pre></div>
 <ol style="list-style-type: lower-alpha">
 <li><p>P(X&gt;x | Y&gt;y)</p></li>
 <li><p>P(X&gt;x, Y&gt;y)</p></li>
-<li><p>P(X<x | Y>y)</p></li>
+</ol>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sum</span>(X &gt;<span class="st"> </span>x)/<span class="kw">length</span>(X) *<span class="st"> </span><span class="kw">sum</span>(Y &gt;<span class="st"> </span>y)/<span class="kw">length</span>(Y)</code></pre></div>
+<pre><code>## [1] 0.372948</code></pre>
+<ol start="3" style="list-style-type: lower-alpha">
+<li>P(X<x | Y>y)</li>
 </ol>
 <p>Does splitting the training data in this fashion make them independent? In other words, does P(X|Y)=P(X)P(Y))? Check mathematically, and then evaluate by running a Chi Square test for association. You might have to research this.</p>
 </div>
