@@ -29,7 +29,7 @@ knitr::opts_chunk$set(
 
 
 ```{r packages, echo=F, collapse=T} 
-packages <- c("prettydoc",'dplyr', 'psych', 'knitr', 'ggplot2', 'MASS', 'car', 'MLmetrics', 'gvlma', 'broom') 
+packages <- c("prettydoc",'dplyr', 'psych', 'knitr', 'ggplot2', 'MASS', 'car', 'MLmetrics', 'gvlma', 'broom', 'randomForest', 'rpart') 
 
 installed_and_loaded <- function(pkg){
   ### See if we need to install and load any packages ###
@@ -274,13 +274,13 @@ hist(rand_samp, breaks = 30)
 
 Build some type of regression model and submit your model to the competition board.  Provide your complete model summary and results with analysis.  Report your Kaggle.com  user name and score.
 
+
+##Clean Data
 ```{r clean}
-
-
 #load CSVs
 #Per data dictionary, "NA" indicates the absense of the characteristic 
 #and shouldn't be treated as R's NAs.
-#changed 2 Likert scales to categorical variables
+#changed 2 Likert scales & 2 date-component values to categorical variables
 train_csv <- read.csv('train.csv', 
                      na.strings = "",
                      colClasses=c("MSSubClass" = "factor",
@@ -301,32 +301,40 @@ test_csv <- read.csv('test.csv',
                                  )
                     )
 
+
+
+#mutate variables in train and test data sets
 current_year <- as.integer(format(Sys.Date(), "%Y"))
 
-#mutate variables
-train_df <- 
-  train_csv %>% 
+train_df <- train_csv %>% 
   mutate(
+    #change the actual year values to age in unit years
     years_since_built = current_year - YearBuilt,
     years_since_remodel = current_year - YearRemodAdd,
     years_since_garage_built = current_year - as.integer(GarageYrBlt), 
+    #change some factors back to integers
     MasVnrArea = as.integer(MasVnrArea),
     LotFrontage = as.integer(LotFrontage)
   ) %>% 
     dplyr::select(-c(YearBuilt, YearRemodAdd, GarageYrBlt))
 
-test_df <- 
-  test_csv %>% 
+test_df <- test_csv %>% 
   mutate(
+    #change the actual year values to age in unit years
     years_since_built = current_year - YearBuilt,
     years_since_remodel = current_year - YearRemodAdd,
     years_since_garage_built = current_year - as.integer(GarageYrBlt)
   ) %>% 
-  mutate_at(vars(MasVnrArea, LotFrontage, BsmtUnfSF, TotalBsmtSF, BsmtFinSF1, GarageArea, BsmtFinSF2),
-           as.integer) %>% 
+  #change some factors back to integers
+  mutate_at(vars(MasVnrArea, LotFrontage, BsmtUnfSF, TotalBsmtSF, 
+                 BsmtFinSF1, GarageArea, BsmtFinSF2),
+                  as.integer
+            ) %>% 
   dplyr::select(-c(YearBuilt, YearRemodAdd, GarageYrBlt))
 
-inspect_data <- function(df){
+inspect_metadata <- function(df){
+  ###Takes a data frame &
+  ###Checks for NAs, incorrect class types, and inspects the unique values
   df_len <- nrow(df)
   NA_ct = as.vector(rapply(df, function(x) sum(is.na(x))))
   var_names <- names(df)
@@ -347,19 +355,14 @@ inspect_data <- function(df){
   df_summary <- cbind(df_metadata, metrics)
   return(df_summary)
 }
-df_summary <- inspect_data(train_df)
-df_summary <- inspect_data(test_df)
+df_summary <- inspect_metadata(train_df)
+df_summary <- inspect_metadata(test_df)
 View(df_summary)
 #write.csv(df_summary, file = "train_summary.csv")
-
-
-
 
 #Remove 2 outliers due to being partial sales of homes
 plot(SalePrice ~ GrLivArea, train_df)
 train_df <- subset(train_df, !(GrLivArea > 4000 & SalePrice < 200000))
-
-
 ```
 
 https://www.theanalysisfactor.com/likert-scale-items-as-predictor-variables-in-regression/
@@ -368,9 +371,9 @@ https://www.researchgate.net/post/Is_a_Likert-type_scale_ordinal_or_interval_dat
 https://stats.stackexchange.com/questions/121907/using-years-when-calculating-linear-regression
 
 
-
+##Baseline Model
 ```{r baseline_model}
-
+#Create baseline model with all the variables
 all_vars <- names(train_df)
 remove <- c("SalePrice", "Id")
 independent_vars <- setdiff(all_vars, remove)
@@ -386,29 +389,27 @@ model_sum <- summary(model1)
 metrics_glance <- glance(model1)
 
 model_summary <- function(model, model_sum, metrics_glance){
+  ###Takes as inputs some of the model outputs
+  ###& creates data frame of summary statitics
   results <- data.frame(
     n_vars = length(names(model$model)),
     RootMSLE = RMSLE(model$fitted.values, model$model$SalePrice),
     adj.r.sq = model_sum$adj.r.squared,
-    f.statistic = paste(round(model_sum$fstatistic, 4), collapse = ", "),
+    f.statistic.and.dfs = paste(round(model_sum$fstatistic, 4), collapse = ", "),
     p.value = metrics_glance$p.value
   )
   return(results)
 }
-baseline_results <- model_summary(model1, model_sum, metrics_glance)
-baseline_results
+
+(baseline_results <- model_summary(model1, model_sum, metrics_glance))
 all_results <- baseline_results
-
-
-
 ```
 
 
-
+##AIC Stepwise Model
 ```{r stepwise_selection}
 
-#if(!exists("AIC_model")) 
-AIC_model <- stepAIC(model1)
+if(!exists("AIC_model")) AIC_model <- stepAIC(model1)
 
 model_sum <- summary(AIC_model)
 metrics_glance <- glance(AIC_model)
@@ -420,6 +421,11 @@ plot(AIC_model)
 all_results <- rbind(all_results, AIC_results)
 print(all_results)
 ```
+
+##Random Forest
+
+
+##Gradient Boosting
 
 
 ```{r}

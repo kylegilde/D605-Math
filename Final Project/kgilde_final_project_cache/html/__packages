@@ -7,3 +7,6 @@ ggplot2
 MASS
 MLmetrics
 car
+gvlma
+broom
+bindrcpp
