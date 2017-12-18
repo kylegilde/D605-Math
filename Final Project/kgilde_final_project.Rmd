@@ -29,7 +29,7 @@ knitr::opts_chunk$set(
 
 
 ```{r packages, echo=F, collapse=T} 
-packages <- c("prettydoc",'dplyr', 'psych', 'knitr', 'ggplot2', 'MASS', 'car', 'MLmetrics') 
+packages <- c("prettydoc",'dplyr', 'psych', 'knitr', 'ggplot2', 'MASS', 'car', 'MLmetrics', 'gvlma', 'broom') 
 
 installed_and_loaded <- function(pkg){
   ### See if we need to install and load any packages ###
@@ -55,9 +55,8 @@ Pick one of the quantitative independent variables from the training data set (t
 #Probability.  
 
 ```{r get_data}
-train_df <- read.csv('train.csv')
-test_df <- read.csv('test.csv')
-#glimpse(train_df)
+
+
 ```
 
 
@@ -275,57 +274,159 @@ hist(rand_samp, breaks = 30)
 
 Build some type of regression model and submit your model to the competition board.  Provide your complete model summary and results with analysis.  Report your Kaggle.com  user name and score.
 
-```{r explore}
-str(train_df)
+```{r clean}
 
-df_len <- nrow(train_df)
-NA_ct = as.vector(rapply(train_df, function(x) sum(is.na(x))))
-var_names <- names(train_df)
-df_metadata <- data.frame(
-  position = 1:length(var_names),
-  var_names = var_names,
-  NA_ct = NA_ct,
-  NA_percent = round(NA_ct / df_len, 4),
-  class_type = rapply(train_df, class),
-  uniq_value_ct = rapply(train_df,function(x)length(unique(x))),
-  uniq_values = rapply(train_df, function(x) paste(sort(unique(x)), collapse = ','))
+
+#load CSVs
+#Per data dictionary, "NA" indicates the absense of the characteristic 
+#and shouldn't be treated as R's NAs.
+#changed 2 Likert scales to categorical variables
+train_csv <- read.csv('train.csv', 
+                     na.strings = "",
+                     colClasses=c("MSSubClass" = "factor",
+                                  "MoSold" = "factor",
+                                  "YrSold" = "factor",
+                                  "OverallQual" = "factor",
+                                  "OverallCond" = "factor"
+                                  )
+                     )
+
+test_csv <- read.csv('test.csv', 
+                    na.strings = "",
+                    colClasses=c("MSSubClass" = "factor",
+                                 "MoSold" = "factor",
+                                 "YrSold" = "factor",
+                                 "OverallQual" = "factor",
+                                 "OverallCond" = "factor"                              
+                                 )
+                    )
+
+current_year <- as.integer(format(Sys.Date(), "%Y"))
+
+#mutate variables
+train_df <- 
+  train_csv %>% 
+  mutate(
+    years_since_built = current_year - YearBuilt,
+    years_since_remodel = current_year - YearRemodAdd,
+    years_since_garage_built = current_year - as.integer(GarageYrBlt), 
+    MasVnrArea = as.integer(MasVnrArea),
+    LotFrontage = as.integer(LotFrontage)
+  ) %>% 
+    dplyr::select(-c(YearBuilt, YearRemodAdd, GarageYrBlt))
+
+test_df <- 
+  test_csv %>% 
+  mutate(
+    years_since_built = current_year - YearBuilt,
+    years_since_remodel = current_year - YearRemodAdd,
+    years_since_garage_built = current_year - as.integer(GarageYrBlt)
+  ) %>% 
+  mutate_at(vars(MasVnrArea, LotFrontage, BsmtUnfSF, TotalBsmtSF, BsmtFinSF1, GarageArea, BsmtFinSF2),
+           as.integer) %>% 
+  dplyr::select(-c(YearBuilt, YearRemodAdd, GarageYrBlt))
+
+inspect_data <- function(df){
+  df_len <- nrow(df)
+  NA_ct = as.vector(rapply(df, function(x) sum(is.na(x))))
+  var_names <- names(df)
   
-)
-metrics <- data.frame(describe(train_df))
-factor_indices <- which(df_metadata$class_type == "factor")
-metrics[factor_indices, ] <- ''
-metrics <- metrics[, 2:ncol(metrics)]
-df_summary <- cbind(df_metadata, metrics)
+  df_metadata <- data.frame(
+    position = 1:length(var_names),
+    var_names = var_names,
+    NA_ct = NA_ct,
+    NA_percent = round(NA_ct / df_len, 4),
+    class_type = rapply(df, class),
+    uniq_value_ct = rapply(df,function(x)length(unique(x))),
+    uniq_values = rapply(df, function(x) paste(sort(unique(x)), collapse = ','))
+  )
+  metrics <- data.frame(describe(df))
+  factor_indices <- which(df_metadata$class_type == "factor")
+  metrics[factor_indices, ] <- ''
+  metrics <- metrics[, 2:ncol(metrics)]
+  df_summary <- cbind(df_metadata, metrics)
+  return(df_summary)
+}
+df_summary <- inspect_data(train_df)
+df_summary <- inspect_data(test_df)
 View(df_summary)
+#write.csv(df_summary, file = "train_summary.csv")
+
+
+
+
+#Remove 2 outliers due to being partial sales of homes
+plot(SalePrice ~ GrLivArea, train_df)
+train_df <- subset(train_df, !(GrLivArea > 4000 & SalePrice < 200000))
+
+
 ```
 
+https://www.theanalysisfactor.com/likert-scale-items-as-predictor-variables-in-regression/
+https://www.researchgate.net/post/how_independent_variables_measured_on_likert_scale_should_be_treated_in_binary_logistic_regression_as_continuous_variables_or_ordinal_variables
+https://www.researchgate.net/post/Is_a_Likert-type_scale_ordinal_or_interval_data
+https://stats.stackexchange.com/questions/121907/using-years-when-calculating-linear-regression
 
 
 
-```{r}
+```{r baseline_model}
 
+all_vars <- names(train_df)
+remove <- c("SalePrice", "Id")
+independent_vars <- setdiff(all_vars, remove)
+independent_vars <- paste(independent_vars, collapse = "+")
 
+options(max.print=2500)
 
-independent_vars <- names(train_df)[2:80]
-mostly_NA <- c("PoolQC", "MiscFeature", "Alley", "Fence", "FireplaceQu", "LotFrontage")
+(lm_formula <- as.formula(paste0('SalePrice ~', independent_vars)))
 
-vars <- paste(independent_vars[!independent_vars %in% mostly_NA], collapse = "+")
-options(max.print=2000)
-lm_formula <- as.formula(paste0('SalePrice ~', vars))
 model1 <- lm(lm_formula, data = train_df)
-summary(model1)
 
+model_sum <- summary(model1)
+metrics_glance <- glance(model1)
 
-RMSLE(model1$fitted.values, model1$model$SalePrice)
+model_summary <- function(model, model_sum, metrics_glance){
+  results <- data.frame(
+    n_vars = length(names(model$model)),
+    RootMSLE = RMSLE(model$fitted.values, model$model$SalePrice),
+    adj.r.sq = model_sum$adj.r.squared,
+    f.statistic = paste(round(model_sum$fstatistic, 4), collapse = ", "),
+    p.value = metrics_glance$p.value
+  )
+  return(results)
+}
+baseline_results <- model_summary(model1, model_sum, metrics_glance)
+baseline_results
+all_results <- baseline_results
+
 
 
 ```
+
+
+
+```{r stepwise_selection}
+
+#if(!exists("AIC_model")) 
+AIC_model <- stepAIC(model1)
+
+model_sum <- summary(AIC_model)
+metrics_glance <- glance(AIC_model)
+AIC_results <- model_summary(AIC_model, model_sum, metrics_glance)
+
+plot(AIC_model)
+#coef(model_sum)[, "Pr(>|t|)"]
+
+all_results <- rbind(all_results, AIC_results)
+print(all_results)
+```
+
 
 ```{r}
 scores_file <- "house-prices-advanced-regression-techniques-publicleaderboard.csv"
 scores <- read.csv(scores_file)
 scores$SubmissionDate <- as.Date(scores$SubmissionDate)
-t(describe(subset(scores, SubmissionDate > "2017-12-01", select = Score), quant = c(.25, .1, .05, .01)))
+t(describe(subset(scores, SubmissionDate > "2010-12-01", select = Score), quant = c(.25, .1, .05, .01, .001)))
 ```
 
 
