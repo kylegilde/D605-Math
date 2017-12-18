@@ -254,23 +254,20 @@ round(cor_matrix %*% precision_matrix, 6)
 round(precision_matrix %*% cor_matrix, 6)
 ```
 
+http://www.sthda.com/english/wiki/correlation-matrix-a-quick-start-guide-to-analyze-format-and-visualize-a-correlation-matrix-using-r-software
 
 #Calculus-Based Probability & Statistics. 
 
 Many times, it makes sense to fit a closed form distribution to data.  For your non-transformed independent variable, location shift (if necessary)  it so that the minimum value is above zero.  Then load the MASS package and run fitdistr to fit a density function of your choice.  (See https://stat.ethz.ch/R-manual/R-devel/library/MASS/html/fitdistr.html ).  Find the optimal value of the parameters for this distribution, and then take 1000 samples from this distribution (e.g., rexp(1000, ??) for an exponential).  Plot a histogram and compare it with a histogram of your non-transformed original variable.   
 
 ```{r calculus}
+set.seed(4)
 X_fit_f <- fitdistr(X, "exponential")
-X_fit_f$vcov
-#hist(X_fit_f)
+hist(X, breaks = 30)
 
 
-rand_samp <- rexp(1000)
+rand_samp <- rexp(1000, X_fit_f$estimate[[1]])
 hist(rand_samp, breaks = 30)
-
-
-
-
 ```
 
 
