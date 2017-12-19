@@ -407,6 +407,8 @@ model_summary <- function(model, model_sum, metrics_glance){
 (baseline_results <- model_summary(model1, model_sum, metrics_glance))
 all_results <- baseline_results
 
+
+#Outlier analysis
 cooksd <- cooks.distance(model1)
 cooks_threshold <-  4 * mean(cooksd, na.rm=T)
 
@@ -426,6 +428,7 @@ length(cooksd[cooksd > cooks_threshold])
 if(!exists("AIC_model")) AIC_model <- stepAIC(model1)
 ```
 
+
 ```{r, stepwise_results}
 model_sum <- summary(AIC_model)
 metrics_glance <- glance(AIC_model)
@@ -434,6 +437,8 @@ AIC_results <- model_summary(AIC_model, model_sum, metrics_glance)
 plot(AIC_model)
 #coef(model_sum)[, "Pr(>|t|)"]
 
+
+#Outlier analysis
 cooksd <- cooks.distance(AIC_model)
 cooks_threshold <-  4 * mean(cooksd, na.rm=T)
 
