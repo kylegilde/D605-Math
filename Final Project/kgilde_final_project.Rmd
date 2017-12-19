@@ -55,7 +55,25 @@ Pick one of the quantitative independent variables from the training data set (t
 #Probability.  
 
 ```{r get_data}
+train_csv <- read.csv('train.csv', 
+                     na.strings = "",
+                     colClasses=c("MSSubClass" = "factor",
+                                  "MoSold" = "factor",
+                                  "YrSold" = "factor",
+                                  "OverallQual" = "factor",
+                                  "OverallCond" = "factor"
+                                  )
+                     )
 
+test_csv <- read.csv('test.csv', 
+                    na.strings = "",
+                    colClasses=c("MSSubClass" = "factor",
+                                 "MoSold" = "factor",
+                                 "YrSold" = "factor",
+                                 "OverallQual" = "factor",
+                                 "OverallCond" = "factor"                              
+                                 )
+                    )
 
 ```
 
@@ -63,8 +81,8 @@ Pick one of the quantitative independent variables from the training data set (t
 Calculate as a minimum the below probabilities a through c.  Assume the small letter "x" is estimated as the 1st quartile of the X variable, and the small letter "y" is estimated as the 2d quartile of the Y variable.  Interpret the meaning of all probabilities.  
 
 ```{r thresholds}
-X <- train_df$X1stFlrSF
-Y <- train_df$SalePrice 
+X <- train_csv$X1stFlrSF
+Y <- train_csv$SalePrice 
 XY <- cbind(X, Y)
 
 #no NAs
@@ -162,7 +180,7 @@ lines(xfit, yfit)
 par(mfrow = c(2, 2))
 XYmodel <- lm(Y ~ X, data = XY_df)
 summary(XYmodel)
-plot(XYmodel)
+plot(XYmodel, which = 2)
 
 ```
 
@@ -218,7 +236,7 @@ lines(xfit, yfit)
 par(mfrow = c(2, 2))
 XYmodel_BC <- lm(Y ~ X, data = XY_df_transform)
 summary(XYmodel_BC)
-plot(XYmodel_BC)
+plot(XYmodel_BC, which = 2)
 
 ```
 ```{r sresid2}
@@ -244,7 +262,7 @@ https://www.rdocumentation.org/packages/car/versions/2.1-6/topics/powerTransform
 Using at least three untransformed variables, build a correlation matrix.  Invert your correlation matrix. (This is known as the precision matrix and contains variance inflation factors on the diagonal.) Multiply the correlation matrix by the precision matrix, and then multiply the precision matrix by the correlation matrix.
 
 ```{r LA}
-selected_vars <- subset(train_df, select = c(LotArea, X1stFlrSF, OpenPorchSF, SalePrice))
+selected_vars <- subset(train_csv, select = c(LotArea, X1stFlrSF, OpenPorchSF, SalePrice))
 
 (cor_matrix <- cor(selected_vars))
 (precision_matrix <- solve(cor_matrix))
@@ -281,25 +299,7 @@ Build some type of regression model and submit your model to the competition boa
 #Per data dictionary, "NA" indicates the absense of the characteristic 
 #and shouldn't be treated as R's NAs.
 #changed 2 Likert scales & 2 date-component values to categorical variables
-train_csv <- read.csv('train.csv', 
-                     na.strings = "",
-                     colClasses=c("MSSubClass" = "factor",
-                                  "MoSold" = "factor",
-                                  "YrSold" = "factor",
-                                  "OverallQual" = "factor",
-                                  "OverallCond" = "factor"
-                                  )
-                     )
 
-test_csv <- read.csv('test.csv', 
-                    na.strings = "",
-                    colClasses=c("MSSubClass" = "factor",
-                                 "MoSold" = "factor",
-                                 "YrSold" = "factor",
-                                 "OverallQual" = "factor",
-                                 "OverallCond" = "factor"                              
-                                 )
-                    )
 
 
 
@@ -363,6 +363,8 @@ View(df_summary)
 #Remove 2 outliers due to being partial sales of homes
 plot(SalePrice ~ GrLivArea, train_df)
 train_df <- subset(train_df, !(GrLivArea > 4000 & SalePrice < 200000))
+
+
 ```
 
 https://www.theanalysisfactor.com/likert-scale-items-as-predictor-variables-in-regression/
@@ -386,6 +388,7 @@ options(max.print=2500)
 model1 <- lm(lm_formula, data = train_df)
 
 model_sum <- summary(model1)
+plot(model1)
 metrics_glance <- glance(model1)
 
 model_summary <- function(model, model_sum, metrics_glance){
@@ -403,14 +406,27 @@ model_summary <- function(model, model_sum, metrics_glance){
 
 (baseline_results <- model_summary(model1, model_sum, metrics_glance))
 all_results <- baseline_results
+
+cooksd <- cooks.distance(model1)
+cooks_threshold <-  4 * mean(cooksd, na.rm=T)
+
+plot(cooksd, pch="*", cex=2, main="Influential Obs by Cooks distance")  # plot cook's distance
+abline(h = cooks_threshold, col="red")  # add cutoff line
+text(x = 1:length(cooksd)+1,
+     y = cooksd, 
+     labels=ifelse(cooksd > cooks_threshold,names(cooksd),""),
+     col="red")  # add labels
+length(cooksd[cooksd > cooks_threshold])
+
 ```
 
 
 ##AIC Stepwise Model
-```{r stepwise_selection}
-
+```{r stepwise_selection, results='hide'}
 if(!exists("AIC_model")) AIC_model <- stepAIC(model1)
+```
 
+```{r, stepwise_results}
 model_sum <- summary(AIC_model)
 metrics_glance <- glance(AIC_model)
 AIC_results <- model_summary(AIC_model, model_sum, metrics_glance)
@@ -418,11 +434,39 @@ AIC_results <- model_summary(AIC_model, model_sum, metrics_glance)
 plot(AIC_model)
 #coef(model_sum)[, "Pr(>|t|)"]
 
+cooksd <- cooks.distance(AIC_model)
+cooks_threshold <-  4 * mean(cooksd, na.rm=T)
+
+plot(cooksd, pch="*", cex=2, main="Influential Obs by Cooks distance")  # plot cook's distance
+abline(h = cooks_threshold, col="red")  # add cutoff line
+text(x = 1:length(cooksd)+1,
+     y = cooksd, 
+     labels=ifelse(cooksd > cooks_threshold, names(cooksd),""),
+     col="red")  # add labels
+
+length(cooksd[cooksd > cooks_threshold])
+
+
 all_results <- rbind(all_results, AIC_results)
 print(all_results)
 ```
 
 ##Random Forest
+
+```{r rforest}
+y_train <- train_df$SalePrice
+x_train_df <- subset(train_df, select = -c(SalePrice, Id))
+
+#fit <- rpart(y_train ~ ., data = x_train_df, method="class")
+fit <- randomForest(y_train ~ ., x_train_df, ntree=500)
+
+summary(fit)
+fit$importance
+fit$inbag
+#Predict Output 
+#predicted= predict(fit, x_test)
+
+```
 
 
 ##Gradient Boosting
