@@ -12,3 +12,12 @@ broom
 bindrcpp
 randomForest
 rpart
+corrplot
+e1071
+forcats
+lattice
+mice
+foreach
+iterators
+itertools
+missForest

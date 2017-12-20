@@ -8,7 +8,7 @@ output:
     theme: architect
     highlight: github
     toc: true
-    toc_depth: 1
+    toc_depth: 2
 ---
 <style type="text/css">
 body{
@@ -29,22 +29,16 @@ knitr::opts_chunk$set(
 
 
 ```{r packages, echo=F, collapse=T} 
-packages <- c("prettydoc",'dplyr', 'psych', 'knitr', 'ggplot2', 'MASS', 'car', 'MLmetrics', 'gvlma', 'broom', 'randomForest', 'rpart') 
+required_packages <- c("prettydoc",'dplyr', 'psych', 'knitr', 'ggplot2', 'MASS', 'car', 'MLmetrics', 'broom', 'randomForest', 'e1071', 'forcats', 'mice', 'missForest') 
 
-installed_and_loaded <- function(pkg){
-  ### See if we need to install and load any packages ###
-  #CODE SOURCE: https://gist.github.com/stevenworthington/3178163
-  new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
-  if (length(new.pkg)) 
-    install.packages(new.pkg, dependencies = TRUE)
-  sapply(pkg, require, character.only = TRUE, quietly = TRUE, warn.conflicts = FALSE)
-}
+### See if we need to install and load any packages ###
+new_packages <- required_packages[!(required_packages %in% installed.packages())]
+if (length(new_packages)) install.packages(new_packages, dependencies = TRUE)
+data.frame(loaded_packages = sapply(required_packages, require, character.only = TRUE, quietly = TRUE, warn.conflicts = FALSE))
 
-#excute function and display the loaded packages
-data.frame(loaded_packages=installed_and_loaded(packages))
 ```
 
-Your final is due by the end of day on 12/27/2017.  You should post your solutions to your GitHub account.  You are also expected to make a short presentation during our last meeting (3-5 minutes) or post a recording to the board.  This project will show off your ability to understand the elements of the class. 
+Your final is due by the end of day on 12/20/2017.  You should post your solutions to your GitHub account.  You are also expected to make a short presentation during our last meeting (3-5 minutes) or post a recording to the board.  This project will show off your ability to understand the elements of the class. 
 
 You are to register for Kaggle.com (free) and compete in the House Prices: Advanced Regression Techniques competition.  https://www.kaggle.com/c/house-prices-advanced-regression-techniques . 
 
@@ -55,8 +49,11 @@ Pick one of the quantitative independent variables from the training data set (t
 #Probability.  
 
 ```{r get_data}
+#load CSVs
+#changed 2 Likert scales & 2 date-component values to categorical variables
+#https://ww2.amstat.org/publications/jse/v19n3/decock/DataDocumentation.txt
+
 train_csv <- read.csv('train.csv', 
-                     na.strings = "",
                      colClasses=c("MSSubClass" = "factor",
                                   "MoSold" = "factor",
                                   "YrSold" = "factor",
@@ -66,7 +63,6 @@ train_csv <- read.csv('train.csv',
                      )
 
 test_csv <- read.csv('test.csv', 
-                    na.strings = "",
                     colClasses=c("MSSubClass" = "factor",
                                  "MoSold" = "factor",
                                  "YrSold" = "factor",
@@ -77,6 +73,11 @@ test_csv <- read.csv('test.csv',
 
 ```
 
+https://www.theanalysisfactor.com/likert-scale-items-as-predictor-variables-in-regression/
+https://www.researchgate.net/post/how_independent_variables_measured_on_likert_scale_should_be_treated_in_binary_logistic_regression_as_continuous_variables_or_ordinal_variables
+https://www.researchgate.net/post/Is_a_Likert-type_scale_ordinal_or_interval_data
+https://stats.stackexchange.com/questions/121907/using-years-when-calculating-linear-regression
+
 
 Calculate as a minimum the below probabilities a through c.  Assume the small letter "x" is estimated as the 1st quartile of the X variable, and the small letter "y" is estimated as the 2d quartile of the Y variable.  Interpret the meaning of all probabilities.  
 
@@ -84,9 +85,6 @@ Calculate as a minimum the below probabilities a through c.  Assume the small le
 X <- train_csv$X1stFlrSF
 Y <- train_csv$SalePrice 
 XY <- cbind(X, Y)
-
-#no NAs
-sum(is.na(XY))
 
 total_length <- nrow(XY)
 x <- quantile(X, .25)
@@ -177,11 +175,9 @@ xfit <- seq(min(XY_df$Y), max(XY_df$Y), by = 10)
 yfit <- dnorm(xfit, mean(XY_df$Y), sd(XY_df$Y))
 lines(xfit, yfit)
 
-par(mfrow = c(2, 2))
 XYmodel <- lm(Y ~ X, data = XY_df)
 summary(XYmodel)
 plot(XYmodel, which = 2)
-
 ```
 
 ```{r sresid}
@@ -198,15 +194,6 @@ lines(xfit, yfit)
 Transform both variables simultaneously using Box-Cox transformations.  You might have to research this.
 
 ```{r transform}
-# univariate BC tranformation
-# BC <- boxcox(Y ~ X, data = XY_df)
-# BC_df <- data.frame(BC)
-# (lambda <- BC_df$x[which.max(BC_df$y)])
-# XY_df_transform <- data.frame(
-#   X = XY_df$X,
-#   Y = (XY_df$Y  ^ lambda - 1) / lambda
-# )
-
 (lambda_values <- powerTransform(XY_df))
 lambda_X <- lambda_values$lambda[1]
 lambda_Y <- lambda_values$lambda[2]
@@ -215,7 +202,7 @@ XY_df_transform <- data.frame(
   X = (XY_df$X^lambda_X - 1) / lambda_X,
   Y = (XY_df$Y^lambda_Y - 1) / lambda_Y
 )
-
+summary(powerTransform(XY_df))
 kable(t(round(describe(XY_df_transform, quant = c(.25,.75)), 2)))
 
 a <- ggplot(XY_df_transform, aes(X, Y))
@@ -233,12 +220,13 @@ xfit <- seq(min(XY_df_transform$Y), max(XY_df_transform$Y), by = .01)
 yfit <- dnorm(xfit, mean(XY_df_transform$Y), sd(XY_df_transform$Y))
 lines(xfit, yfit)
 
-par(mfrow = c(2, 2))
 XYmodel_BC <- lm(Y ~ X, data = XY_df_transform)
-summary(XYmodel_BC)
+
 plot(XYmodel_BC, which = 2)
 
 ```
+
+
 ```{r sresid2}
 
 sresid <- studres(XYmodel_BC)
@@ -295,46 +283,37 @@ Build some type of regression model and submit your model to the competition boa
 
 ##Clean Data
 ```{r clean}
-#load CSVs
-#Per data dictionary, "NA" indicates the absense of the characteristic 
-#and shouldn't be treated as R's NAs.
-#changed 2 Likert scales & 2 date-component values to categorical variables
-
-
-
+#combine test & training
+test_csv$SalePrice <- NA
+all_data <- rbind(train_csv, test_csv)
 
 #mutate variables in train and test data sets
 current_year <- as.integer(format(Sys.Date(), "%Y"))
 
-train_df <- train_csv %>% 
+all_data_cleaned <- all_data %>% 
+  #change the actual year values to age in unit years
   mutate(
-    #change the actual year values to age in unit years
-    years_since_built = current_year - YearBuilt,
-    years_since_remodel = current_year - YearRemodAdd,
-    years_since_garage_built = current_year - as.integer(GarageYrBlt), 
-    #change some factors back to integers
-    MasVnrArea = as.integer(MasVnrArea),
-    LotFrontage = as.integer(LotFrontage)
-  ) %>% 
-    dplyr::select(-c(YearBuilt, YearRemodAdd, GarageYrBlt))
-
-test_df <- test_csv %>% 
-  mutate(
-    #change the actual year values to age in unit years
     years_since_built = current_year - YearBuilt,
     years_since_remodel = current_year - YearRemodAdd,
     years_since_garage_built = current_year - as.integer(GarageYrBlt)
+  ) %>%
+  #Per the data dictionary, the following variables have meaningful NA values
+  mutate_at(
+    vars(Alley, BsmtQual, BsmtCond, BsmtExposure, BsmtFinType1, BsmtFinType2, FireplaceQu, GarageType, GarageFinish, GarageQual, GarageCond, PoolQC, Fence, MiscFeature),
+    fct_explicit_na, na_level = "None"
   ) %>% 
-  #change some factors back to integers
-  mutate_at(vars(MasVnrArea, LotFrontage, BsmtUnfSF, TotalBsmtSF, 
-                 BsmtFinSF1, GarageArea, BsmtFinSF2),
-                  as.integer
-            ) %>% 
-  dplyr::select(-c(YearBuilt, YearRemodAdd, GarageYrBlt))
+  dplyr::select(-c(YearBuilt, YearRemodAdd, GarageYrBlt, Id))
+
+#Remove 2 outliers due to being partial sales of homes
+#https://ww2.amstat.org/publications/jse/v19n3/decock/DataDocumentation.txt
+plot(SalePrice ~ GrLivArea, all_data_cleaned)
+all_data_cleaned <- subset(all_data_cleaned, !(GrLivArea > 4000 & SalePrice < 200000))
+
 
 inspect_metadata <- function(df){
   ###Takes a data frame &
-  ###Checks for NAs, incorrect class types, and inspects the unique values
+  ###Checks for NAs, incorrect class types, inspects the unique values
+  ###Adds summary metrics
   df_len <- nrow(df)
   NA_ct = as.vector(rapply(df, function(x) sum(is.na(x))))
   var_names <- names(df)
@@ -355,119 +334,180 @@ inspect_metadata <- function(df){
   df_summary <- cbind(df_metadata, metrics)
   return(df_summary)
 }
-df_summary <- inspect_metadata(train_df)
-df_summary <- inspect_metadata(test_df)
-View(df_summary)
-#write.csv(df_summary, file = "train_summary.csv")
 
-#Remove 2 outliers due to being partial sales of homes
-plot(SalePrice ~ GrLivArea, train_df)
-train_df <- subset(train_df, !(GrLivArea > 4000 & SalePrice < 200000))
+#View(df_metadata <- inspect_metadata(test_df))
 
+#Impute missing values
+imputed_Data <- missForest(all_data_cleaned)
 
+#check imputed values
+imputed_Data$ximp
+
+#check imputation error
+imputed_Data$OOBerror
+
+# numeric_vars <- subset(df_metadata, class_type != 'factor', select = var_names)[, 1]
+# numeric_vars <- setdiff(numeric_vars, c('Id', 'SalePrice'))
+# 
+# numeric_data <- subset(all_data_cleaned, select = numeric_vars)
+# other_data <- all_data_cleaned[, !names(all_data_cleaned) %in% numeric_vars]
+# 
+# imputed_Data <- mice(numeric_data, m=5, maxit = 50, method = 'pmm', seed = 500)
+# summary(imputed_Data)
+# completed_numeric_data <- complete(imputed_Data, 1)
+
+all_data_completed <- cbind(other_data, completed_numeric_data)
+
+#Split test & training
+train_df <- subset(na.omit(all_data_completed), Id <= nrow(train_csv))
+test_df <- subset(all_data_completed, Id > nrow(train_csv), select = -SalePrice)
 ```
 
-https://www.theanalysisfactor.com/likert-scale-items-as-predictor-variables-in-regression/
-https://www.researchgate.net/post/how_independent_variables_measured_on_likert_scale_should_be_treated_in_binary_logistic_regression_as_continuous_variables_or_ordinal_variables
-https://www.researchgate.net/post/Is_a_Likert-type_scale_ordinal_or_interval_data
-https://stats.stackexchange.com/questions/121907/using-years-when-calculating-linear-regression
-
+https://www.analyticsvidhya.com/blog/2016/03/tutorial-powerful-packages-imputing-missing-values/
 
 ##Baseline Model
 ```{r baseline_model}
 #Create baseline model with all the variables
-all_vars <- names(train_df)
-remove <- c("SalePrice", "Id")
-independent_vars <- setdiff(all_vars, remove)
-independent_vars <- paste(independent_vars, collapse = "+")
+baseline <- lm(SalePrice ~ ., data = train_df)
+```
 
-options(max.print=2500)
+The model's plots show some violations of LR conditions. The residuals are not normally distributed or homoscedastic.
 
-(lm_formula <- as.formula(paste0('SalePrice ~', independent_vars)))
+```{r baseline_results}
+par(mfrow = c(2, 2)) 
+plot(baseline)
 
-model1 <- lm(lm_formula, data = train_df)
-
-model_sum <- summary(model1)
-plot(model1)
-metrics_glance <- glance(model1)
-
-model_summary <- function(model, model_sum, metrics_glance){
-  ###Takes as inputs some of the model outputs
-  ###& creates data frame of summary statitics
-  results <- data.frame(
-    n_vars = length(names(model$model)),
-    RootMSLE = RMSLE(model$fitted.values, model$model$SalePrice),
-    adj.r.sq = model_sum$adj.r.squared,
-    f.statistic.and.dfs = paste(round(model_sum$fstatistic, 4), collapse = ", "),
-    p.value = metrics_glance$p.value
-  )
-  return(results)
+model_summary <- function(model, y_var){
+  ### Summarizes the model's key statistics in one row
+  df_summary <- glance(summary(model))
+  df_summary$n_vars <- ncol(model$model) - 1
+  df_summary$RootMSLE = RMSLE(model$fitted.values, model$model[, y_var])
+  df_summary$model_name <- deparse(substitute(model)) 
+  df_summary <- subset(df_summary, select = c(model_name, n_vars, adj.r.squared, statistic, RootMSLE, p.value, sigma, df))
 }
+mod_sum <- model_summary(baseline, 'SalePrice')
+kable(all_results <- mod_sum)
+```
 
-(baseline_results <- model_summary(model1, model_sum, metrics_glance))
-all_results <- baseline_results
 
 
-#Outlier analysis
-cooksd <- cooks.distance(model1)
-cooks_threshold <-  4 * mean(cooksd, na.rm=T)
+## Model with Transformations
+```{r baseline_PT}
+train_df_transformed <- baseline$model
 
-plot(cooksd, pch="*", cex=2, main="Influential Obs by Cooks distance")  # plot cook's distance
-abline(h = cooks_threshold, col="red")  # add cutoff line
-text(x = 1:length(cooksd)+1,
-     y = cooksd, 
-     labels=ifelse(cooksd > cooks_threshold,names(cooksd),""),
-     col="red")  # add labels
-length(cooksd[cooksd > cooks_threshold])
+PT <- powerTransform(as.formula(baseline$call), family="bcnPower", data = train_df_transformed)
 
+train_df_transformed$SalePrice  <- bcnPower(train_df_transformed$SalePrice, 
+                                            lambda = PT$lambda, 
+                                            gamma = PT$gamma)
+
+baseline_PT <- lm(SalePrice ~ ., data = train_df_transformed)
+```
+https://stats.stackexchange.com/questions/61217/transforming-variables-for-multiple-regression-in-r
+
+The Q-Q plot isn't as normal as it could be, and there are a number of outliers.
+
+```{r, baseline_PT_results}
+par(mfrow = c(2, 2)) 
+plot(baseline_PT)
+
+mod_sum <- model_summary(baseline_PT, 'SalePrice')
+
+kable(all_results <- rbind(all_results, mod_sum))
 ```
 
 
 ##AIC Stepwise Model
 ```{r stepwise_selection, results='hide'}
-if(!exists("AIC_model")) AIC_model <- stepAIC(model1)
+#if(!exists("AIC_model")) 
+  AIC_model <- stepAIC(baseline)
 ```
 
+The Q-Q plot isn't normal, and there are a number of outliers.
 
 ```{r, stepwise_results}
-model_sum <- summary(AIC_model)
-metrics_glance <- glance(AIC_model)
-AIC_results <- model_summary(AIC_model, model_sum, metrics_glance)
-
+par(mfrow = c(2, 2)) 
 plot(AIC_model)
-#coef(model_sum)[, "Pr(>|t|)"]
 
+mod_sum <- model_summary(AIC_model, 'SalePrice')
+kable(all_results <- rbind(all_results, mod_sum))
+
+# cooksd <- cooks.distance(AIC_model)
+# cooks_threshold <-  4 * mean(cooksd, na.rm=T)
+# 
+# plot(cooksd, pch="*", cex=2, main="Influential Obs by Cooks distance")  # plot cook's distance
+# abline(h = cooks_threshold, col="red")  # add cutoff line
+# text(x = 1:length(cooksd)+1,
+#      y = cooksd,
+#      labels=ifelse(cooksd > cooks_threshold, names(cooksd),""),
+#      col="red")  # add labels
+# 
+# length(cooksd[cooksd > cooks_threshold])
+```
+
+##AIC Stepwise Model with Transformations
+```{r, AIC_model_PT, results='hide'}
+
+train_df_AIC_PT <- AIC_model$model
+PT <- powerTransform(as.formula(AIC_model$call), family="bcnPower", data = train_df_AIC_PT)
+summary(PT)
+
+train_df_AIC_PT$SalePrice  <- bcnPower(train_df_AIC_PT$SalePrice, 
+                                            lambda = PT$lambda, 
+                                            gamma = PT$gamma)
+
+AIC_model_PT <- lm(SalePrice ~ ., data = train_df_AIC_PT)
+
+#if(!exists("AIC_model_PT")) 
+  AIC_model_PT <- stepAIC(AIC_model_PT)
+
+```
+
+
+```{r, AIC_model_PT_results}
+par(mfrow = c(2, 2)) 
+plot(AIC_model_PT)
+
+mod_sum <- model_summary(AIC_model_PT, 'SalePrice')
+kable(all_results <- rbind(all_results, mod_sum))
+
+cols_needed <- intersect(names(AIC_model_PT$model), names(test_df))
+
+fit <- predict(AIC_model_PT, newdata = subset(test_df, select = cols_needed))
+summary(fit)
+
+table(all_data_completed$OverallQual)
+table(AIC_model_PT$model$OverallQual)
+table(test_df$OverallQual)
 
 #Outlier analysis
-cooksd <- cooks.distance(AIC_model)
-cooks_threshold <-  4 * mean(cooksd, na.rm=T)
+# cooksd <- cooks.distance(AIC_model_PT)
+# cooks_threshold <-  4 * mean(cooksd, na.rm=T)
+# 
+# plot(cooksd, pch="*", cex=2, main="Influential Obs by Cooks distance")  # plot cook's distance
+# abline(h = cooks_threshold, col="red")  # add cutoff line
+# text(x = 1:length(cooksd)+1,
+#      y = cooksd,
+#      labels=ifelse(cooksd > cooks_threshold, names(cooksd),""),
+#      col="red")  # add labels
+# 
+# length(cooksd[cooksd > cooks_threshold])
 
-plot(cooksd, pch="*", cex=2, main="Influential Obs by Cooks distance")  # plot cook's distance
-abline(h = cooks_threshold, col="red")  # add cutoff line
-text(x = 1:length(cooksd)+1,
-     y = cooksd, 
-     labels=ifelse(cooksd > cooks_threshold, names(cooksd),""),
-     col="red")  # add labels
-
-length(cooksd[cooksd > cooks_threshold])
-
-
-all_results <- rbind(all_results, AIC_results)
-print(all_results)
 ```
+
 
 ##Random Forest
 
 ```{r rforest}
 y_train <- train_df$SalePrice
-x_train_df <- subset(train_df, select = -c(SalePrice, Id))
+x_train_df <- subset(train_df, select = -SalePrice)
 
 #fit <- rpart(y_train ~ ., data = x_train_df, method="class")
-fit <- randomForest(y_train ~ ., x_train_df, ntree=500)
-
-summary(fit)
-fit$importance
-fit$inbag
+#fit <- randomForest(x_train_df, y = y_train, xtest = test_df, ntree=500, importance = T)
+# 
+# summary(fit)
+# fit$importance
+# fit$inbag
 #Predict Output 
 #predicted= predict(fit, x_test)
 
