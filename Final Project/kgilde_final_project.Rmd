@@ -282,7 +282,7 @@ Build some type of regression model and submit your model to the competition boa
 
 
 ##Clean Data
-```{r clean}
+```{r clean_impute, results='hide'}
 #combine test & training
 test_csv$SalePrice <- NA
 all_data <- rbind(train_csv, test_csv)
@@ -309,7 +309,6 @@ all_data_cleaned <- all_data %>%
 plot(SalePrice ~ GrLivArea, all_data_cleaned)
 all_data_cleaned <- subset(all_data_cleaned, !(GrLivArea > 4000 & SalePrice < 200000))
 
-
 inspect_metadata <- function(df){
   ###Takes a data frame &
   ###Checks for NAs, incorrect class types, inspects the unique values
@@ -317,7 +316,7 @@ inspect_metadata <- function(df){
   df_len <- nrow(df)
   NA_ct = as.vector(rapply(df, function(x) sum(is.na(x))))
   var_names <- names(df)
-  
+  #create dataframe  
   df_metadata <- data.frame(
     position = 1:length(var_names),
     var_names = var_names,
@@ -335,14 +334,19 @@ inspect_metadata <- function(df){
   return(df_summary)
 }
 
-#View(df_metadata <- inspect_metadata(test_df))
-memory.limit(size = 8060)
+View(df_metadata <- inspect_metadata(imputed_Data$ximp
+))
 #Impute missing values
-imputed_Data <- missForest(all_data_cleaned)
+x_data <- subset(all_data_cleaned, select = -c(Id, SalePrice))
+dim(x_data)
+imputed_Data <- missForest(x_data)
+```
 
+
+```{r, combine_split}
 #check imputed values
-imputed_Data$ximp
-
+sum(is.na(imputed_Data$ximp))
+dim(imputed_Data$ximp)
 #check imputation error
 imputed_Data$OOBerror
 
@@ -356,12 +360,15 @@ imputed_Data$OOBerror
 # summary(imputed_Data)
 # completed_numeric_data <- complete(imputed_Data, 1)
 
-all_data_completed <- cbind(other_data, completed_numeric_data)
+#all_data_completed <- cbind(other_data, completed_numeric_data)
+
+all_data_completed <- cbind(Id = all_data_cleaned$Id, imputed_Data$ximp, SalePrice = all_data_cleaned$SalePrice)
 
 #Split test & training
-train_df <- subset(na.omit(all_data_completed), Id <= nrow(train_csv))
-test_df <- subset(all_data_completed, Id > nrow(train_csv), select = -SalePrice)
+train_df <- subset(na.omit(all_data_completed), Id <= nrow(train_csv), select = -Id)
+test_df <- subset(all_data_completed, Id > nrow(train_csv), select = -c(Id, SalePrice))
 ```
+
 
 https://www.analyticsvidhya.com/blog/2016/03/tutorial-powerful-packages-imputing-missing-values/
 
