@@ -336,7 +336,7 @@ inspect_metadata <- function(df){
 }
 
 #View(df_metadata <- inspect_metadata(test_df))
-
+memory.limit(size = 8060)
 #Impute missing values
 imputed_Data <- missForest(all_data_cleaned)
 
@@ -513,8 +513,6 @@ x_train_df <- subset(train_df, select = -SalePrice)
 
 ```
 
-
-##Gradient Boosting
 
 
 ```{r}
