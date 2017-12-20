@@ -284,6 +284,7 @@ Build some type of regression model and submit your model to the competition boa
 ##Clean Data
 ```{r clean_impute, results='hide'}
 #combine test & training
+min_test_id <- min(test_csv$Id)
 test_csv$SalePrice <- NA
 all_data <- rbind(train_csv, test_csv)
 
@@ -302,12 +303,14 @@ all_data_cleaned <- all_data %>%
     vars(Alley, BsmtQual, BsmtCond, BsmtExposure, BsmtFinType1, BsmtFinType2, FireplaceQu, GarageType, GarageFinish, GarageQual, GarageCond, PoolQC, Fence, MiscFeature),
     fct_explicit_na, na_level = "None"
   ) %>% 
-  dplyr::select(-c(YearBuilt, YearRemodAdd, GarageYrBlt, Id))
+  dplyr::select(-c(YearBuilt, YearRemodAdd, GarageYrBlt))
 
 #Remove 2 outliers due to being partial sales of homes
 #https://ww2.amstat.org/publications/jse/v19n3/decock/DataDocumentation.txt
 plot(SalePrice ~ GrLivArea, all_data_cleaned)
-all_data_cleaned <- subset(all_data_cleaned, !(GrLivArea > 4000 & SalePrice < 200000))
+rows_to_remove <- which(all_data_cleaned$GrLivArea > 4000 & all_data_cleaned$SalePrice < 200000)
+all_data_cleaned <- all_data_cleaned[-rows_to_remove,]
+
 
 inspect_metadata <- function(df){
   ###Takes a data frame &
@@ -361,12 +364,14 @@ imputed_Data$OOBerror
 # completed_numeric_data <- complete(imputed_Data, 1)
 
 #all_data_completed <- cbind(other_data, completed_numeric_data)
+nrow(all_data)
+nrow(all_data_completed)
 
 all_data_completed <- cbind(Id = all_data_cleaned$Id, imputed_Data$ximp, SalePrice = all_data_cleaned$SalePrice)
 
 #Split test & training
-train_df <- subset(na.omit(all_data_completed), Id <= nrow(train_csv), select = -Id)
-test_df <- subset(all_data_completed, Id > nrow(train_csv), select = -c(Id, SalePrice))
+train_df <- subset(all_data_completed, Id < min_test_id, select = -Id)
+test_df <- subset(all_data_completed, Id >= min_test_id, select = -c(Id, SalePrice))
 ```
 
 
@@ -480,8 +485,8 @@ kable(all_results <- rbind(all_results, mod_sum))
 
 cols_needed <- intersect(names(AIC_model_PT$model), names(test_df))
 
-fit <- predict(AIC_model_PT, newdata = subset(test_df, select = cols_needed))
-summary(fit)
+AIC_model_PT_fit <- predict(AIC_model_PT, newdata = subset(test_df, select = cols_needed))
+summary(AIC_model_PT_fit)
 
 table(all_data_completed$OverallQual)
 table(AIC_model_PT$model$OverallQual)
@@ -510,9 +515,11 @@ y_train <- train_df$SalePrice
 x_train_df <- subset(train_df, select = -SalePrice)
 
 #fit <- rpart(y_train ~ ., data = x_train_df, method="class")
-#fit <- randomForest(x_train_df, y = y_train, xtest = test_df, ntree=500, importance = T)
+rf_fit <- randomForest(x_train_df, y = y_train, xtest = test_df, ntree=500, importance = T)
+nrow(test_df)
+sum(is.na(rf_fit))
 # 
-# summary(fit)
+summary(rf_fit)
 # fit$importance
 # fit$inbag
 #Predict Output 
