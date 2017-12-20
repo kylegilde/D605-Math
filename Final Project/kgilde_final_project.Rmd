@@ -352,7 +352,7 @@ imputed_Data$OOBerror
 # numeric_data <- subset(all_data_cleaned, select = numeric_vars)
 # other_data <- all_data_cleaned[, !names(all_data_cleaned) %in% numeric_vars]
 # 
-# imputed_Data <- mice(numeric_data, m=5, maxit = 50, method = 'pmm', seed = 500)
+# imputed_Data2 <- mice(numeric_data, m=5, maxit = 50, method = 'pmm', seed = 500)
 # summary(imputed_Data)
 # completed_numeric_data <- complete(imputed_Data, 1)
 
