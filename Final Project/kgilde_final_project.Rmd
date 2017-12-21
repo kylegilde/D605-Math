@@ -193,6 +193,8 @@ lines(xfit, yfit)
 
 Transform both variables simultaneously using Box-Cox transformations.  You might have to research this.
 
+**The BC transformations make the relationship more linear and the distributions of X, Y and the residuals more normal**
+
 ```{r transform}
 (lambda_values <- powerTransform(XY_df))
 lambda_X <- lambda_values$lambda[1]
@@ -202,7 +204,7 @@ XY_df_transform <- data.frame(
   X = (XY_df$X^lambda_X - 1) / lambda_X,
   Y = (XY_df$Y^lambda_Y - 1) / lambda_Y
 )
-summary(powerTransform(XY_df))
+summary(lambda_values)
 kable(t(round(describe(XY_df_transform, quant = c(.25,.75)), 2)))
 
 a <- ggplot(XY_df_transform, aes(X, Y))
@@ -282,7 +284,7 @@ Build some type of regression model and submit your model to the competition boa
 
 
 ##Clean Data
-```{r clean_impute, results='hide'}
+```{r clean, results='hide'}
 #combine test & training
 min_test_id <- min(test_csv$Id)
 test_csv$SalePrice <- NA
@@ -315,7 +317,7 @@ all_data_cleaned <- all_data_cleaned[-rows_to_remove,]
 inspect_metadata <- function(df){
   ###Takes a data frame &
   ###Checks for NAs, incorrect class types, inspects the unique values
-  ###Adds summary metrics
+  ###& adds summary metrics
   df_len <- nrow(df)
   NA_ct = as.vector(rapply(df, function(x) sum(is.na(x))))
   var_names <- names(df)
@@ -337,36 +339,27 @@ inspect_metadata <- function(df){
   return(df_summary)
 }
 
-View(df_metadata <- inspect_metadata(imputed_Data$ximp
-))
-#Impute missing values
-x_data <- subset(all_data_cleaned, select = -c(Id, SalePrice))
-dim(x_data)
-imputed_Data <- missForest(x_data)
+#View(df_metadata <- inspect_metadata(imputed_Data$ximp))
+
 ```
 
+Let's use the missForest package to imput the missing values.
 
-```{r, combine_split}
+```{r impute, results='hide', warning=FALSE}
+x_data <- subset(all_data_cleaned, select = -c(Id, SalePrice))
+
+imputed_Data <- missForest(x_data)
+
 #check imputed values
 sum(is.na(imputed_Data$ximp))
 dim(imputed_Data$ximp)
 #check imputation error
 imputed_Data$OOBerror
+```
 
-# numeric_vars <- subset(df_metadata, class_type != 'factor', select = var_names)[, 1]
-# numeric_vars <- setdiff(numeric_vars, c('Id', 'SalePrice'))
-# 
-# numeric_data <- subset(all_data_cleaned, select = numeric_vars)
-# other_data <- all_data_cleaned[, !names(all_data_cleaned) %in% numeric_vars]
-# 
-# imputed_Data2 <- mice(numeric_data, m=5, maxit = 50, method = 'pmm', seed = 500)
-# summary(imputed_Data)
-# completed_numeric_data <- complete(imputed_Data, 1)
+Let's combine the variables again and split back into train and test sets.
 
-#all_data_completed <- cbind(other_data, completed_numeric_data)
-nrow(all_data)
-nrow(all_data_completed)
-
+```{r, combine_split}
 all_data_completed <- cbind(Id = all_data_cleaned$Id, imputed_Data$ximp, SalePrice = all_data_cleaned$SalePrice)
 
 #Split test & training
@@ -378,16 +371,23 @@ test_df <- subset(all_data_completed, Id >= min_test_id, select = -c(Id, SalePri
 https://www.analyticsvidhya.com/blog/2016/03/tutorial-powerful-packages-imputing-missing-values/
 
 ##Baseline Model
-```{r baseline_model}
-#Create baseline model with all the variables
+
+Create baseline model with all the variables
+
+```{r baseline_model, results='hide', warning=FALSE}
 baseline <- lm(SalePrice ~ ., data = train_df)
 ```
 
 The model's plots show some violations of LR conditions. The residuals are not normally distributed or homoscedastic.
 
-```{r baseline_results}
+```{r baseline_results, warning=FALSE}
 par(mfrow = c(2, 2)) 
 plot(baseline)
+```
+
+With an adjusted R-squared of  .93, this data has some potential, but we need to address the violations of LR assumptions. 
+
+```{r summary}
 
 model_summary <- function(model, y_var){
   ### Summarizes the model's key statistics in one row
@@ -402,9 +402,9 @@ kable(all_results <- mod_sum)
 ```
 
 
-
 ## Model with Transformations
-```{r baseline_PT}
+
+```{r baseline_PT, warning=FALSE}
 train_df_transformed <- baseline$model
 
 PT <- powerTransform(as.formula(baseline$call), family="bcnPower", data = train_df_transformed)
@@ -419,12 +419,16 @@ https://stats.stackexchange.com/questions/61217/transforming-variables-for-multi
 
 The Q-Q plot isn't as normal as it could be, and there are a number of outliers.
 
-```{r, baseline_PT_results}
+```{r baseline_PT_results, warning=FALSE}
 par(mfrow = c(2, 2)) 
 plot(baseline_PT)
 
 mod_sum <- model_summary(baseline_PT, 'SalePrice')
+```
 
+The `baseline_PT model` has a larger adjusted R-squared value and F-statistic, but the diagnostics show substantial deviation from the LR assumptions.
+
+```{r summary2}
 kable(all_results <- rbind(all_results, mod_sum))
 ```
 
@@ -437,27 +441,49 @@ kable(all_results <- rbind(all_results, mod_sum))
 
 The Q-Q plot isn't normal, and there are a number of outliers.
 
-```{r, stepwise_results}
+```{r, stepwise_results, warning=FALSE}
 par(mfrow = c(2, 2)) 
 plot(AIC_model)
-
-mod_sum <- model_summary(AIC_model, 'SalePrice')
-kable(all_results <- rbind(all_results, mod_sum))
-
-# cooksd <- cooks.distance(AIC_model)
-# cooks_threshold <-  4 * mean(cooksd, na.rm=T)
-# 
-# plot(cooksd, pch="*", cex=2, main="Influential Obs by Cooks distance")  # plot cook's distance
-# abline(h = cooks_threshold, col="red")  # add cutoff line
-# text(x = 1:length(cooksd)+1,
-#      y = cooksd,
-#      labels=ifelse(cooksd > cooks_threshold, names(cooksd),""),
-#      col="red")  # add labels
-# 
-# length(cooksd[cooksd > cooks_threshold])
 ```
 
+The studentized residuals are not as normally distributed as we would prefer.
+
+```{r normal_res, warning=FALSE}
+sresid <- studres(AIC_model)
+hist(sresid, freq = FALSE, breaks = 30, main = "AIC_model of Studentized Residuals")
+xfit <- seq(min(na.omit(sresid)), max(na.omit(sresid)), by = .1)
+yfit <- dnorm(xfit)
+lines(xfit, yfit)
+
+```
+
+
+The Durbin Watson test's p-value is >.05. Therefore, we fail to reject the null hypothesis of independence (no autocorrelation).
+
+```{r dw}
+set.seed(40)
+durbinWatsonTest(AIC_model)
+```
+
+The Non-constant Variance Score Test has a p-value of near zero, which indicates that we reject the null hypothesis of homoscedasticity.
+
+```{r}
+ncvTest(AIC_model)
+```
+
++ The forward and backward stepwise selection of the `MASS::stepAIC` function reduces the model to 44 statistically significant variables. 
++ Adjusted R-squared is about the same as the `baseline`and a little less than `baseline_PT`. + While the F-statistic is much larger, we still have some issues with our assumptions to address.
+
+```{r summary3}
+mod_sum <- model_summary(AIC_model, 'SalePrice')
+kable(all_results <- rbind(all_results, mod_sum))
+```
+
+
 ##AIC Stepwise Model with Transformations
+
+Let's use the 44 predictors and see if a power transformation of the response variable will address some of the issues with the `AIC_model`.
+
 ```{r, AIC_model_PT, results='hide'}
 
 train_df_AIC_PT <- AIC_model$model
@@ -467,74 +493,107 @@ summary(PT)
 train_df_AIC_PT$SalePrice  <- bcnPower(train_df_AIC_PT$SalePrice, 
                                             lambda = PT$lambda, 
                                             gamma = PT$gamma)
-
-AIC_model_PT <- lm(SalePrice ~ ., data = train_df_AIC_PT)
-
-#if(!exists("AIC_model_PT")) 
-  AIC_model_PT <- stepAIC(AIC_model_PT)
-
 ```
 
+```{r AIC_model_PT_calc, results='hide'}
+AIC_model_PT <- lm(SalePrice ~ ., data = train_df_AIC_PT)
+#if(!exists("AIC_model_PT")) 
+  AIC_model_PT <- stepAIC(AIC_model_PT)
+```
 
-```{r, AIC_model_PT_results}
+This model has more homoscedasticity in the residuals & the Q-Q plot is more normal, but some outliers remain. Let's check the conditions with the following tests.
+
+```{r, AIC_model_PT_results, warning=FALSE}
 par(mfrow = c(2, 2)) 
 plot(AIC_model_PT)
 
-mod_sum <- model_summary(AIC_model_PT, 'SalePrice')
-kable(all_results <- rbind(all_results, mod_sum))
+```
 
-cols_needed <- intersect(names(AIC_model_PT$model), names(test_df))
+The studentized residuals appear relatively normally distributed.
 
-AIC_model_PT_fit <- predict(AIC_model_PT, newdata = subset(test_df, select = cols_needed))
-summary(AIC_model_PT_fit)
-
-table(all_data_completed$OverallQual)
-table(AIC_model_PT$model$OverallQual)
-table(test_df$OverallQual)
-
-#Outlier analysis
-# cooksd <- cooks.distance(AIC_model_PT)
-# cooks_threshold <-  4 * mean(cooksd, na.rm=T)
-# 
-# plot(cooksd, pch="*", cex=2, main="Influential Obs by Cooks distance")  # plot cook's distance
-# abline(h = cooks_threshold, col="red")  # add cutoff line
-# text(x = 1:length(cooksd)+1,
-#      y = cooksd,
-#      labels=ifelse(cooksd > cooks_threshold, names(cooksd),""),
-#      col="red")  # add labels
-# 
-# length(cooksd[cooksd > cooks_threshold])
+```{r normal_res2, warning=FALSE}
+sresid <- studres(AIC_model_PT)
+hist(sresid, freq = FALSE, breaks = 20, main = "AIC_model_PT of Studentized Residuals")
+xfit <- seq(min(na.omit(sresid)), max(na.omit(sresid)), by = .1)
+yfit <- dnorm(xfit)
+lines(xfit, yfit)
 
 ```
 
 
+The Durbin Watson test's p-value is >.05. Therefore, we fail to reject the null hypothesis of independence (no autocorrelation).
+
+```{r dw2}
+set.seed(40)
+durbinWatsonTest(AIC_model_PT)
+```
+
+The Non-constant Variance Score Test has a p-value of >.05, which indicates that we would fail to reject the null hypothesis of homoscedasticity.
+
+```{r ncv2}
+ncvTest(AIC_model_PT)
+```
+
+This time the AIC process narrowed the model down to 38 statistically significant predictors and our adjusted R-squared and F-statistic are higher than the previous models.
+
+```{r summary4}
+mod_sum <- model_summary(AIC_model_PT, 'SalePrice')
+kable(all_results <- rbind(all_results, mod_sum))
+```
+
+##AIC Stepwise Conclusion
+
+Since it doesn't appear that we can back-transform our response variable after using `bcnPower`, let's predict the response values of the test set using the untransformed `AIC_model` and see how it does on Kaggle. It received a RMSLE score of 0.18310.
+
+```{r AIC_predictions, warning=FALSE}
+significant_predictors <- intersect(names(AIC_model$model), names(test_df))
+
+AIC_model_fit <- predict(AIC_model, newdata = subset(test_df, select = significant_predictors))
+
+kable(t(round(describe(AIC_model_fit),2)))
+
+AIC_model_fit_output <- data.frame(
+  Id = test_csv$Id, 
+  SalePrice = AIC_model_fit
+  )
+
+write.csv(AIC_model_fit_output, 'AIC_model_fit.csv', row.names = FALSE)
+```
+
+https://stats.stackexchange.com/questions/1713/express-answers-in-terms-of-original-units-in-box-cox-transformed-data
+
+https://stats.stackexchange.com/questions/117407/predict-after-using-box-cox-transformation
+
+
 ##Random Forest
+
+Let's also try our train data set with imputed missing values in a Random Forest regression model. The model explains 89% of the variance in the response variable.
 
 ```{r rforest}
 y_train <- train_df$SalePrice
 x_train_df <- subset(train_df, select = -SalePrice)
 
-#fit <- rpart(y_train ~ ., data = x_train_df, method="class")
-rf_fit <- randomForest(x_train_df, y = y_train, xtest = test_df, ntree=500, importance = T)
-nrow(test_df)
-sum(is.na(rf_fit))
-# 
-summary(rf_fit)
-# fit$importance
-# fit$inbag
-#Predict Output 
-#predicted= predict(fit, x_test)
+(rf_fit <- randomForest(x_train_df, y = y_train, ntree=500, importance = T))  
 
+plot(rf_fit)
+
+rf_model_fit <- predict(rf_fit, test_df)
+
+#Summary of Predicted Output 
+kable(t(round(describe(rf_model_fit), 2)))
+
+rf_model_fit_output <- data.frame(
+  Id = test_csv$Id, 
+  SalePrice = rf_model_fit
+  )
+
+write.csv(rf_model_fit_output, 'rf_model_fit.csv', row.names = FALSE)
 ```
 
+##Conclusions
 
+The Random Forest model received an Root Mean Squared Logistic Error score of 0.15497 (under username KyleGilde) and outperformed the untransformed AIC stepwise model, which received a score of 0.18310.
 
-```{r}
-scores_file <- "house-prices-advanced-regression-techniques-publicleaderboard.csv"
-scores <- read.csv(scores_file)
-scores$SubmissionDate <- as.Date(scores$SubmissionDate)
-t(describe(subset(scores, SubmissionDate > "2010-12-01", select = Score), quant = c(.25, .1, .05, .01, .001)))
-```
 
 
 </body>
